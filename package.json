@@ -1,0 +1,11 @@
+{
+  "name": "light-workflow-js",
+  "version": "0.0.1",
+  "description": "Lightweight Framework for Amazon Simple Workflow Service in TypeScript and RxJS",
+  "main": "index.js",
+  "author": "Adam Recsko <adam.recsko@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.6.7"
+  }
+}

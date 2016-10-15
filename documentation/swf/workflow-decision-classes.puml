@@ -1,0 +1,191 @@
+@startuml
+
+class ActivityId
+
+class TaskList{
+    name: string
+}
+
+class StartTimerDecisionAttributes {
+        startToFireTimeout: string
+        timerId: string
+        control: string
+}
+
+
+class CancelTimerAttributes{
+    timerId: string
+}
+
+
+class CancelWorkflowExecutionDecisionAttributes {
+    details: string
+}
+
+
+class CompleteWorkflowExecutionDecisionAttributes {
+   result: string
+}
+
+enum ChildPolicy{
+    TERMINATE
+    REQUEST_CANCEL
+    ABANDON
+}
+
+class ContinueAsNewWorkflowExecutionDecisionAttributes {
+        childPolicy:ChildPolicy
+        executionStartToCloseTimeout: string
+        input: string
+        lambdaRole: string
+        tagList: Array<string>
+        taskList: TaskList
+        taskPriority: string
+        taskStartToCloseTimeout: string
+        workflowTypeVersion: string
+}
+
+class FailWorkflowExecutionDecisionAttributes {
+        details: string
+        reason: string
+}
+
+class RecordMarkerDecisionAttributes {
+       markerName: string
+       details: string
+}
+
+
+class RequestCancelActivityTaskDecisionAttributes{
+    activityId: string
+}
+
+
+class RequestCancelExternalWorkflowExecutionDecisionAttributes{
+        workflowId: string
+        control: string
+        runId: string
+}
+
+class ActivityType {
+  name: string
+  version: string
+}
+
+class ScheduleActivityTaskDecisionAttributes: {
+        activityId: string
+        activityType: ActivityType
+        control: string
+        heartbeatTimeout: string
+        input: string
+        scheduleToCloseTimeout: string
+        scheduleToStartTimeout: string
+        startToCloseTimeout: string
+        taskList: TaskList
+        taskPriority: string
+}
+
+class ScheduleLambdaFunctionDecisionAttributes {
+        id: string
+        name: string
+        input: string
+        startToCloseTimeout: string
+}
+
+
+class SignalExternalWorkflowExecutionDecisionAttributes {
+        signalName: string
+        workflowId: string
+        control: string
+        input: string
+        runId: string
+}
+
+class WorkflowType{
+       name: string
+       version: string
+}
+class StartChildWorkflowExecutionDecisionAttributes {
+        workflowId: string
+        workflowType: WorkflowType
+        childPolicy: ChildPolicy
+        control: string
+        executionStartToCloseTimeout: string
+        input: string
+        lambdaRole: string
+        tagList: Array<string>
+        taskList: TaskList
+        taskPriority: string
+        taskStartToCloseTimeout: string
+}
+
+
+
+interface Decision{
+   toJSON():JSON
+   decisionType:String
+}
+enum DecisionType{
+ ScheduleActivityTask
+ RequestCancelActivityTask
+ CompleteWorkflowExecution
+ FailWorkflowExecution
+ CancelWorkflowExecution
+ ContinueAsNewWorkflowExecution
+ RecordMarker
+ StartTimer
+ CancelTimer
+ SignalExternalWorkflowExecution
+ RequestCancelExternalWorkflowExecution
+ StartChildWorkflowExecution
+ ScheduleLambdaFunction
+}
+
+
+class ScheduleActivityTask implements Decision {
+  scheduleActivityTaskDecisionAttributes: ScheduleActivityTaskDecisionAttributes
+}
+class RequestCancelActivityTask implements Decision{
+   requestCancelActivityTaskDecisionAttributes:RequestCancelActivityTaskDecisionAttributes
+}
+
+class CompleteWorkflowExecution implements Decision{
+   completeWorkflowExecutionDecisionAttributes: CompleteWorkflowExecutionDecisionAttributes
+}
+class FailWorkflowExecution implements Decision{
+   failWorkflowExecutionDecisionAttributes:FailWorkflowExecutionDecisionAttributes
+}
+class CancelWorkflowExecution implements Decision{
+     cancelWorkflowExecutionDecisionAttributes: CancelWorkflowExecutionDecisionAttributes
+}
+class ContinueAsNewWorkflowExecution implements Decision{
+   continueAsNewWorkflowExecutionDecisionAttributes:ContinueAsNewWorkflowExecutionDecisionAttributes
+}
+
+class RecordMarker implements Decision{
+   recordMarkerDecisionAttributes: RecordMarkerDecisionAttributes
+}
+
+class StartTimer implements Decision{
+   startTimerDecisionAttributes:StartTimerDecisionAttributes
+}
+class CancelTimer implements Decision{
+    cancelTimerAttributes:CancelTimerAttributes
+}
+
+class SignalExternalWorkflowExecution implements Decision{
+    signalExternalWorkflowExecutionDecisionAttributes:SignalExternalWorkflowExecutionDecisionAttributes
+}
+
+class RequestCancelExternalWorkflowExecution implements Decision{
+    requestCancelExternalWorkflowExecutionDecisionAttributes:RequestCancelExternalWorkflowExecutionDecisionAttributes
+}
+
+class StartChildWorkflowExecution implements Decision{
+  startChildWorkflowExecutionDecisionAttributes:StartChildWorkflowExecutionDecisionAttributes
+}
+class ScheduleLambdaFunction implements Decision{
+  scheduleLambdaFunctionDecisionAttributes: ScheduleLambdaFunctionDecisionAttributes
+}
+
+@enduml

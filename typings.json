@@ -1,0 +1,13 @@
+{
+  "name": "light-workflow-js",
+  "dependencies": {
+    "chai": "registry:npm/chai#3.5.0+20160723033700",
+    "sinon": "registry:npm/sinon#1.16.0+20160723033700"
+  },
+  "globalDependencies": {
+    "aws-sdk": "registry:dt/aws-sdk#0.0.0+20160927141703",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "node": "registry:dt/node#6.0.0+20161014191813"
+  },
+  "globalDevDependencies": {}
+}

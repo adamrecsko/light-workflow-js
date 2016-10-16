@@ -1,0 +1,22 @@
+@startuml
+
+package "AWS_SDK"{
+    [AWS_JS]
+}
+
+
+package "AWS" {
+ AWS_SDK <- AWS_Adapter
+ [ActivityPoller] -> AWS_Adapter : poll for activity task
+ [DecisionPoller] -> AWS_Adapter : poll for decision task
+}
+
+
+
+package "Workers"{
+    [ActivityWorker] -> [ActivityPoller] : subscribe
+    [DecisionWorker] -> [ActivityPoller] : subscribe
+
+}
+
+@enduml

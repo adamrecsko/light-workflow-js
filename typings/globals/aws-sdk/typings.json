@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/1e7454173b2d2cf76545b361456df7fb42683ce0/aws-sdk/aws-sdk.d.ts",
+    "raw": "registry:dt/aws-sdk#0.0.0+20160927141703",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/1e7454173b2d2cf76545b361456df7fb42683ce0/aws-sdk/aws-sdk.d.ts"
+  }
+}

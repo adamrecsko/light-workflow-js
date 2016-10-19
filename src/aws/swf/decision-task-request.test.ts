@@ -48,8 +48,6 @@ class MockSwfRx implements SwfRx {
 
 
 describe('DecisionPollerObservable', ()=> {
-
-
     context('if paging needed', ()=> {
         it('should merge the decision list if it has next page', ()=> {
             const parameters = new DecisionPollParameters();

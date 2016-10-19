@@ -1,4 +1,4 @@
-import {DecisionPollerObservable} from './decision-poller-observable';
+import {DecisionTaskRequest} from './decision-task-request';
 import {SwfRx} from "../swf-rx";
 import {ActivityPollParameters, ActivityTask, DecisionTask, HistoryEvent, DecisionPollParameters} from "../aws.types";
 import {Observable, TestScheduler} from "rxjs";
@@ -66,8 +66,8 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            testScheduler.expectObservable(decisionListPoller).toBe('(a|)', {a: expectedMergedEvent});
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            testScheduler.expectObservable(decisionTaskRequest).toBe('(a|)', {a: expectedMergedEvent});
 
             testScheduler.flush();
         });
@@ -86,16 +86,55 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            decisionListPoller.subscribe();
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            decisionTaskRequest.subscribe();
             testScheduler.flush();
-            sinon.assert.callCount(stub, 3);
+            sinon.assert.calledThrice(stub);
+        });
+
+        it('should call pollForDecisionTask with the nextPageToken', ()=> {
+            const parameters = new DecisionPollParameters();
+            const mockSwfRx: SwfRx = new MockSwfRx();
+            const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
+            stub.onFirstCall()
+                .returns(Observable.of(generateDecisionTask('haveNext', [])));
+            stub.onSecondCall()
+                .returns(Observable.of(generateDecisionTask('haveNext2', [])));
+            stub.onThirdCall()
+                .returns(Observable.of(generateDecisionTask(null, [])));
+
+            const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
+                expect(a).to.eql(b);
+            });
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            decisionTaskRequest.subscribe();
+            testScheduler.flush();
+            expect(stub.firstCall.args[0]).to.eq(parameters);
+            expect(stub.secondCall.args[0]).to.eql(parameters.nextPage('haveNext'));
+            expect(stub.thirdCall.args[0]).to.eql(parameters.nextPage('haveNext2'));
         });
 
     });
 
 
     context('if no paging needed', ()=> {
+
+        it('should call pollForDecisionTask with the given parameters', ()=> {
+            const parameters = new DecisionPollParameters();
+            const mockSwfRx: SwfRx = new MockSwfRx();
+            const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
+            stub.onFirstCall()
+                .returns(Observable.of(generateDecisionTask(null, [])));
+
+            const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
+                expect(a).to.eql(b);
+            });
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            decisionTaskRequest.subscribe();
+            testScheduler.flush();
+            sinon.assert.calledWith(stub, parameters);
+        });
+
         it('should emit the decision task without merge', ()=> {
             const parameters = new DecisionPollParameters();
             const mockSwfRx: SwfRx = new MockSwfRx();
@@ -107,8 +146,8 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            testScheduler.expectObservable(decisionListPoller).toBe('(a|)', {a: expectedMergedEvent});
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            testScheduler.expectObservable(decisionTaskRequest).toBe('(a|)', {a: expectedMergedEvent});
 
             testScheduler.flush();
         });
@@ -122,10 +161,10 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            decisionListPoller.subscribe();
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            decisionTaskRequest.subscribe();
             testScheduler.flush();
-            sinon.assert.callCount(stub, 1);
+            sinon.assert.calledOnce(stub);
         });
     });
 
@@ -144,8 +183,8 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            testScheduler.expectObservable(decisionListPoller).toBe('#', null, error);
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            testScheduler.expectObservable(decisionTaskRequest).toBe('#', null, error);
 
             testScheduler.flush();
         });
@@ -162,12 +201,12 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            decisionListPoller.subscribe(()=> {
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            decisionTaskRequest.subscribe(()=> {
             }, ()=> {
             });
             testScheduler.flush();
-            sinon.assert.callCount(stub, 2);
+            sinon.assert.calledTwice(stub);
         });
     });
 
@@ -183,8 +222,8 @@ describe('DecisionPollerObservable', ()=> {
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);
             });
-            const decisionListPoller = new DecisionPollerObservable(parameters, mockSwfRx, testScheduler);
-            testScheduler.expectObservable(decisionListPoller).toBe('(a|)', {a: expectedResult});
+            const decisionTaskRequest = new DecisionTaskRequest(parameters, mockSwfRx, testScheduler);
+            testScheduler.expectObservable(decisionTaskRequest).toBe('(a|)', {a: expectedResult});
             testScheduler.flush();
         });
     });

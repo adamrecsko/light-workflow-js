@@ -8,7 +8,7 @@ import {SwfRx} from "../swf-rx";
 const arrayConcat = [].concat;
 
 
-export class DecisionPollerObservable extends Observable<DecisionTask> {
+export class DecisionTaskRequest extends Observable<DecisionTask> {
     constructor(private decisionPollParameters: DecisionPollParameters,
                 private rxSwf: SwfRx,
                 private scheduler?: Scheduler) {
@@ -43,7 +43,7 @@ export class DecisionPollerObservable extends Observable<DecisionTask> {
         return pollRequest
             .expand((decisionTask: DecisionTask)=>this.pager(decisionTask))
             .toArray()
-            .map((list: DecisionTask[])=>DecisionPollerObservable.mergeDecisionTaskArray(list))
+            .map((list: DecisionTask[])=>DecisionTaskRequest.mergeDecisionTaskArray(list))
             .subscribe(subscriber);
     }
 }

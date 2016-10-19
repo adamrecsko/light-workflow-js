@@ -11,28 +11,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-const inversify_1 = require("inversify/dts/inversify");
+const inversify_1 = require("inversify");
 const types_1 = require("../types");
-const aws_types_1 = require("../aws.types");
+const task_poller_observable_1 = require("./task-poller-observable");
 let GenericActivityPollerFactory = class GenericActivityPollerFactory {
-    constructor(awsAdapter) {
-        this.awsAdapter = awsAdapter;
+    constructor(swfRx) {
+        this.swfRx = swfRx;
     }
-    createPollParametersFromDefinition(definition) {
-        const params = new aws_types_1.ActivityPollParameters();
-        params.domain = definition.domain;
-        params.identity;
-    }
-    createPoller(definition) {
-        const pollingObservable = this.awsAdapter
-            .getSWFRx()
-            .pollForActivityTask(new aws_types_1.ActivityPollParameters());
-        return pollingObservable.repeat();
+    createPoller(pollParameters) {
+        const req = this.swfRx.pollForActivityTask(pollParameters);
+        return new task_poller_observable_1.TaskPollerObservable(req);
     }
 };
 GenericActivityPollerFactory = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.AWS_ADAPTER)), 
+    __param(0, inversify_1.inject(types_1.SWF_RX)), 
     __metadata('design:paramtypes', [Object])
 ], GenericActivityPollerFactory);
 exports.GenericActivityPollerFactory = GenericActivityPollerFactory;

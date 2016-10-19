@@ -14,17 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 const inversify_1 = require('inversify');
 const types_1 = require("./types");
 const aws_sdk_1 = require("aws-sdk");
-const swf_rx_1 = require("./swf-rx");
 let GenericAWSAdapter = class GenericAWSAdapter {
     constructor(swf) {
         this.swf = swf;
-        this.swfRx = new swf_rx_1.SwfRx(swf);
     }
     getNativeSWFClient() {
         return this.swf;
-    }
-    getSWFRx() {
-        return this.swfRx;
     }
 };
 GenericAWSAdapter = __decorate([

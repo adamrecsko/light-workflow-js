@@ -1,36 +1,20 @@
-import {Observable} from "rxjs/Rx";
-import {AWSAdapter} from "../aws-adapter";
-import {injectable, inject} from "inversify/dts/inversify";
-import {AWS_ADAPTER} from "../types";
-import {ActivityTask, ActivityDefinition, ActivityPollParameters} from "../aws.types";
-
-export type ActivityTaskPollerObservable = Observable<ActivityTask>;
+import {injectable, inject} from "inversify";
+import {SWF_RX} from "../types";
+import {ActivityPollParameters, ActivityTask} from "../aws.types";
+import {SwfRx} from "../swf-rx";
+import {TaskPollerObservable} from "./task-poller-observable";
 
 
 export interface ActivityPollerFactory {
-    createPoller(definition:ActivityDefinition):ActivityTaskPollerObservable
+    createPoller(pollParameters: ActivityPollParameters): TaskPollerObservable<ActivityTask>
 }
-
 
 @injectable()
 export class GenericActivityPollerFactory implements ActivityPollerFactory {
-    constructor(@inject(AWS_ADAPTER) private awsAdapter:AWSAdapter) {
+    constructor(@inject(SWF_RX) private swfRx: SwfRx) {
     }
-
-
-    private createPollParametersFromDefinition(definition:ActivityDefinition){
-        const params = new ActivityPollParameters();
-        
-        params.domain = definition.domain;
-        params.identity
-        
-    }
-    
-    createPoller(definition:ActivityDefinition):ActivityTaskPollerObservable {
-        const pollingObservable =
-            this.awsAdapter
-                .getSWFRx()
-                .pollForActivityTask(new ActivityPollParameters());
-        return pollingObservable.repeat();
+    createPoller(pollParameters: ActivityPollParameters): TaskPollerObservable<ActivityTask> {
+        const req = this.swfRx.pollForActivityTask(pollParameters);
+        return new TaskPollerObservable<ActivityTask>(req);
     }
 }

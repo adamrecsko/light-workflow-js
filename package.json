@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "pretest": "tsc",
-    "test": "mocha src/*/**.test.js",
+    "test": "mocha src/**/*.test.js",
     "start": "tsc; node ./src/index.js"
   },
   "dependencies": {
@@ -17,6 +17,8 @@
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.0.0-rc.1",
     "sinon": "^1.17.6",
+    "ts-node": "^1.6.0",
+    "typescript": "^2.0.3",
     "zone.js": "^0.6.25"
   },
   "devDependencies": {

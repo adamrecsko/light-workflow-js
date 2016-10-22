@@ -2,9 +2,9 @@
 class TaskList {
 }
 exports.TaskList = TaskList;
-class ActivityDefinition {
+class ActivityRegistrationParameters {
 }
-exports.ActivityDefinition = ActivityDefinition;
+exports.ActivityRegistrationParameters = ActivityRegistrationParameters;
 class ActivityPollParameters {
     constructor(domain, taskList, identity) {
         this.domain = domain;

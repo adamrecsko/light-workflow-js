@@ -12,20 +12,19 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 const inversify_1 = require('inversify');
-const types_1 = require("./types");
-const aws_sdk_1 = require("aws-sdk");
+const symbols_1 = require("./symbols");
 let GenericAWSAdapter = class GenericAWSAdapter {
-    constructor(swf) {
-        this.swf = swf;
+    constructor(configProvider) {
+        this.configProvider = configProvider;
     }
     getNativeSWFClient() {
-        return this.swf;
+        return this.configProvider.getConfiguration().swf;
     }
 };
 GenericAWSAdapter = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.AWS_SWF_NATIVE_CLIENT)), 
-    __metadata('design:paramtypes', [aws_sdk_1.SWF])
+    __param(0, inversify_1.inject(symbols_1.APPLICATION_CONFIGURATION)), 
+    __metadata('design:paramtypes', [Object])
 ], GenericAWSAdapter);
 exports.GenericAWSAdapter = GenericAWSAdapter;
 //# sourceMappingURL=aws-adapter.js.map

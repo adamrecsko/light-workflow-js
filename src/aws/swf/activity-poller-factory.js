@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 const inversify_1 = require("inversify");
-const types_1 = require("../types");
+const symbols_1 = require("../symbols");
 const task_poller_observable_1 = require("./task-poller-observable");
 let GenericActivityPollerFactory = class GenericActivityPollerFactory {
     constructor(swfRx) {
@@ -25,7 +25,7 @@ let GenericActivityPollerFactory = class GenericActivityPollerFactory {
 };
 GenericActivityPollerFactory = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.SWF_RX)), 
+    __param(0, inversify_1.inject(symbols_1.WORKFLOW_CLIENT)), 
     __metadata('design:paramtypes', [Object])
 ], GenericActivityPollerFactory);
 exports.GenericActivityPollerFactory = GenericActivityPollerFactory;

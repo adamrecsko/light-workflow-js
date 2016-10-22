@@ -14,6 +14,7 @@
     "aws-sdk": "^2.6.9",
     "chai": "^3.5.0",
     "inversify": "^2.0.1",
+    "proxy-polyfill": "^0.1.6",
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.0.0-rc.1",
     "sinon": "^1.17.6",

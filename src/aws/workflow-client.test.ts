@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {GenericSwfRx} from './swf-rx';
+import {GenericWorkflowClient} from './workflow-client';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {Notification} from "rxjs/Rx";
@@ -14,7 +14,7 @@ describe('GenericSwfRx', () => {
                 'domain',
                 {name: 'tasklist'}
             );
-            const obs = GenericSwfRx.fromSwfFunction(testFunction, param);
+            const obs = GenericWorkflowClient.fromSwfFunction(testFunction, param);
             obs.subscribe();
             sinon.assert.calledWith(testFunction, param);
 
@@ -31,7 +31,7 @@ describe('GenericSwfRx', () => {
             const testFunction = (p: P, cb: (error: any, data: D)=>{})=> {
                 cb(null, result);
             };
-            const obs = GenericSwfRx.fromSwfFunction<D>(testFunction, param);
+            const obs = GenericWorkflowClient.fromSwfFunction<D>(testFunction, param);
             const testObs = obs.materialize();
             let values: Notification<any>[];
             testObs.toArray().subscribe((v)=>values = v);
@@ -49,7 +49,7 @@ describe('GenericSwfRx', () => {
             const testFunction = (p: P, cb: (error: any, data: D)=>{})=> {
                 cb(error, null);
             };
-            const obs = GenericSwfRx.fromSwfFunction<D>(testFunction, param);
+            const obs = GenericWorkflowClient.fromSwfFunction<D>(testFunction, param);
             const testObs = obs.materialize();
             let values: Notification<any>[];
             testObs.toArray().subscribe((v)=>values = v);

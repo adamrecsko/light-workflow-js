@@ -8,9 +8,10 @@ export type HistoryEvent = Swf.HistoryEvent;
 export class TaskList {
     public name: string;
 }
-export class ActivityDefinition {
+export class ActivityRegistrationParameters {
     public domain: string;
-    public activityType: ActivityType;
+    public name: string;
+    public version: string;
     public description: string;
     public defaultTaskStartToCloseTimeout: string;
     public defaultTaskHeartbeatTimeout: string;
@@ -18,6 +19,8 @@ export class ActivityDefinition {
     public defaultTaskScheduleToStartTimeout: string;
     public defaultTaskScheduleToCloseTimeout: string;
 }
+
+
 export class ActivityPollParameters {
     public domain: string;
     public taskList: TaskList;
@@ -33,7 +36,7 @@ export class ActivityPollParameters {
 export class DecisionPollParameters {
     public domain: string;
     public taskList: TaskList;
-    public identity: string;
+    public identity?: string;
     public maximumPageSize: number;
     public nextPageToken?: string;
     public reverseOrder: boolean;
@@ -50,7 +53,7 @@ export class DecisionPollParameters {
         return result;
     }
 
-    public nextPage(nextPageToken:string): DecisionPollParameters {
+    public nextPage(nextPageToken: string): DecisionPollParameters {
         const result = this.copy();
         result.nextPageToken = nextPageToken;
         return result;

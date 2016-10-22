@@ -1,13 +1,13 @@
 import "reflect-metadata";
 import {GenericActivityPollerFactory} from './activity-poller-factory';
-import {SwfRx} from "../swf-rx";
+import {WorkflowClient} from "../workflow-client";
 import {ActivityPollParameters, ActivityTask, DecisionTask} from "../aws.types";
 import {Observable} from "rxjs";
 import * as sinon from "sinon";
 import {expect} from 'chai';
 import {TaskPollerObservable} from "./task-poller-observable";
 
-class MockSwfRx implements SwfRx {
+class MockSwfRx implements WorkflowClient {
     pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask> {
         return null;
     }
@@ -19,7 +19,7 @@ class MockSwfRx implements SwfRx {
 
 describe('GenericActivityPollerFactory', ()=> {
     it('should return an ActivityPollerObservable', ()=> {
-        const mockSwfRx: SwfRx = new MockSwfRx();
+        const mockSwfRx: WorkflowClient = new MockSwfRx();
         const mockObs = {obs: 'obs'};
         sinon.stub(mockSwfRx, "pollForActivityTask", ()=>mockObs);
         const gpf = new GenericActivityPollerFactory(mockSwfRx);
@@ -30,7 +30,7 @@ describe('GenericActivityPollerFactory', ()=> {
 
     });
     it('should call swfRx pollForActivityTask with the poll parameters', ()=> {
-        const mockSwfRx: SwfRx = new MockSwfRx();
+        const mockSwfRx: WorkflowClient = new MockSwfRx();
         const mockObs = {};
         const testPollForActivityTask = sinon.stub(mockSwfRx, "pollForActivityTask", ()=>mockObs);
         const gpf = new GenericActivityPollerFactory(mockSwfRx);

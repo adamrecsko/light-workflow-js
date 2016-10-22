@@ -1,7 +1,7 @@
 import {injectable, inject} from "inversify";
-import {SWF_RX} from "../types";
+import {WORKFLOW_CLIENT} from "../symbols";
 import {DecisionPollParameters, DecisionTask} from "../aws.types";
-import {SwfRx} from "../swf-rx";
+import {WorkflowClient} from "../workflow-client";
 import {TaskPollerObservable} from "./task-poller-observable";
 import {DecisionTaskRequest} from "./decision-task-request";
 
@@ -12,7 +12,7 @@ export interface DecisionPollerFactory {
 
 @injectable()
 export class GenericDecisionPollerFactory implements DecisionPollerFactory {
-    constructor(@inject(SWF_RX) private swfRx: SwfRx) {
+    constructor(@inject(WORKFLOW_CLIENT) private swfRx: WorkflowClient) {
     }
 
     createPoller(pollParameters: DecisionPollParameters): TaskPollerObservable<DecisionTask> {

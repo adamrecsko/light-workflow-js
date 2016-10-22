@@ -3,14 +3,14 @@ import {TeardownLogic} from "rxjs/Subscription";
 import {Scheduler} from "rxjs/Scheduler";
 import {Observable} from "rxjs/Observable";
 import {Subscriber} from "rxjs/Subscriber";
-import {SwfRx} from "../swf-rx";
+import {WorkflowClient} from "../workflow-client";
 
 const arrayConcat = [].concat;
 
 
 export class DecisionTaskRequest extends Observable<DecisionTask> {
     constructor(private decisionPollParameters: DecisionPollParameters,
-                private rxSwf: SwfRx,
+                private rxSwf: WorkflowClient,
                 private scheduler?: Scheduler) {
         super();
     }

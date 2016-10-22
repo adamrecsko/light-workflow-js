@@ -11,8 +11,6 @@ package "AWS" {
  [DecisionPoller] -> AWS_Adapter : poll for decision task
 }
 
-
-
 package "Workers"{
     [ActivityWorker] -> [ActivityPoller] : subscribe
     [DecisionWorker] -> [ActivityPoller] : subscribe

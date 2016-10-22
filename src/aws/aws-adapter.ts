@@ -1,16 +1,18 @@
 import {injectable, inject} from 'inversify';
-import {AWS_SWF_NATIVE_CLIENT} from "./types";
 import {SWF} from "aws-sdk";
-import {SwfRx} from "./swf-rx";
+import {APPLICATION_CONFIGURATION} from "./symbols";
+import {ApplicationConfigurationProvider} from "../application/application";
 
 export interface AWSAdapter {
-    getNativeSWFClient():SWF
+    getNativeSWFClient(): SWF
 }
 
 @injectable()
 export class GenericAWSAdapter implements AWSAdapter {
-    constructor(@inject(AWS_SWF_NATIVE_CLIENT) private swf:SWF) {}
-    getNativeSWFClient():SWF {
-        return this.swf;
+    constructor(@inject(APPLICATION_CONFIGURATION) private configProvider: ApplicationConfigurationProvider) {
+    }
+
+    getNativeSWFClient(): SWF {
+        return this.configProvider.getConfiguration().swf;
     }
 }

@@ -12,7 +12,6 @@ export interface ActivityWorker {
 
 export class GenericActivityWorker implements ActivityWorker {
     private activityPoller: TaskPollerObservable<ActivityTask>;
-    private implementationList: any[] = [];
 
     constructor(private domain: string,
                 private taskList: TaskList,
@@ -21,9 +20,5 @@ export class GenericActivityWorker implements ActivityWorker {
             .createPoller(new ActivityPollParameters(domain, taskList));
     }
 
-
-    public addImplementation<T>(clazz: T) {
-        this.implementationList.push(clazz);
-    }
 
 }

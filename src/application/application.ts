@@ -1,7 +1,8 @@
 import {Kernel} from "inversify";
-import {CORE} from "../core/index";
+import {CORE, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER} from "../core/index";
 import {SWF} from "aws-sdk";
 import {APPLICATION_CONFIGURATION} from "../aws/symbols";
+import {ActivityClientImplementationHelper} from "./activity-client-implementation-helper";
 
 
 export class ApplicationConfiguration {
@@ -27,17 +28,25 @@ export interface ApplicationFactory {
     createApplication<T>(applicationClass: T): T
 }
 
+export const APP_KERNEL = Symbol('APP_KERNEL');
+
 export class ConfigurableApplicationFactory implements ApplicationFactory {
     private coreKernel: Kernel;
     private applicationKernel: Kernel;
+    private activityClientImplementationHelper: ActivityClientImplementationHelper;
 
     constructor(private configurationProvider: ApplicationConfigurationProvider) {
         this.coreKernel = new Kernel();
-        this.coreKernel.bind<ApplicationConfigurationProvider>(APPLICATION_CONFIGURATION)
-            .toConstantValue(configurationProvider);
-        this.coreKernel.load(CORE);
         this.applicationKernel = new Kernel();
         this.applicationKernel.parent = this.coreKernel;
+        this.coreKernel
+            .bind<ApplicationConfigurationProvider>(APPLICATION_CONFIGURATION)
+            .toConstantValue(configurationProvider);
+        this.coreKernel.bind<Kernel>(APP_KERNEL)
+            .toConstantValue(this.applicationKernel);
+        this.coreKernel.load(CORE);
+        this.activityClientImplementationHelper =
+            this.coreKernel.get<ActivityClientImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
     }
 
     public createApplication<T>(applicationClass: Implementation<T>): T {

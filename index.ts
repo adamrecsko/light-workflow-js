@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {KernelModule, Kernel} from 'inversify';
-import {injectable} from "inversify";
+import {injectable,inject} from "inversify";
 const kernel = new Kernel();
 
 import "proxy-polyfill";
@@ -34,20 +34,20 @@ const testActivitySymbol = Symbol('testActivty');
 
 
 @injectable()
+class Tes1 {
+    constructor() {
+        console.log("ACTIVITY! Tes1");
+    }
+}
+
+@injectable()
 class TestActivityImpl implements TestActivity {
-    @dec('cicapannu')
+
     helloWorld(message: string): void {
         console.log(message);
     }
 
-    @dec('nyuzette')
-    method1(message: string, alma: boolean, v: TestActivityImpl): TestActivityImpl {
-        console.log(message);
-        return null;
-    }
-
-    constructor() {
-
+    constructor(@inject('Tes1') test: Tes1) {
         console.log("ACTIVITY! CONSTRUCOT");
     }
 }
@@ -83,40 +83,9 @@ const registerActivity = (activityClass: any)=> {
 
 };
 
+kernel.bind<Tes1>('Tes1').to(Tes1);
+
 kernel.bind<TestActivity>(TestActivityImpl).to(TestActivityImpl);
 kernel.get<TestActivity>(TestActivityImpl).helloWorld('szia');
 
 kernel.get<TestActivity>(TestActivityImpl).helloWorld('szia');
-
-
-class ActivityContainer {
-    constructor(app: any) {
-    }
-}
-
-class Application {
-    private applicationKernel: Kernel;
-
-    constructor(configuration: any) {
-    }
-
-    register(implementations: any[]) {
-    }
-
-    loadKernelModule(kernelModule: any) {
-
-    }
-}
-
-
-const application = new Application({
-    secret: 'gaggas=='
-});
-
-
-
-
-
-
-
-

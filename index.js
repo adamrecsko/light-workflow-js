@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 require("reflect-metadata");
 const inversify_1 = require('inversify');
 const inversify_2 = require("inversify");
@@ -26,33 +29,27 @@ function dec(value) {
     };
 }
 const testActivitySymbol = Symbol('testActivty');
-let TestActivityImpl = class TestActivityImpl {
+let Tes1 = class Tes1 {
     constructor() {
+        console.log("ACTIVITY! Tes1");
+    }
+};
+Tes1 = __decorate([
+    inversify_2.injectable(), 
+    __metadata('design:paramtypes', [])
+], Tes1);
+let TestActivityImpl = class TestActivityImpl {
+    constructor(test) {
         console.log("ACTIVITY! CONSTRUCOT");
     }
     helloWorld(message) {
         console.log(message);
     }
-    method1(message, alma, v) {
-        console.log(message);
-        return null;
-    }
 };
-__decorate([
-    dec('cicapannu'), 
-    __metadata('design:type', Function), 
-    __metadata('design:paramtypes', [String]), 
-    __metadata('design:returntype', void 0)
-], TestActivityImpl.prototype, "helloWorld", null);
-__decorate([
-    dec('nyuzette'), 
-    __metadata('design:type', Function), 
-    __metadata('design:paramtypes', [String, Boolean, TestActivityImpl]), 
-    __metadata('design:returntype', TestActivityImpl)
-], TestActivityImpl.prototype, "method1", null);
 TestActivityImpl = __decorate([
-    inversify_2.injectable(), 
-    __metadata('design:paramtypes', [])
+    inversify_2.injectable(),
+    __param(0, inversify_2.inject('Tes1')), 
+    __metadata('design:paramtypes', [Tes1])
 ], TestActivityImpl);
 function getClient(classImp) {
     const proto = classImp.prototype;
@@ -66,22 +63,8 @@ function getClient(classImp) {
 }
 const registerActivity = (activityClass) => {
 };
+kernel.bind('Tes1').to(Tes1);
 kernel.bind(TestActivityImpl).to(TestActivityImpl);
 kernel.get(TestActivityImpl).helloWorld('szia');
 kernel.get(TestActivityImpl).helloWorld('szia');
-class ActivityContainer {
-    constructor(app) {
-    }
-}
-class Application {
-    constructor(configuration) {
-    }
-    register(implementations) {
-    }
-    loadKernelModule(kernelModule) {
-    }
-}
-const application = new Application({
-    secret: 'gaggas=='
-});
 //# sourceMappingURL=index.js.map

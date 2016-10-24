@@ -25,7 +25,7 @@ describe('ConfigurableApplicationFactory', ()=> {
 
             }
         }
-        const app = factory.createApplication<App>(AppImp);
+        const app:App = factory.createApplication<App>(AppImp);
         expect(app).to.instanceOf(AppImp);
     });
 });

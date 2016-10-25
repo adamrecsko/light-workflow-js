@@ -40,13 +40,13 @@ export class ConfigurableApplicationFactory implements ApplicationFactory {
         this.applicationKernel = new Kernel();
         this.applicationKernel.parent = this.coreKernel;
         this.coreKernel
-            .bind<ApplicationConfigurationProvider>(APPLICATION_CONFIGURATION)
+            .bind(APPLICATION_CONFIGURATION)
             .toConstantValue(configurationProvider);
         this.coreKernel.bind<Kernel>(APP_KERNEL)
             .toConstantValue(this.applicationKernel);
         this.coreKernel.load(CORE);
         this.activityClientImplementationHelper =
-            this.coreKernel.get<ActivityClientImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
+            this.coreKernel.get(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
     }
 
     public createApplication<T>(applicationClass: Implementation<T>): T {

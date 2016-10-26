@@ -1,173 +1,129 @@
 import {ActivityDecisionStateMachine, ActivityDecisionStates} from "./activity-decision";
-import {HistoryEvent} from "../aws/aws.types";
-import {EventType} from "../aws/workflow-history/event-types";
+import {ActivityHistoryGenerator} from "../testing/helpers/workflow-history-generator";
+import {expect} from "chai";
 
-const TEST_ACTIVITY_TYPE = {
-    name: 'test-activity',
-    version: '1'
-};
-
-function createActivityScheduledEvent(activityId: string): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskScheduled],
-        eventId: 10,
-        activityTaskScheduledEventAttributes: {
-            activityType: TEST_ACTIVITY_TYPE,
-            activityId: activityId,
-            input: 'createActivityScheduledEvent',
-            control: 'control - createActivityScheduledEvent',
-            scheduleToStartTimeout: '10',
-            scheduleToCloseTimeout: '100',
-            startToCloseTimeout: '1',
-            taskList: {
-                name: 'test task list'
-            },
-            decisionTaskCompletedEventId: 9,
-            heartbeatTimeout: '11'
-        }
-    };
-    return historyEvent;
-}
-
-function createScheduleActivityTaskFailed(activityId: string): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ScheduleActivityTaskFailed],
-        eventId: 10,
-        scheduleActivityTaskFailedEventAttributes: {
-            activityType: TEST_ACTIVITY_TYPE,
-            activityId: activityId,
-            cause: 'createScheduleActivityTaskFailed - cause',
-            decisionTaskCompletedEventId: 10
-        }
-    };
-
-    return historyEvent;
-}
+export function expectStateMachine(sm: ActivityDecisionStateMachine,
+                                   properties: any,
+                                   currentState: ActivityDecisionStates) {
 
 
-function createActivityTaskStarted(): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskStarted],
-        eventId: 10,
-        activityTaskStartedEventAttributes: {
-            identity: 'identity - ',
-            scheduledEventId: 10
-        }
-    };
-
-    return historyEvent;
-}
+    if (properties !== null)
+        expect(sm).to.contain.all.keys(properties);
 
 
-function createActivityTaskCompleted(): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskCompleted],
-        eventId: 10,
-        activityTaskCompletedEventAttributes: {
-            result: "result",
-            scheduledEventId: 10,
-            startedEventId: 10
-        }
-    };
-
-    return historyEvent;
-}
-
-
-function createActivityTaskFailed(): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskFailed],
-        eventId: 10,
-        activityTaskFailedEventAttributes: {
-            reason: 'reason',
-            details: 'details',
-            scheduledEventId: 10,
-            startedEventId: 9
-        }
-    };
-    return historyEvent;
-}
-
-function createActivityTaskTimedOut(): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskTimedOut],
-        eventId: 10,
-        activityTaskTimedOutEventAttributes: {
-            timeoutType: 'timeout type',
-            scheduledEventId: 10,
-            startedEventId: 10,
-            details: 'details createActivityTaskTimedOut'
-        }
-    };
-    return historyEvent;
-}
-
-function createActivityTaskCanceled(): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskCanceled],
-        eventId: 10,
-        activityTaskCanceledEventAttributes: {
-            details: 'details createActivityTaskCanceled',
-            scheduledEventId: 10,
-            startedEventId: 9,
-            latestCancelRequestedEventId: 11
-        }
-    };
-    return historyEvent;
-}
-
-function createActivityTaskCancelRequested(activityId: string): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.ActivityTaskCancelRequested],
-        eventId: 10,
-        activityTaskCancelRequestedEventAttributes: {
-            decisionTaskCompletedEventId: 10,
-            activityId: activityId
-        }
-    };
-    return historyEvent;
-}
-
-
-function createRequestCancelActivityTaskFailed(activityId: string): HistoryEvent {
-    const historyEvent: HistoryEvent = {
-        eventTimestamp: 1234,
-        eventType: EventType[EventType.RequestCancelActivityTaskFailed],
-        eventId: 10,
-        requestCancelActivityTaskFailedEventAttributes: {
-            activityId: activityId,
-            cause: 'cause createRequestCancelActivityTaskFailed',
-            decisionTaskCompletedEventId: 10,
-        }
-    };
-    return historyEvent;
+    expect(sm.currentState).to.eq(currentState, 'Current state not equal expected');
 }
 
 describe('ActivityDecisionStateMachine', ()=> {
-
-    /**
-     ActivityTaskScheduled,
-     ScheduleActivityTaskFailed,
-     ActivityTaskStarted,
-     ActivityTaskCompleted,
-     ActivityTaskFailed,
-     ActivityTaskTimedOut,
-     ActivityTaskCanceled,
-     ActivityTaskCancelRequested,
-     RequestCancelActivityTaskFailed
-     *
-     */
+    let stateMachine: ActivityDecisionStateMachine;
+    let historyGenerator: ActivityHistoryGenerator;
+    beforeEach(()=> {
+        stateMachine = new ActivityDecisionStateMachine(ActivityDecisionStates.Created);
+        historyGenerator = new ActivityHistoryGenerator();
+    });
 
     it('should handle ActivityTaskScheduled event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(ActivityDecisionStates.Created);
+        const activityId = '1';
+        const event = historyGenerator.createActivityScheduledEvent(activityId);
+        const params = event.activityTaskScheduledEventAttributes;
+        stateMachine.processHistoryEvent(event);
 
+        expectStateMachine(stateMachine,
+            {
+                control: params.control,
+                input: params.input
+            },
+            ActivityDecisionStates.Scheduled);
+
+
+    });
+    it('should handle ScheduleActivityTaskFailed event', ()=> {
+        const event = historyGenerator.createScheduleActivityTaskFailed('1001');
+        const params = event.scheduleActivityTaskFailedEventAttributes;
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                cause: params.cause
+            },
+            ActivityDecisionStates.ScheduleFailed
+        );
+    });
+    it('should handle ActivityTaskStarted event', ()=> {
+        const event = historyGenerator.createActivityTaskStarted();
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            null,
+            ActivityDecisionStates.Started
+        );
+    });
+    it('should handle ActivityTaskCompleted event', ()=> {
+        const event = historyGenerator.createActivityTaskCompleted();
+        const params = event.activityTaskCompletedEventAttributes;
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                result: params.result
+            },
+            ActivityDecisionStates.Completed
+        );
+    });
+    it('should handle ActivityTaskFailed event', ()=> {
+        const event = historyGenerator.createActivityTaskFailed();
+        const params = event.activityTaskFailedEventAttributes;
+
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                details: params.details,
+                reason: params.reason
+            },
+            ActivityDecisionStates.Failed
+        );
+    });
+    it('should handle ActivityTaskTimedOut event', ()=> {
+        const event = historyGenerator.createActivityTaskTimedOut();
+        const params = event.activityTaskTimedOutEventAttributes;
+
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                details: params.details,
+                timeoutType: params.timeoutType
+            },
+            ActivityDecisionStates.TimedOut
+        );
+    });
+    it('should handle ActivityTaskCanceled event', ()=> {
+        const event = historyGenerator.createActivityTaskCanceled();
+        const params = event.activityTaskCanceledEventAttributes;
+
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                details: params.details
+            },
+            ActivityDecisionStates.Canceled
+        );
+    });
+    it('should handle ActivityTaskCancelRequested event', ()=> {
+        const activityId = '1';
+        const event = historyGenerator.createActivityTaskCancelRequested(activityId);
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            null,
+            ActivityDecisionStates.CancelRequested
+        );
+    });
+    it('should handle RequestCancelActivityTaskFailed event', ()=> {
+        const activityId = '1';
+        const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
+        const params = event.requestCancelActivityTaskFailedEventAttributes;
+        stateMachine.processHistoryEvent(event);
+        expectStateMachine(stateMachine,
+            {
+                cause: params.cause
+            },
+            ActivityDecisionStates.RequestCancelFailed
+        );
     });
 });

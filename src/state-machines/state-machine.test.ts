@@ -12,7 +12,7 @@ describe('BaseStateMachine', ()=> {
                 [state2, state3]
             ], state1);
             stateMachine.goTo(state2);
-            expect(stateMachine.getCurrentState()).to.eq(state2);
+            expect(stateMachine.currentState).to.eq(state2);
         });
 
         it('should allow multiple possible transition', ()=> {
@@ -25,7 +25,7 @@ describe('BaseStateMachine', ()=> {
                 [state2, state3]
             ], state1);
             stateMachine.goTo(state3);
-            expect(stateMachine.getCurrentState()).to.eq(state3);
+            expect(stateMachine.currentState).to.eq(state3);
         });
 
     });
@@ -44,6 +44,19 @@ describe('BaseStateMachine', ()=> {
                 stateMachine.goTo(state3);
             }).to.throw(InvalidStateTransitionException);
         });
+        it('should throw InvalidStateChangeException when property setter used', ()=> {
+            const state1 = 'state1';
+            const state2 = 'state2';
+            const state3 = 'state3';
+            const stateMachine = new BaseStateMachine<string>([
+                [state1, state2],
+                [state2, state3]
+            ], state1);
+
+            expect(()=> {
+                stateMachine.currentState = state3;
+            }).to.throw(InvalidStateTransitionException);
+        });
     });
 });
 
@@ -60,7 +73,7 @@ describe('ObservableStateMachine', ()=> {
         stateMachine.stateObservable.subscribe((state: string)=> {
             testState = state;
         });
-        stateMachine.goTo(state2);
+        stateMachine.currentState = state2;
         expect(testState).to.eq(state2);
     });
 });

@@ -1,25 +1,27 @@
 import {HistoryEvent, ActivityType, TaskList} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
-import * as  faker from 'faker';
+import  * as faker from 'faker';
 import {ActivityDecisionStates, ActivityDecisionStateMachine} from "../../state-machines/activity-decision";
 import {expect} from "chai";
-
-
-const TEST_ACTIVITY_TYPE = {
-    name: 'test-activity',
-    version: '1'
-};
-
-const TEST_TASK_LIST = {
-    name: 'test-task-list'
-};
-
-const DEFAULT_TEST_ACTIVITY_ID = '1';
+import  * as uuid from 'node-uuid';
 
 const randomTimestampGen = (): number=> {
     return faker.date.past().getTime();
 };
+const activityName = ()=>faker.helpers.slugify(`${uuid.v4()}  Actvivity`);
+const taskListName = ()=>faker.helpers.slugify(`${faker.internet.domainName()} ${uuid.v4()} list`);
 
+const randomActivityType = ()=> {
+    return {
+        name: activityName(),
+        version: `${Math.random() * 1000}`
+    }
+};
+const randomTaskList = ()=> {
+    return {
+        name: taskListName()
+    };
+};
 
 export class HistoryGenerator {
     public timestampGen: ()=>number = randomTimestampGen;
@@ -37,21 +39,24 @@ export class HistoryGenerator {
 
 
 export class ActivityHistoryGenerator extends HistoryGenerator {
-    public activityType: ActivityType = TEST_ACTIVITY_TYPE;
-    public taskList: TaskList = TEST_TASK_LIST;
-    public activityId: string = DEFAULT_TEST_ACTIVITY_ID;
+    public activityType: ActivityType;
+    public taskList: TaskList;
+    public activityId: string;
 
     constructor() {
         super();
+        this.activityType = randomActivityType();
+        this.taskList = randomTaskList();
+        this.activityId = uuid.v4();
     }
 
     createActivityScheduledEvent(activityId?: string): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskScheduled);
         historyEvent.activityTaskScheduledEventAttributes = {
-            activityType: TEST_ACTIVITY_TYPE,
+            activityType: this.activityType,
             activityId: activityId || this.activityId,
-            input: 'createActivityScheduledEvent',
-            control: 'control - createActivityScheduledEvent',
+            input: `createActivityScheduledEvent ${uuid.v4()}`,
+            control: `control - createActivityScheduledEvent ${uuid.v4()}`,
             scheduleToStartTimeout: '10',
             scheduleToCloseTimeout: '100',
             startToCloseTimeout: '1',
@@ -67,7 +72,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         historyEvent.scheduleActivityTaskFailedEventAttributes = {
             activityType: this.activityType,
             activityId: activityId || this.activityId,
-            cause: 'createScheduleActivityTaskFailed - cause',
+            cause: `createScheduleActivityTaskFailed - cause ${uuid.v4()}`,
             decisionTaskCompletedEventId: 10
         };
         return historyEvent;
@@ -76,7 +81,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskStarted(): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskStarted);
         historyEvent.activityTaskStartedEventAttributes = {
-            identity: 'identity - createActivityTaskStarted',
+            identity: `identity - createActivityTaskStarted ${uuid.v4()}`,
             scheduledEventId: 10
 
         };
@@ -86,7 +91,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskCompleted(): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCompleted);
         historyEvent.activityTaskCompletedEventAttributes = {
-            result: "result",
+            result: `createActivityTaskCompleted - ${uuid.v4()}`,
             scheduledEventId: 10,
             startedEventId: 10
 
@@ -97,8 +102,8 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskFailed(): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskFailed);
         historyEvent.activityTaskFailedEventAttributes = {
-            reason: 'reason',
-            details: 'details',
+            reason: `createActivityTaskFailed reason - ${uuid.v4()}`,
+            details: `createActivityTaskFailed details - ${uuid.v4()}`,
             scheduledEventId: 10,
             startedEventId: 9
 
@@ -112,7 +117,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
             timeoutType: 'timeout type',
             scheduledEventId: 10,
             startedEventId: 10,
-            details: 'details createActivityTaskTimedOut'
+            details: `details createActivityTaskTimedOut ${uuid.v4()}`
 
         };
         return historyEvent;
@@ -121,7 +126,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskCanceled(): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCanceled);
         historyEvent.activityTaskCanceledEventAttributes = {
-            details: 'details createActivityTaskCanceled',
+            details: `details createActivityTaskCanceled ${uuid.v4()}`,
             scheduledEventId: 10,
             startedEventId: 9,
             latestCancelRequestedEventId: 11
@@ -144,7 +149,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.RequestCancelActivityTaskFailed);
         historyEvent.requestCancelActivityTaskFailedEventAttributes = {
             activityId: activityId || this.activityId,
-            cause: 'cause createRequestCancelActivityTaskFailed',
+            cause: `cause createRequestCancelActivityTaskFailed ${uuid.v4()}`,
             decisionTaskCompletedEventId: 10,
 
         };
@@ -180,6 +185,16 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         };
         return events.map(createEvent);
     }
+
+
+    static generateList(events: EventType[][]): HistoryEvent[] {
+        const listOfList = events.map((evtList: EventType[])=> {
+            const generator = new ActivityHistoryGenerator();
+            return generator.createActivityList(evtList);
+        });
+        return [].concat.apply([], listOfList);
+    }
+
 }
 
 export function expectState(current: ActivityDecisionStates, expected: ActivityDecisionStates): void {

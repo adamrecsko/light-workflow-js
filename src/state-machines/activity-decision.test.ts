@@ -37,8 +37,6 @@ describe('ActivityDecisionStateMachine', ()=> {
                 input: params.input
             },
             ActivityDecisionStates.Scheduled);
-
-
     });
     it('should handle ScheduleActivityTaskFailed event', ()=> {
         const event = historyGenerator.createScheduleActivityTaskFailed('1001');

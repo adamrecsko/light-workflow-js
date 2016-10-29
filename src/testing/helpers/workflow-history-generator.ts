@@ -1,8 +1,6 @@
 import {HistoryEvent, ActivityType, TaskList} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
 import  * as faker from 'faker';
-import * as chai from 'chai';
-chai.use(require('chai-shallow-deep-equal'));
 import  * as uuid from 'node-uuid';
 import {HistoryGenerator} from "./history-event-generator";
 

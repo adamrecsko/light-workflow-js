@@ -1,3 +1,5 @@
+import * as chai from 'chai';
+chai.use(require('chai-shallow-deep-equal'));
 import {expect} from "chai";
 import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
 import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";

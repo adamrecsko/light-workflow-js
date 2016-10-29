@@ -1,40 +1,7 @@
+import {ActivityDefinition} from "./activity-definition";
+import {ActivityDefinitionProperty} from "./activity-deinition-property";
 export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor)=>void;
 export const ACTIVITY_DEFINITIONS = Symbol('ACTIVITY_DEFINITIONS');
-export enum ActivityDefinitionProperty{
-    name,
-    version,
-    defaultTaskHeartbeatTimeout,
-    defaultTaskPriority,
-    defaultTaskScheduleToCloseTimeout,
-    defaultTaskScheduleToStartTimeout,
-    defaultTaskStartToCloseTimeout,
-    description,
-    heartbeatTimeout,
-    scheduleToCloseTimeout,
-    scheduleToStartTimeout,
-    startToCloseTimeout,
-    taskPriority
-}
-export class ActivityDefinition {
-    name: string;
-    version: string = '1';
-    defaultTaskHeartbeatTimeout: string;
-    defaultTaskPriority: string;
-    defaultTaskScheduleToCloseTimeout: string;
-    defaultTaskScheduleToStartTimeout: string;
-    defaultTaskStartToCloseTimeout: string;
-    description: string;
-    heartbeatTimeout: string;
-    scheduleToCloseTimeout: string;
-    scheduleToStartTimeout: string;
-    startToCloseTimeout: string;
-    taskPriority: string;
-    [key: string]: any;
-
-    constructor(name: string) {
-        this.name = name;
-    }
-}
 
 
 export class ActivityDefinitionsContainer {

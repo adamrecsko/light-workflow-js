@@ -2,6 +2,7 @@ import {ActivityDecisionStateMachine, ActivityDecisionStates} from "./activity-d
 import {ActivityHistoryGenerator, expectStateMachine, expectState} from "../testing/helpers/workflow-history-generator";
 import {expect} from "chai";
 import {ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
+import {InvalidStateTransitionException} from "./state-machine";
 
 
 describe('ActivityDecisionStateMachine', ()=> {
@@ -153,6 +154,16 @@ describe('ActivityDecisionStateMachine', ()=> {
                 },
                 ActivityDecisionStates.RequestCancelFailed
             );
+        });
+
+        it('should throw InvalidStateTransitionException in state conflict', ()=> {
+            const activityId = '1';
+            const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
+            const event2 = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
+            stateMachine.processHistoryEvent(event);
+            expect(()=> {
+                stateMachine.processHistoryEvent(event2);
+            }).to.throw(InvalidStateTransitionException);
         });
     })
 

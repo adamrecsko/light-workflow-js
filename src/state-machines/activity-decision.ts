@@ -1,8 +1,8 @@
 import {
-    ObservableStateMachine, TransitionTable, NotifyableStateMachine, StateMachine,
+    TransitionTable,
     AbstractHistoryEventStateMachine
 } from "./state-machine";
-import {HistoryEvent, ActivityType, TaskList, ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
+import {HistoryEvent, ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
 import {EventType} from "../aws/workflow-history/event-types";
 
 
@@ -29,6 +29,7 @@ export enum ActivityDecisionStates{
     CancelRequested = EventType.ActivityTaskCancelRequested,
     RequestCancelFailed = EventType.RequestCancelActivityTaskFailed
 }
+
 
 const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
     [ActivityDecisionStates.Created, ActivityDecisionStates.Sending],
@@ -57,21 +58,11 @@ const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
     [ActivityDecisionStates.Started, ActivityDecisionStates.Completed],
     [ActivityDecisionStates.Started, ActivityDecisionStates.Failed],
     [ActivityDecisionStates.Started, ActivityDecisionStates.TimedOut],
+    [ActivityDecisionStates.Started, ActivityDecisionStates.CancelRequested],
 
     [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.Canceled],
     [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.RequestCancelFailed],
 ];
-
-const EVENT_TYPE_TO_STATE: any = {};
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskScheduled] = ActivityDecisionStates.Scheduled;
-EVENT_TYPE_TO_STATE[EventType.ScheduleActivityTaskFailed] = ActivityDecisionStates.ScheduleFailed;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskStarted] = ActivityDecisionStates.Started;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskCompleted] = ActivityDecisionStates.Completed;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskFailed] = ActivityDecisionStates.Failed;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskTimedOut] = ActivityDecisionStates.TimedOut;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskCanceled] = ActivityDecisionStates.Canceled;
-EVENT_TYPE_TO_STATE[EventType.ActivityTaskCancelRequested] = ActivityDecisionStates.CancelRequested;
-EVENT_TYPE_TO_STATE[EventType.RequestCancelActivityTaskFailed] = ActivityDecisionStates.RequestCancelFailed;
 
 
 export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachine<ActivityDecisionStates> {
@@ -84,20 +75,27 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
     public result: string;
     public timeoutType: string;
     public startParams: ScheduleActivityTaskDecisionAttributes;
+    public processedEventIds: Set<number>;
 
 
     constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionStates) {
         super(TRANSITION_TABLE, currentState || ActivityDecisionStates.Created);
         this.startParams = startParams;
+        this.processedEventIds = new Set<number>();
+    }
+
+    isProcessed(event: HistoryEvent): boolean {
+        return !this.processedEventIds.has(event.eventId);
     }
 
     processHistoryEvent(event: HistoryEvent): void {
-        const eventType: EventType = (<any> EventType)[event.eventType];
-
         /*
          Do not process if already in the state
          */
-        if (EVENT_TYPE_TO_STATE[eventType] === this.currentState) return;
+        if (!this.isProcessed(event)) return;
+
+        this.processedEventIds.add(event.eventId);
+        const eventType: EventType = EventType.fromString(event.eventType);
 
         switch (eventType) {
             case EventType.ActivityTaskScheduled:

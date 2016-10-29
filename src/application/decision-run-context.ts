@@ -12,6 +12,20 @@ export interface DecisionRunContext {
 }
 
 
+export class NotSupportedEventTypeException extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+export class DecisionConflictException extends Error {
+
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+
 export class BaseDecisionRunContext implements DecisionRunContext {
     private activityIdToStateMachine: Map<string,ActivityDecisionStateMachine>;
     private scheduleEventIdToActivityId: Map<number,string>;
@@ -56,15 +70,20 @@ export class BaseDecisionRunContext implements DecisionRunContext {
                     activityId = this.scheduleEventIdToActivityId.get(eventId);
                     break;
                 case EventType.ActivityTaskCancelRequested:
-                    eventId = event.activityTaskCanceledEventAttributes.scheduledEventId;
-                    activityId = this.scheduleEventIdToActivityId.get(eventId);
+                    activityId = event.activityTaskCancelRequestedEventAttributes.activityId;
                     break;
                 case EventType.RequestCancelActivityTaskFailed:
                     activityId = event.requestCancelActivityTaskFailedEventAttributes.activityId;
                     break;
 
+                case EventType.DecisionTaskScheduled:
+                case EventType.DecisionTaskStarted:
+                case EventType.DecisionTaskCompleted:
+                case EventType.DecisionTaskTimedOut:
+                    break;
+
                 default:
-                    throw Error(`Not supported event type ${event.eventType}`);
+                    throw new NotSupportedEventTypeException(`Not supported event type ${event.eventType}`);
             }
 
             let stateMachine: ActivityDecisionStateMachine;
@@ -74,11 +93,15 @@ export class BaseDecisionRunContext implements DecisionRunContext {
                 if (eventType === EventType.ActivityTaskScheduled) {
                     stateMachine = new ActivityDecisionStateMachine(null);
                     this.activityIdToStateMachine.set(activityId, stateMachine);
+                } else {
+                    throw new DecisionConflictException(`Missing decision machine for activity id ${activityId}`);
                 }
             }
             stateMachine.processHistoryEvent(event);
         };
+        const notify = (stateMachine: AbstractHistoryEventStateMachine<any>)=>stateMachine.notify();
         eventList.forEach(process);
+        this.getStateMachines().forEach(notify);
     }
 
     getActivityDecisionStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {

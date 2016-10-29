@@ -2,13 +2,15 @@ import {HistoryEvent, ActivityType, TaskList} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
 import  * as faker from 'faker';
 import {ActivityDecisionStates, ActivityDecisionStateMachine} from "../../state-machines/activity-decision";
+import * as chai from 'chai';
+chai.use(require('chai-shallow-deep-equal'));
 import {expect} from "chai";
 import  * as uuid from 'node-uuid';
 
 const randomTimestampGen = (): number=> {
     return faker.date.past().getTime();
 };
-const activityName = ()=>faker.helpers.slugify(`${uuid.v4()}  Actvivity`);
+const activityName = ()=>faker.helpers.slugify(`${uuid.v4()}  Activity`);
 const taskListName = ()=>faker.helpers.slugify(`${faker.internet.domainName()} ${uuid.v4()} list`);
 
 const randomActivityType = ()=> {
@@ -25,14 +27,15 @@ const randomTaskList = ()=> {
 
 export class HistoryGenerator {
     public timestampGen: ()=>number = randomTimestampGen;
-    public defaultEventId: number = 10;
+    public currentEventId: number = 1;
 
-    public createHistoryEvent(eventType: EventType, eventId?: number): HistoryEvent {
+    public createHistoryEvent(eventType: EventType): HistoryEvent {
         const historyEvent: HistoryEvent = {
             eventTimestamp: this.timestampGen(),
             eventType: EventType[eventType],
-            eventId: eventId || this.defaultEventId
+            eventId: this.currentEventId
         };
+        this.currentEventId++;
         return historyEvent;
     }
 }
@@ -78,58 +81,58 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         return historyEvent;
     }
 
-    createActivityTaskStarted(): HistoryEvent {
+    createActivityTaskStarted(scheduledEventId?: number): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskStarted);
         historyEvent.activityTaskStartedEventAttributes = {
             identity: `identity - createActivityTaskStarted ${uuid.v4()}`,
-            scheduledEventId: 10
+            scheduledEventId: scheduledEventId || 10
 
         };
         return historyEvent;
     }
 
-    createActivityTaskCompleted(): HistoryEvent {
+    createActivityTaskCompleted(scheduledEventId?: number, startedEventId?: number): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCompleted);
         historyEvent.activityTaskCompletedEventAttributes = {
             result: `createActivityTaskCompleted - ${uuid.v4()}`,
-            scheduledEventId: 10,
-            startedEventId: 10
+            scheduledEventId: scheduledEventId || 10,
+            startedEventId: startedEventId || 10
 
         };
         return historyEvent;
     }
 
-    createActivityTaskFailed(): HistoryEvent {
+    createActivityTaskFailed(scheduledEventId?: number, startedEventId?: number): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskFailed);
         historyEvent.activityTaskFailedEventAttributes = {
             reason: `createActivityTaskFailed reason - ${uuid.v4()}`,
             details: `createActivityTaskFailed details - ${uuid.v4()}`,
-            scheduledEventId: 10,
-            startedEventId: 9
+            scheduledEventId: scheduledEventId || 10,
+            startedEventId: startedEventId || 10
 
         };
         return historyEvent;
     }
 
-    createActivityTaskTimedOut(): HistoryEvent {
+    createActivityTaskTimedOut(scheduledEventId?: number, startedEventId?: number): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskTimedOut);
         historyEvent.activityTaskTimedOutEventAttributes = {
             timeoutType: 'timeout type',
-            scheduledEventId: 10,
-            startedEventId: 10,
+            scheduledEventId: scheduledEventId || 10,
+            startedEventId: startedEventId || 10,
             details: `details createActivityTaskTimedOut ${uuid.v4()}`
 
         };
         return historyEvent;
     }
 
-    createActivityTaskCanceled(): HistoryEvent {
+    createActivityTaskCanceled(scheduledEventId?: number, startedEventId?: number, latestCancelRequestedEventId?: number): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCanceled);
         historyEvent.activityTaskCanceledEventAttributes = {
             details: `details createActivityTaskCanceled ${uuid.v4()}`,
-            scheduledEventId: 10,
-            startedEventId: 9,
-            latestCancelRequestedEventId: 11
+            scheduledEventId: scheduledEventId || 10,
+            startedEventId: startedEventId || 10,
+            latestCancelRequestedEventId: latestCancelRequestedEventId || 11
 
         };
         return historyEvent;
@@ -157,22 +160,28 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     }
 
     createActivityList(events: EventType[]): HistoryEvent[] {
+        let lastScheduledEventId: number;
+        let lastStartedEventId: number;
+        let lastCancelRequestEventId: number;
         const createEvent = (eventType: EventType) => {
             switch (eventType) {
                 case EventType.ActivityTaskCanceled:
-                    return this.createActivityTaskCanceled();
+                    return this.createActivityTaskCanceled(lastScheduledEventId, lastStartedEventId, lastCancelRequestEventId);
                 case EventType.ActivityTaskCancelRequested:
+                    lastCancelRequestEventId = this.currentEventId;
                     return this.createActivityTaskCancelRequested();
                 case EventType.ActivityTaskTimedOut:
-                    return this.createActivityTaskTimedOut();
+                    return this.createActivityTaskTimedOut(lastScheduledEventId, lastStartedEventId);
                 case EventType.ActivityTaskCompleted:
-                    return this.createActivityTaskCompleted();
+                    return this.createActivityTaskCompleted(lastScheduledEventId, lastStartedEventId);
                 case EventType.ActivityTaskFailed:
-                    return this.createActivityTaskFailed();
+                    return this.createActivityTaskFailed(lastScheduledEventId, lastStartedEventId);
                 case EventType.ActivityTaskScheduled:
+                    lastScheduledEventId = this.currentEventId;
                     return this.createActivityScheduledEvent();
                 case EventType.ActivityTaskStarted:
-                    return this.createActivityTaskStarted();
+                    lastStartedEventId = this.currentEventId;
+                    return this.createActivityTaskStarted(lastScheduledEventId);
                 case EventType.RequestCancelActivityTaskFailed:
                     return this.createRequestCancelActivityTaskFailed();
                 case EventType.ScheduleActivityTaskFailed:
@@ -204,10 +213,7 @@ export function expectState(current: ActivityDecisionStates, expected: ActivityD
 export function expectStateMachine(sm: ActivityDecisionStateMachine,
                                    properties: any,
                                    currentState: ActivityDecisionStates) {
-
     if (properties !== null)
-        expect(sm).to.contain.all.keys(properties);
-
-
+        (<any>expect(sm).to).shallowDeepEqual(properties);
     expectState(sm.currentState, currentState);
 }

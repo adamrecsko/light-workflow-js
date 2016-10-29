@@ -54,3 +54,9 @@ export enum EventType {
     ScheduleLambdaFunctionFailed,
     StartLambdaFunctionFailed
 }
+
+export namespace EventType {
+    export function fromString(eventType: string): EventType {
+        return (<any> EventType)[eventType];
+    }
+}

@@ -8,6 +8,7 @@ import Base = Mocha.reporters.Base;
 import {ActivityHistoryGenerator, expectStateMachine} from "../testing/helpers/workflow-history-generator";
 import {EventType} from "../aws/workflow-history/event-types";
 import {AbstractHistoryEventStateMachine} from "../state-machines/state-machine";
+import {stat} from "fs";
 
 
 const FAILED_TRANSITION = [
@@ -158,22 +159,51 @@ describe('BaseDecisionContext', ()=> {
             const runContext = new BaseDecisionRunContext();
             const list = ActivityHistoryGenerator.generateList([
                 COMPETED_TRANSITION,
-                COMPETED_TRANSITION,
                 FAILED_TRANSITION,
                 CANCEL_FAILED_TRANSITION,
                 CANCELLED_TRANSITION,
-                COMPETED_TRANSITION,
-                FAILED_TRANSITION,
-                FAILED_TRANSITION,
-                COMPETED_TRANSITION,
-                TIMEOUTED_TRANSITION
+                TIMEOUTED_TRANSITION,
             ]);
 
             runContext.processEventList(list);
             const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
 
-            expect(stateMachines.length).to.eq(10);
+            expect(stateMachines.length).to.eq(5);
         });
 
+        it('should not create new activity state machines', ()=> {
+            const runContext = new BaseDecisionRunContext();
+            const list = ActivityHistoryGenerator.generateList([
+                COMPETED_TRANSITION,
+                FAILED_TRANSITION,
+                CANCEL_FAILED_TRANSITION,
+                CANCELLED_TRANSITION,
+                TIMEOUTED_TRANSITION
+            ]);
+
+            runContext.processEventList(list);
+            runContext.processEventList(list);
+            runContext.processEventList(list);
+
+            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
+            expect(stateMachines.length).to.eq(5);
+        });
+
+        it('should notify stateMachines about change', ()=> {
+            const runContext = new BaseDecisionRunContext();
+            const list = ActivityHistoryGenerator.generateList([
+                COMPETED_TRANSITION
+            ]);
+            runContext.processEventList(list.slice(0, 1));
+            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
+            const stateMachine = stateMachines[0];
+
+            let status: ActivityDecisionStates;
+            stateMachine.onChange.subscribe((s)=> {
+                status = s;
+            });
+            runContext.processEventList(list);
+            expect(status).to.eq(ActivityDecisionStates.Completed);
+        });
     });
 });

@@ -1,10 +1,8 @@
-import {
-    ActivityDecisionStateMachine,
-    ActivityDecisionStates
-} from "../state-machines/activity-decision";
-import {ScheduleActivityTaskDecisionAttributes, HistoryEvent} from "../aws/aws.types";
-import {EventType} from "../aws/workflow-history/event-types";
-import {AbstractHistoryEventStateMachine} from "../state-machines/state-machine";
+import {HistoryEvent, ScheduleActivityTaskDecisionAttributes} from "../../aws/aws.types";
+import {EventType} from "../../aws/workflow-history/event-types";
+import {AbstractHistoryEventStateMachine} from "../../state-machines/history-event-state-machines/abstract-history-event-state-machine";
+import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
 export interface DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void;
     getActivityDecisionStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
@@ -19,12 +17,10 @@ export class NotSupportedEventTypeException extends Error {
 }
 
 export class DecisionConflictException extends Error {
-
     constructor(message: string) {
         super(message);
     }
 }
-
 
 export class BaseDecisionRunContext implements DecisionRunContext {
     private activityIdToStateMachine: Map<string,ActivityDecisionStateMachine>;

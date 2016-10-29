@@ -1,14 +1,13 @@
 import "reflect-metadata";
 
-import {
-    ConfigurableApplicationFactory, ApplicationConfiguration,
-    BaseApplicationConfigurationProvider
-} from "./application";
 import {injectable, inject} from "inversify";
 import {expect} from "chai";
-import {WORKFLOW_CLIENT} from "../aws/symbols";
 import {WorkflowClient} from "../aws/workflow-client";
 import {MockSWF} from "../testing/mocks/SWF";
+import {ApplicationConfiguration} from "./application-configuration";
+import {BaseApplicationConfigurationProvider} from "./application-configuration-provider";
+import {ConfigurableApplicationFactory} from "./application-factory";
+import {WORKFLOW_CLIENT} from "../symbols";
 
 
 describe('ConfigurableApplicationFactory', ()=> {
@@ -25,7 +24,7 @@ describe('ConfigurableApplicationFactory', ()=> {
 
             }
         }
-        const app:App = factory.createApplication<App>(AppImp);
+        const app: App = factory.createApplication<App>(AppImp);
         expect(app).to.instanceOf(AppImp);
     });
 });

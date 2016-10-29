@@ -7,7 +7,6 @@ import {WorkflowClient} from "../workflow-client";
 
 const arrayConcat = [].concat;
 
-
 export class DecisionTaskRequest extends Observable<DecisionTask> {
     constructor(private decisionPollParameters: DecisionPollParameters,
                 private rxSwf: WorkflowClient,

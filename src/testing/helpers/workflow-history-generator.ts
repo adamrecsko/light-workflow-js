@@ -1,18 +1,20 @@
 import {HistoryEvent, ActivityType, TaskList} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
 import  * as faker from 'faker';
-import {ActivityDecisionStates, ActivityDecisionStateMachine} from "../../state-machines/activity-decision";
 import * as chai from 'chai';
 chai.use(require('chai-shallow-deep-equal'));
 import {expect} from "chai";
 import  * as uuid from 'node-uuid';
+import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
+import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
 
 const randomTimestampGen = (): number=> {
     return faker.date.past().getTime();
 };
-const activityName = ()=>faker.helpers.slugify(`${uuid.v4()}  Activity`);
-const taskListName = ()=>faker.helpers.slugify(`${faker.internet.domainName()} ${uuid.v4()} list`);
-
+const activityName =
+    ()=>faker.helpers.slugify(`${uuid.v4()}  Activity`);
+const taskListName =
+    ()=>faker.helpers.slugify(`${faker.internet.domainName()} ${uuid.v4()} list`);
 const randomActivityType = ()=> {
     return {
         name: activityName(),
@@ -206,14 +208,3 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
 
 }
 
-export function expectState(current: ActivityDecisionStates, expected: ActivityDecisionStates): void {
-    expect(current)
-        .to.eq(expected, `Current state ( ${ActivityDecisionStates[current]} ) not equal expected ( ${ActivityDecisionStates[expected]} )`);
-}
-export function expectStateMachine(sm: ActivityDecisionStateMachine,
-                                   properties: any,
-                                   currentState: ActivityDecisionStates) {
-    if (properties !== null)
-        (<any>expect(sm).to).shallowDeepEqual(properties);
-    expectState(sm.currentState, currentState);
-}

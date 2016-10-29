@@ -1,47 +1,20 @@
 import {BaseDecisionRunContext} from "./decision-run-context";
 import {expect} from "chai";
-import {
-    ActivityDecisionStateMachine, ActivityDecisionStates
-} from "../state-machines/activity-decision";
-import {ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
 import Base = Mocha.reporters.Base;
-import {ActivityHistoryGenerator, expectStateMachine} from "../testing/helpers/workflow-history-generator";
-import {EventType} from "../aws/workflow-history/event-types";
-import {AbstractHistoryEventStateMachine} from "../state-machines/state-machine";
-import {stat} from "fs";
+import {ActivityHistoryGenerator} from "../../testing/helpers/workflow-history-generator";
+import {ScheduleActivityTaskDecisionAttributes} from "../../aws/aws.types";
+import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {AbstractHistoryEventStateMachine} from "../../state-machines/history-event-state-machines/abstract-history-event-state-machine";
+import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
+import {expectActivityStateMachine} from "../../testing/helpers/expectation-helpers";
+import {
+    COMPETED_TRANSITION,
+    FAILED_TRANSITION,
+    CANCEL_FAILED_TRANSITION,
+    CANCELLED_TRANSITION,
+    TIMEOUTED_TRANSITION
+} from "../../testing/test-data/normal-transitions";
 
-
-const FAILED_TRANSITION = [
-    EventType.ActivityTaskScheduled,
-    EventType.ActivityTaskStarted,
-    EventType.ActivityTaskFailed
-];
-
-const COMPETED_TRANSITION = [
-    EventType.ActivityTaskScheduled,
-    EventType.ActivityTaskStarted,
-    EventType.ActivityTaskCompleted
-];
-
-const TIMEOUTED_TRANSITION = [
-    EventType.ActivityTaskScheduled,
-    EventType.ActivityTaskStarted,
-    EventType.ActivityTaskTimedOut
-];
-
-const CANCELLED_TRANSITION = [
-    EventType.ActivityTaskScheduled,
-    EventType.ActivityTaskStarted,
-    EventType.ActivityTaskCancelRequested,
-    EventType.ActivityTaskCanceled
-];
-
-const CANCEL_FAILED_TRANSITION = [
-    EventType.ActivityTaskScheduled,
-    EventType.ActivityTaskStarted,
-    EventType.ActivityTaskCancelRequested,
-    EventType.RequestCancelActivityTaskFailed
-];
 
 function createNewActivityDecision(activityId?: string): ScheduleActivityTaskDecisionAttributes {
     return {
@@ -103,7 +76,7 @@ describe('BaseDecisionContext', ()=> {
             const completedEvent = eventList[2];
             runContext.processEventList(eventList);
             const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-            expectStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
                 result: completedEvent.activityTaskCompletedEventAttributes.result
             }, ActivityDecisionStates.Completed);
         });
@@ -115,7 +88,7 @@ describe('BaseDecisionContext', ()=> {
             const failedEvent = eventList[2];
             runContext.processEventList(eventList);
             const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-            expectStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
                 reason: failedEvent.activityTaskFailedEventAttributes.reason,
                 details: failedEvent.activityTaskFailedEventAttributes.details
             }, ActivityDecisionStates.Failed);
@@ -129,7 +102,7 @@ describe('BaseDecisionContext', ()=> {
             const failedEvent = eventList[2];
             runContext.processEventList(eventList);
             const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-            expectStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
                 reason: failedEvent.activityTaskFailedEventAttributes.reason,
                 details: failedEvent.activityTaskFailedEventAttributes.details
             }, ActivityDecisionStates.Failed);
@@ -144,12 +117,12 @@ describe('BaseDecisionContext', ()=> {
 
             runContext.processEventList(list);
             const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-            expectStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
                 reason: list[2].activityTaskFailedEventAttributes.reason,
                 details: list[2].activityTaskFailedEventAttributes.details
             }, ActivityDecisionStates.Failed);
 
-            expectStateMachine(<ActivityDecisionStateMachine>stateMachines[1], {
+            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[1], {
                 reason: list[5].activityTaskFailedEventAttributes.reason,
                 details: list[5].activityTaskFailedEventAttributes.details
             }, ActivityDecisionStates.Failed);
@@ -199,7 +172,7 @@ describe('BaseDecisionContext', ()=> {
             const stateMachine = stateMachines[0];
 
             let status: ActivityDecisionStates;
-            stateMachine.onChange.subscribe((s)=> {
+            stateMachine.onChange.subscribe((s: ActivityDecisionStates)=> {
                 status = s;
             });
             runContext.processEventList(list);

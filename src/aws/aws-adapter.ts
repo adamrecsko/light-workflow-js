@@ -1,7 +1,7 @@
 import {injectable, inject} from 'inversify';
 import {SWF} from "aws-sdk";
-import {APPLICATION_CONFIGURATION} from "./symbols";
-import {ApplicationConfigurationProvider} from "../application/application";
+import {ApplicationConfigurationProvider} from "../application/application-configuration-provider";
+import {APPLICATION_CONFIGURATION} from "../symbols";
 
 export interface AWSAdapter {
     getNativeSWFClient(): SWF

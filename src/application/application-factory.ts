@@ -1,34 +1,13 @@
 import {Kernel} from "inversify";
-import {CORE, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER} from "../core/index";
-import {SWF} from "aws-sdk";
-import {APPLICATION_CONFIGURATION} from "../aws/symbols";
-import {ActivityClientImplementationHelper} from "./activity-client-implementation-helper";
-
-
-export class ApplicationConfiguration {
-    constructor(public swf: SWF) {
-    }
-}
+import {APPLICATION_CONFIGURATION, APP_KERNEL, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER} from "../symbols";
+import {ApplicationConfigurationProvider} from "./application-configuration-provider";
+import {ActivityClientImplementationHelper} from "./helpers/activity-client-implementation-helper";
+import {CORE} from "./core-module";
 
 export type Implementation<T> = { new(...args: any[]): T; };
-
-export interface ApplicationConfigurationProvider {
-    getConfiguration(): ApplicationConfiguration
-}
-
-export class BaseApplicationConfigurationProvider implements ApplicationConfigurationProvider {
-    constructor(private configuration: ApplicationConfiguration) {
-    }
-
-    getConfiguration(): ApplicationConfiguration {
-        return this.configuration;
-    }
-}
 export interface ApplicationFactory {
     createApplication<T>(applicationClass: T): T
 }
-
-export const APP_KERNEL = Symbol('APP_KERNEL');
 
 export class ConfigurableApplicationFactory implements ApplicationFactory {
     private coreKernel: Kernel;

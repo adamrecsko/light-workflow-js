@@ -1,13 +1,9 @@
-import {TaskList, ActivityTask, ActivityPollParameters} from "../aws.types";
-import {WorkflowClient} from "../workflow-client";
-import {ActivityPollerFactory} from "../swf/activity-poller-factory";
-import {TaskPollerObservable} from "../swf/task-poller-observable";
-import {ActivityDefinition, getActivityDefinitionsFromClass} from "../decorators/activity/activity-decorators";
 import {Kernel} from "inversify";
-
+import {TaskPollerObservable} from "../../aws/swf/task-poller-observable";
+import {ActivityTask, TaskList, ActivityPollParameters} from "../../aws/aws.types";
+import {ActivityPollerFactory} from "../../aws/swf/activity-poller-factory";
 
 export interface ActivityWorker {
-
 }
 
 export class GenericActivityWorker implements ActivityWorker {

@@ -3,7 +3,7 @@ import {Observable, Observer} from "rxjs/Rx";
 import {ActivityPollParameters, DecisionTask, ActivityTask, DecisionPollParameters} from "./aws.types";
 import {injectable, inject} from "inversify";
 import {AWSAdapter} from "./aws-adapter";
-import {AWS_ADAPTER} from "./symbols";
+import {AWS_ADAPTER} from "../symbols";
 
 export interface WorkflowClient {
     pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>

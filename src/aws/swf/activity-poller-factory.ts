@@ -1,8 +1,8 @@
 import {injectable, inject} from "inversify";
-import {WORKFLOW_CLIENT} from "../symbols";
 import {ActivityPollParameters, ActivityTask} from "../aws.types";
 import {WorkflowClient} from "../workflow-client";
 import {TaskPollerObservable} from "./task-poller-observable";
+import {WORKFLOW_CLIENT} from "../../symbols";
 
 
 export interface ActivityPollerFactory {

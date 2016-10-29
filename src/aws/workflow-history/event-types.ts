@@ -1,5 +1,5 @@
 export enum EventType {
-    WorkflowExecutionStarted,
+    WorkflowExecutionStarted = 1,
     WorkflowExecutionCancelRequested,
     WorkflowExecutionCompleted,
     CompleteWorkflowExecutionFailed,

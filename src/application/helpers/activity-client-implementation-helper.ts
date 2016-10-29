@@ -1,6 +1,6 @@
-import {APP_KERNEL} from "./application";
 import {Kernel, injectable, inject} from "inversify";
 import {tagged} from "inversify";
+import {APP_KERNEL} from "../../symbols";
 
 
 export const activity = tagged('activity', true);

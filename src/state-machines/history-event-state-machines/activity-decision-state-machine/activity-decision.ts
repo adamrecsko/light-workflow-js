@@ -1,68 +1,13 @@
-import {
-    TransitionTable,
-    AbstractHistoryEventStateMachine
-} from "./state-machine";
-import {HistoryEvent, ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
-import {EventType} from "../aws/workflow-history/event-types";
-
-
+import {AbstractHistoryEventStateMachine} from "../abstract-history-event-state-machine";
+import {ActivityDecisionStates} from "./activity-decision-states";
+import {ScheduleActivityTaskDecisionAttributes, HistoryEvent} from "../../../aws/aws.types";
+import {TRANSITION_TABLE} from "./transition-table";
+import {EventType} from "../../../aws/workflow-history/event-types";
 export class UnknownEventTypeException extends Error {
     constructor(message: string) {
         super(message);
     }
 }
-
-
-export enum ActivityDecisionStates{
-    Created = -10,
-    CanceledBeforeSent,
-    Sending,
-    Sent,
-    CancelledAfterSent,
-    Scheduled = EventType.ActivityTaskScheduled,
-    ScheduleFailed = EventType.ActivityTaskFailed,
-    Started = EventType.ActivityTaskStarted,
-    Completed = EventType.ActivityTaskCompleted,
-    Failed = EventType.ActivityTaskFailed,
-    TimedOut = EventType.ActivityTaskTimedOut,
-    Canceled = EventType.ActivityTaskCanceled,
-    CancelRequested = EventType.ActivityTaskCancelRequested,
-    RequestCancelFailed = EventType.RequestCancelActivityTaskFailed
-}
-
-
-const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Sending],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.CanceledBeforeSent],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Scheduled],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.ScheduleFailed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Started],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Completed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Failed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.TimedOut],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Canceled],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.CancelRequested],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.RequestCancelFailed],
-
-
-    [ActivityDecisionStates.Sending, ActivityDecisionStates.Sent],
-
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.Scheduled],
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.ScheduleFailed],
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.CancelledAfterSent],
-
-
-    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.Started],
-    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.CancelRequested],
-
-    [ActivityDecisionStates.Started, ActivityDecisionStates.Completed],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.Failed],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.TimedOut],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.CancelRequested],
-
-    [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.Canceled],
-    [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.RequestCancelFailed],
-];
 
 
 export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachine<ActivityDecisionStates> {

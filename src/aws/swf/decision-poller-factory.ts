@@ -1,9 +1,9 @@
 import {injectable, inject} from "inversify";
-import {WORKFLOW_CLIENT} from "../symbols";
 import {DecisionPollParameters, DecisionTask} from "../aws.types";
 import {WorkflowClient} from "../workflow-client";
 import {TaskPollerObservable} from "./task-poller-observable";
 import {DecisionTaskRequest} from "./decision-task-request";
+import {WORKFLOW_CLIENT} from "../../symbols";
 
 
 export interface DecisionPollerFactory {

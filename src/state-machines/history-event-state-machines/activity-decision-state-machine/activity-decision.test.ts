@@ -1,8 +1,10 @@
-import {ActivityDecisionStateMachine, ActivityDecisionStates} from "./activity-decision";
-import {ActivityHistoryGenerator, expectStateMachine, expectState} from "../testing/helpers/workflow-history-generator";
 import {expect} from "chai";
-import {ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
-import {InvalidStateTransitionException} from "./state-machine";
+import {ActivityHistoryGenerator} from "../../../testing/helpers/workflow-history-generator";
+import {ScheduleActivityTaskDecisionAttributes} from "../../../aws/aws.types";
+import {InvalidStateTransitionException} from "../../state-machine";
+import {ActivityDecisionStateMachine} from "./activity-decision";
+import {ActivityDecisionStates} from "./activity-decision-states";
+import {expectActivityState, expectActivityStateMachine} from "../../../testing/helpers/expectation-helpers";
 
 
 describe('ActivityDecisionStateMachine', ()=> {
@@ -22,7 +24,7 @@ describe('ActivityDecisionStateMachine', ()=> {
     });
 
     it('should initialized with start params', ()=> {
-        expectState(stateMachine.currentState, ActivityDecisionStates.Created);
+        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Created);
         expect(stateMachine.startParams).to.eq(startParams);
     });
 
@@ -32,7 +34,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const params = event.activityTaskScheduledEventAttributes;
         stateMachine.processHistoryEvent(event);
 
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 control: params.control,
                 input: params.input
@@ -43,7 +45,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const event = historyGenerator.createScheduleActivityTaskFailed('1001');
         const params = event.scheduleActivityTaskFailedEventAttributes;
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 cause: params.cause
             },
@@ -53,7 +55,7 @@ describe('ActivityDecisionStateMachine', ()=> {
     it('should handle ActivityTaskStarted event', ()=> {
         const event = historyGenerator.createActivityTaskStarted();
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             null,
             ActivityDecisionStates.Started
         );
@@ -62,7 +64,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const event = historyGenerator.createActivityTaskCompleted();
         const params = event.activityTaskCompletedEventAttributes;
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 result: params.result
             },
@@ -74,7 +76,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const params = event.activityTaskFailedEventAttributes;
 
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 details: params.details,
                 reason: params.reason
@@ -87,7 +89,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const params = event.activityTaskTimedOutEventAttributes;
 
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 details: params.details,
                 timeoutType: params.timeoutType
@@ -100,7 +102,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const params = event.activityTaskCanceledEventAttributes;
 
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 details: params.details
             },
@@ -111,7 +113,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const activityId = '1';
         const event = historyGenerator.createActivityTaskCancelRequested(activityId);
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             null,
             ActivityDecisionStates.CancelRequested
         );
@@ -121,7 +123,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
         const params = event.requestCancelActivityTaskFailedEventAttributes;
         stateMachine.processHistoryEvent(event);
-        expectStateMachine(stateMachine,
+        expectActivityStateMachine(stateMachine,
             {
                 cause: params.cause
             },
@@ -131,13 +133,13 @@ describe('ActivityDecisionStateMachine', ()=> {
 
     it('should it should set state to sending', ()=> {
         stateMachine.setStateToSending();
-        expectState(stateMachine.currentState, ActivityDecisionStates.Sending);
+        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Sending);
     });
 
     it('should it should set state to sent', ()=> {
         stateMachine.setStateToSending();
         stateMachine.setStateToSent();
-        expectState(stateMachine.currentState, ActivityDecisionStates.Sent);
+        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Sent);
     });
 
 
@@ -148,7 +150,7 @@ describe('ActivityDecisionStateMachine', ()=> {
             const params = event.requestCancelActivityTaskFailedEventAttributes;
             stateMachine.processHistoryEvent(event);
             stateMachine.processHistoryEvent(event);
-            expectStateMachine(stateMachine,
+            expectActivityStateMachine(stateMachine,
                 {
                     cause: params.cause
                 },

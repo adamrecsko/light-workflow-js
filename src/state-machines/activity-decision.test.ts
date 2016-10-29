@@ -1,25 +1,28 @@
 import {ActivityDecisionStateMachine, ActivityDecisionStates} from "./activity-decision";
-import {ActivityHistoryGenerator} from "../testing/helpers/workflow-history-generator";
+import {ActivityHistoryGenerator, expectStateMachine, expectState} from "../testing/helpers/workflow-history-generator";
 import {expect} from "chai";
+import {ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
 
-export function expectStateMachine(sm: ActivityDecisionStateMachine,
-                                   properties: any,
-                                   currentState: ActivityDecisionStates) {
-
-
-    if (properties !== null)
-        expect(sm).to.contain.all.keys(properties);
-
-
-    expect(sm.currentState).to.eq(currentState, 'Current state not equal expected');
-}
 
 describe('ActivityDecisionStateMachine', ()=> {
     let stateMachine: ActivityDecisionStateMachine;
     let historyGenerator: ActivityHistoryGenerator;
+    let startParams: ScheduleActivityTaskDecisionAttributes;
     beforeEach(()=> {
-        stateMachine = new ActivityDecisionStateMachine(ActivityDecisionStates.Created);
+        startParams = {
+            activityType: {
+                name: 'activity',
+                version: '1'
+            },
+            activityId: '3'
+        };
+        stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Created);
         historyGenerator = new ActivityHistoryGenerator();
+    });
+
+    it('should initialized with start params', ()=> {
+        expectState(stateMachine.currentState, ActivityDecisionStates.Created);
+        expect(stateMachine.startParams).to.eq(startParams);
     });
 
     it('should handle ActivityTaskScheduled event', ()=> {
@@ -126,4 +129,33 @@ describe('ActivityDecisionStateMachine', ()=> {
             ActivityDecisionStates.RequestCancelFailed
         );
     });
+
+    it('should it should set state to sending', ()=> {
+        stateMachine.setStateToSending();
+        expectState(stateMachine.currentState, ActivityDecisionStates.Sending);
+    });
+
+    it('should it should set state to sent', ()=> {
+        stateMachine.setStateToSending();
+        stateMachine.setStateToSent();
+        expectState(stateMachine.currentState, ActivityDecisionStates.Sent);
+    });
+
+
+    context('if already in the state', ()=> {
+        it('should not process event', ()=> {
+            const activityId = '1';
+            const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
+            const params = event.requestCancelActivityTaskFailedEventAttributes;
+            stateMachine.processHistoryEvent(event);
+            stateMachine.processHistoryEvent(event);
+            expectStateMachine(stateMachine,
+                {
+                    cause: params.cause
+                },
+                ActivityDecisionStates.RequestCancelFailed
+            );
+        });
+    })
+
 });

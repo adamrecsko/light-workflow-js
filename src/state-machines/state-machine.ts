@@ -1,5 +1,6 @@
 import Base = Mocha.reporters.Base;
 import {Observable, BehaviorSubject, Subject} from "rxjs";
+import {HistoryEvent} from "../aws/aws.types";
 export interface StateMachine<T> {
     goTo(state: T): void;
     currentState: T;
@@ -67,3 +68,26 @@ export class ObservableStateMachine<T> extends BaseStateMachine<T> {
         this.stateObservable.next(state);
     }
 }
+
+export class NotifyableStateMachine<T> extends BaseStateMachine<T> {
+    public stateObservable: Subject<T>;
+
+    constructor(transitionTable: TransitionTable<T>, currentState: T) {
+        super(transitionTable, currentState);
+        this.stateObservable = new BehaviorSubject<T>(currentState);
+    }
+
+    goTo(state: T): void {
+        super.goTo(state);
+    }
+
+    notify() {
+        this.stateObservable.next(this.currentState);
+    }
+}
+
+
+export abstract class AbstractHistoryEventStateMachine<T> extends NotifyableStateMachine<T> {
+    abstract processHistoryEvent(event: HistoryEvent): void;
+}
+

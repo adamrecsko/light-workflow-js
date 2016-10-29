@@ -1,6 +1,8 @@
 import {HistoryEvent, ActivityType, TaskList} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
 import * as  faker from 'faker';
+import {ActivityDecisionStates, ActivityDecisionStateMachine} from "../../state-machines/activity-decision";
+import {expect} from "chai";
 
 
 const TEST_ACTIVITY_TYPE = {
@@ -11,6 +13,8 @@ const TEST_ACTIVITY_TYPE = {
 const TEST_TASK_LIST = {
     name: 'test-task-list'
 };
+
+const DEFAULT_TEST_ACTIVITY_ID = '1';
 
 const randomTimestampGen = (): number=> {
     return faker.date.past().getTime();
@@ -35,17 +39,17 @@ export class HistoryGenerator {
 export class ActivityHistoryGenerator extends HistoryGenerator {
     public activityType: ActivityType = TEST_ACTIVITY_TYPE;
     public taskList: TaskList = TEST_TASK_LIST;
-
+    public activityId: string = DEFAULT_TEST_ACTIVITY_ID;
 
     constructor() {
         super();
     }
 
-    createActivityScheduledEvent(activityId: string): HistoryEvent {
+    createActivityScheduledEvent(activityId?: string): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskScheduled);
         historyEvent.activityTaskScheduledEventAttributes = {
             activityType: TEST_ACTIVITY_TYPE,
-            activityId: activityId,
+            activityId: activityId || this.activityId,
             input: 'createActivityScheduledEvent',
             control: 'control - createActivityScheduledEvent',
             scheduleToStartTimeout: '10',
@@ -58,11 +62,11 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         return historyEvent;
     }
 
-    createScheduleActivityTaskFailed(activityId: string): HistoryEvent {
+    createScheduleActivityTaskFailed(activityId?: string): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ScheduleActivityTaskFailed);
         historyEvent.scheduleActivityTaskFailedEventAttributes = {
             activityType: this.activityType,
-            activityId: activityId,
+            activityId: activityId || this.activityId,
             cause: 'createScheduleActivityTaskFailed - cause',
             decisionTaskCompletedEventId: 10
         };
@@ -126,24 +130,69 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         return historyEvent;
     }
 
-    createActivityTaskCancelRequested(activityId: string): HistoryEvent {
+    createActivityTaskCancelRequested(activityId?: string): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCancelRequested);
         historyEvent.activityTaskCancelRequestedEventAttributes = {
             decisionTaskCompletedEventId: 10,
-            activityId: activityId
+            activityId: activityId || this.activityId
 
         };
         return historyEvent;
     }
 
-    createRequestCancelActivityTaskFailed(activityId: string): HistoryEvent {
+    createRequestCancelActivityTaskFailed(activityId?: string): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.RequestCancelActivityTaskFailed);
         historyEvent.requestCancelActivityTaskFailedEventAttributes = {
-            activityId: activityId,
+            activityId: activityId || this.activityId,
             cause: 'cause createRequestCancelActivityTaskFailed',
             decisionTaskCompletedEventId: 10,
 
         };
         return historyEvent;
     }
+
+    createActivityList(events: EventType[]): HistoryEvent[] {
+        const createEvent = (eventType: EventType) => {
+            switch (eventType) {
+                case EventType.ActivityTaskCanceled:
+                    return this.createActivityTaskCanceled();
+                case EventType.ActivityTaskCancelRequested:
+                    return this.createActivityTaskCancelRequested();
+                case EventType.ActivityTaskTimedOut:
+                    return this.createActivityTaskTimedOut();
+                case EventType.ActivityTaskCompleted:
+                    return this.createActivityTaskCompleted();
+                case EventType.ActivityTaskFailed:
+                    return this.createActivityTaskFailed();
+                case EventType.ActivityTaskScheduled:
+                    return this.createActivityScheduledEvent();
+                case EventType.ActivityTaskStarted:
+                    return this.createActivityTaskStarted();
+                case EventType.RequestCancelActivityTaskFailed:
+                    return this.createRequestCancelActivityTaskFailed();
+                case EventType.ScheduleActivityTaskFailed:
+                    return this.createScheduleActivityTaskFailed();
+
+                default:
+                    throw new Error('Unknown event type');
+
+            }
+        };
+        return events.map(createEvent);
+    }
+}
+
+export function expectState(current: ActivityDecisionStates, expected: ActivityDecisionStates): void {
+    expect(current)
+        .to.eq(expected, `Current state ( ${ActivityDecisionStates[current]} ) not equal expected ( ${ActivityDecisionStates[expected]} )`);
+}
+export function expectStateMachine(sm: ActivityDecisionStateMachine,
+                                   properties: any,
+                                   currentState: ActivityDecisionStates) {
+
+    if (properties !== null)
+        expect(sm).to.contain.all.keys(properties);
+
+
+    expectState(sm.currentState, currentState);
 }

@@ -1,5 +1,8 @@
-import {ObservableStateMachine, TransitionTable} from "./state-machine";
-import {HistoryEvent, ActivityType, TaskList} from "../aws/aws.types";
+import {
+    ObservableStateMachine, TransitionTable, NotifyableStateMachine, StateMachine,
+    AbstractHistoryEventStateMachine
+} from "./state-machine";
+import {HistoryEvent, ActivityType, TaskList, ScheduleActivityTaskDecisionAttributes} from "../aws/aws.types";
 import {EventType} from "../aws/workflow-history/event-types";
 
 
@@ -11,22 +14,24 @@ export class UnknownEventTypeException extends Error {
 
 
 export enum ActivityDecisionStates{
-    Created = 1,
-    Sent,
+    Created = -10,
     CanceledBeforeSent,
-    Scheduled,
-    ScheduleFailed,
-    Started,
-    Completed,
-    Failed,
-    TimedOut,
-    Canceled,
-    CancelRequested,
-    RequestCancelFailed
+    Sending,
+    Sent,
+    CancelledAfterSent,
+    Scheduled = EventType.ActivityTaskScheduled,
+    ScheduleFailed = EventType.ActivityTaskFailed,
+    Started = EventType.ActivityTaskStarted,
+    Completed = EventType.ActivityTaskCompleted,
+    Failed = EventType.ActivityTaskFailed,
+    TimedOut = EventType.ActivityTaskTimedOut,
+    Canceled = EventType.ActivityTaskCanceled,
+    CancelRequested = EventType.ActivityTaskCancelRequested,
+    RequestCancelFailed = EventType.RequestCancelActivityTaskFailed
 }
 
 const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Sent],
+    [ActivityDecisionStates.Created, ActivityDecisionStates.Sending],
     [ActivityDecisionStates.Created, ActivityDecisionStates.CanceledBeforeSent],
     [ActivityDecisionStates.Created, ActivityDecisionStates.Scheduled],
     [ActivityDecisionStates.Created, ActivityDecisionStates.ScheduleFailed],
@@ -39,8 +44,12 @@ const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
     [ActivityDecisionStates.Created, ActivityDecisionStates.RequestCancelFailed],
 
 
+    [ActivityDecisionStates.Sending, ActivityDecisionStates.Sent],
+
     [ActivityDecisionStates.Sent, ActivityDecisionStates.Scheduled],
     [ActivityDecisionStates.Sent, ActivityDecisionStates.ScheduleFailed],
+    [ActivityDecisionStates.Sent, ActivityDecisionStates.CancelledAfterSent],
+
 
     [ActivityDecisionStates.Scheduled, ActivityDecisionStates.Started],
     [ActivityDecisionStates.Scheduled, ActivityDecisionStates.CancelRequested],
@@ -53,25 +62,43 @@ const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
     [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.RequestCancelFailed],
 ];
 
-export class ActivityDecisionStateMachine extends ObservableStateMachine<ActivityDecisionStates> {
+const EVENT_TYPE_TO_STATE: any = {};
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskScheduled] = ActivityDecisionStates.Scheduled;
+EVENT_TYPE_TO_STATE[EventType.ScheduleActivityTaskFailed] = ActivityDecisionStates.ScheduleFailed;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskStarted] = ActivityDecisionStates.Started;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskCompleted] = ActivityDecisionStates.Completed;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskFailed] = ActivityDecisionStates.Failed;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskTimedOut] = ActivityDecisionStates.TimedOut;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskCanceled] = ActivityDecisionStates.Canceled;
+EVENT_TYPE_TO_STATE[EventType.ActivityTaskCancelRequested] = ActivityDecisionStates.CancelRequested;
+EVENT_TYPE_TO_STATE[EventType.RequestCancelActivityTaskFailed] = ActivityDecisionStates.RequestCancelFailed;
 
-    public activityType: ActivityType;
-    public activityId: string;
+
+export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachine<ActivityDecisionStates> {
+
     public input: string;
     public control: string;
-    public taskList: TaskList;
     public cause: string;
     public details: string;
     public reason: string;
     public result: string;
     public timeoutType: string;
+    public startParams: ScheduleActivityTaskDecisionAttributes;
 
-    constructor(currentState?: ActivityDecisionStates) {
+
+    constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionStates) {
         super(TRANSITION_TABLE, currentState || ActivityDecisionStates.Created);
+        this.startParams = startParams;
     }
 
-    processHistoryEvent(event: HistoryEvent) {
+    processHistoryEvent(event: HistoryEvent): void {
         const eventType: EventType = (<any> EventType)[event.eventType];
+
+        /*
+         Do not process if already in the state
+         */
+        if (EVENT_TYPE_TO_STATE[eventType] === this.currentState) return;
+
         switch (eventType) {
             case EventType.ActivityTaskScheduled:
                 this.processActivityTaskScheduled(event);
@@ -112,6 +139,15 @@ export class ActivityDecisionStateMachine extends ObservableStateMachine<Activit
                 throw new UnknownEventTypeException(`Unknown HistoryEvent eventType: ${event.eventType}`);
         }
     }
+
+    public setStateToSending(): void {
+        this.currentState = ActivityDecisionStates.Sending;
+    }
+
+    public setStateToSent(): void {
+        this.currentState = ActivityDecisionStates.Sent;
+    }
+
 
     private processActivityTaskScheduled(event: HistoryEvent): void {
         const params = event.activityTaskScheduledEventAttributes;

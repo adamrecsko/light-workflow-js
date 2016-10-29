@@ -3,14 +3,10 @@ import {EventType} from "../../aws/workflow-history/event-types";
 import  * as faker from 'faker';
 import * as chai from 'chai';
 chai.use(require('chai-shallow-deep-equal'));
-import {expect} from "chai";
 import  * as uuid from 'node-uuid';
-import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
-import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {HistoryGenerator} from "./history-event-generator";
 
-const randomTimestampGen = (): number=> {
-    return faker.date.past().getTime();
-};
+
 const activityName =
     ()=>faker.helpers.slugify(`${uuid.v4()}  Activity`);
 const taskListName =
@@ -26,21 +22,6 @@ const randomTaskList = ()=> {
         name: taskListName()
     };
 };
-
-export class HistoryGenerator {
-    public timestampGen: ()=>number = randomTimestampGen;
-    public currentEventId: number = 1;
-
-    public createHistoryEvent(eventType: EventType): HistoryEvent {
-        const historyEvent: HistoryEvent = {
-            eventTimestamp: this.timestampGen(),
-            eventType: EventType[eventType],
-            eventId: this.currentEventId
-        };
-        this.currentEventId++;
-        return historyEvent;
-    }
-}
 
 
 export class ActivityHistoryGenerator extends HistoryGenerator {

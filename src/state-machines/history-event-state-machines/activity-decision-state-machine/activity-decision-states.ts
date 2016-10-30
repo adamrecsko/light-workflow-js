@@ -1,6 +1,6 @@
 import {EventType} from "../../../aws/workflow-history/event-types";
 export enum ActivityDecisionStates{
-    Created = -10,
+    Created = 1,
     CanceledBeforeSent,
     Sending,
     Sent,

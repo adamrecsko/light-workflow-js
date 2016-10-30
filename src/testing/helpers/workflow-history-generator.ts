@@ -21,17 +21,16 @@ const randomTaskList = ()=> {
     };
 };
 
-
 export class ActivityHistoryGenerator extends HistoryGenerator {
     public activityType: ActivityType;
     public taskList: TaskList;
     public activityId: string;
 
-    constructor() {
+    constructor(activityType?: ActivityType, taskList?: TaskList, activityId?: string) {
         super();
-        this.activityType = randomActivityType();
-        this.taskList = randomTaskList();
-        this.activityId = uuid.v4();
+        this.activityType = activityType || randomActivityType();
+        this.taskList = taskList || randomTaskList();
+        this.activityId = activityId || uuid.v4();
     }
 
     createActivityScheduledEvent(activityId?: string): HistoryEvent {

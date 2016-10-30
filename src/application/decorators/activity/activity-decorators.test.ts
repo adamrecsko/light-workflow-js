@@ -1,11 +1,12 @@
-import {
-    activityDefinitionPropertySetterDecoratorFactory,
-    ACTIVITY_DEFINITIONS, ActivityDefinitionsContainer, getActivityDefinitionsFromClass,
-    description, DefinitionNotAvailableException
-} from "./activity-decorators";
 import {expect} from "chai";
 import {ActivityDefinitionProperty} from "./activity-deinition-property";
 import {ActivityDefinition} from "./activity-definition";
+import {ActivityDefinitionsContainer} from "./activity-decorator-conainer";
+import {description} from "./activity-decorators";
+import {
+    getActivityDefinitionsFromClass,
+    activityDefinitionPropertySetterDecoratorFactory, DefinitionNotAvailableException, ACTIVITY_DEFINITIONS
+} from "./activity-decorator-utils";
 
 
 describe('ActivityDefinitionsContainer', ()=> {

@@ -31,6 +31,312 @@ function expectHistoryEvent(event: HistoryEvent, expectation: EventExpectation):
 }
 
 describe('ActivityHistoryGenerator', ()=> {
+    describe('createActivityScheduledEvent', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    activityType: 'testActivityType',
+                    activityId: 'testActivityId',
+                    input: 'testInput',
+                    control: 'testControl',
+                    scheduleToStartTimeout: 'test schedule to start timeout',
+                    scheduleToCloseTimeout: 'testScheduleToClose timeout',
+                    startToCloseTimeout: 'test start to close timeout',
+                    taskList: 'test task list',
+                    decisionTaskCompletedEventId: 11111,
+                    heartbeatTimeout: 'test heartbeatTimeout'
+                };
+                const historyEvent = generator.createActivityScheduledEvent(expected);
+
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskScheduled,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    activityType: generator.activityType,
+                    activityId: generator.activityId,
+                    taskList: generator.taskList,
+                    decisionTaskCompletedEventId: -1
+                };
+                const historyEvent = generator.createActivityScheduledEvent({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskScheduled,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+    describe('createScheduleActivityTaskFailed', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    activityType: 'test activity type',
+                    activityId: 'test actvity id',
+                    cause: 'test cause',
+                    decisionTaskCompletedEventId: 11111
+                };
+                const historyEvent = generator.createScheduleActivityTaskFailed(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ScheduleActivityTaskFailed,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    activityType: generator.activityType,
+                    activityId: generator.activityId,
+                };
+                const historyEvent = generator.createScheduleActivityTaskFailed({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ScheduleActivityTaskFailed,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+
+    describe('createActivityTaskStarted', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    identity: 'test activity type',
+                    scheduledEventId: 11111
+                };
+                const historyEvent = generator.createActivityTaskStarted(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskStarted,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskStarted({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskStarted,
+                    params: {},
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+    describe('createActivityTaskCompleted', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    result: 'test result',
+                    scheduledEventId: 11111,
+                    startedEventId: 22222
+                };
+                const historyEvent = generator.createActivityTaskCompleted(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskCompleted,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskStarted({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskStarted,
+                    params: {},
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+    describe('createActivityTaskFailed', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    reason: 'test reason',
+                    details: 'test details',
+                    scheduledEventId: 11111,
+                    startedEventId: 222222
+                };
+                const historyEvent = generator.createActivityTaskFailed(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskFailed,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskFailed({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskFailed,
+                    params: {},
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+    describe('createActivityTaskTimedOut', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    timeoutType: 'timeout type test',
+                    scheduledEventId: 11111,
+                    startedEventId: 22222,
+                    details: 'test details'
+                };
+                const historyEvent = generator.createActivityTaskTimedOut(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskTimedOut,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskTimedOut({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskTimedOut,
+                    params: {},
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+    describe('createActivityTaskCanceled', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    details: 'details test',
+                    scheduledEventId: 11111,
+                    startedEventId: 222222,
+                    latestCancelRequestedEventId: 33333
+                };
+                const historyEvent = generator.createActivityTaskCanceled(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskCanceled,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskCanceled({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskCanceled,
+                    params: {},
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+
+    describe('createActivityTaskCancelRequested', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    decisionTaskCompletedEventId: 11111,
+                    activityId: 'test activity id'
+                };
+                const historyEvent = generator.createActivityTaskCancelRequested(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskCancelRequested,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createActivityTaskCancelRequested({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.ActivityTaskCancelRequested,
+                    params: {
+                        activityId: generator.activityId
+                    },
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
+
+    describe('createRequestCancelActivityTaskFailed', ()=> {
+        context('with parameters', ()=> {
+            it('should create HistoryEvent with the given parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const expected = {
+                    activityId: 'test activity id',
+                    cause: 'test cause',
+                    decisionTaskCompletedEventId: 2222,
+                };
+                const historyEvent = generator.createRequestCancelActivityTaskFailed(expected);
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.RequestCancelActivityTaskFailed,
+                    params: expected,
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+
+        context('without params', ()=> {
+            it('should create history event with default parameters', ()=> {
+                const generator = new ActivityHistoryGenerator();
+                const historyEvent = generator.createRequestCancelActivityTaskFailed({});
+                expectHistoryEvent(historyEvent, {
+                    eventType: EventType.RequestCancelActivityTaskFailed,
+                    params: {
+                        activityId: generator.activityId
+                    },
+                    eventId: generator.currentEventId - 1
+                });
+            });
+        });
+    });
+
     it('should generate a workflow history', ()=> {
         const historyGenerator = new ActivityHistoryGenerator();
         const list = historyGenerator.createActivityList([

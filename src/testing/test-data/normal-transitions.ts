@@ -7,7 +7,7 @@ export const FAILED_TRANSITION = [
     EventType.ActivityTaskFailed
 ];
 
-export const COMPETED_TRANSITION = [
+export const COMPLETED_TRANSITION = [
     EventType.ActivityTaskScheduled,
     EventType.ActivityTaskStarted,
     EventType.ActivityTaskCompleted
@@ -25,6 +25,7 @@ export const CANCELLED_TRANSITION = [
     EventType.ActivityTaskCancelRequested,
     EventType.ActivityTaskCanceled
 ];
+
 
 export const CANCEL_FAILED_TRANSITION = [
     EventType.ActivityTaskScheduled,

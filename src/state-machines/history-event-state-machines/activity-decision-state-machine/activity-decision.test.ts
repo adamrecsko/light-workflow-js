@@ -53,7 +53,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         );
     });
     it('should handle ActivityTaskStarted event', ()=> {
-        const event = historyGenerator.createActivityTaskStarted();
+        const event = historyGenerator.createActivityTaskStarted({});
         stateMachine.processHistoryEvent(event);
         expectActivityStateMachine(stateMachine,
             null,
@@ -61,7 +61,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         );
     });
     it('should handle ActivityTaskCompleted event', ()=> {
-        const event = historyGenerator.createActivityTaskCompleted();
+        const event = historyGenerator.createActivityTaskCompleted({});
         const params = event.activityTaskCompletedEventAttributes;
         stateMachine.processHistoryEvent(event);
         expectActivityStateMachine(stateMachine,
@@ -72,7 +72,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         );
     });
     it('should handle ActivityTaskFailed event', ()=> {
-        const event = historyGenerator.createActivityTaskFailed();
+        const event = historyGenerator.createActivityTaskFailed({});
         const params = event.activityTaskFailedEventAttributes;
 
         stateMachine.processHistoryEvent(event);
@@ -85,7 +85,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         );
     });
     it('should handle ActivityTaskTimedOut event', ()=> {
-        const event = historyGenerator.createActivityTaskTimedOut();
+        const event = historyGenerator.createActivityTaskTimedOut({});
         const params = event.activityTaskTimedOutEventAttributes;
 
         stateMachine.processHistoryEvent(event);
@@ -98,7 +98,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         );
     });
     it('should handle ActivityTaskCanceled event', ()=> {
-        const event = historyGenerator.createActivityTaskCanceled();
+        const event = historyGenerator.createActivityTaskCanceled({});
         const params = event.activityTaskCanceledEventAttributes;
 
         stateMachine.processHistoryEvent(event);

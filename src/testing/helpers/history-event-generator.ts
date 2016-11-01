@@ -1,5 +1,3 @@
-
-
 import {EventType} from "../../aws/workflow-history/event-types";
 import {HistoryEvent} from "../../aws/aws.types";
 

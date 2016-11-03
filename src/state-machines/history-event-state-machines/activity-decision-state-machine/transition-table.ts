@@ -4,14 +4,6 @@ export const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
     [ActivityDecisionStates.Created, ActivityDecisionStates.Sending],
     [ActivityDecisionStates.Created, ActivityDecisionStates.CanceledBeforeSent],
     [ActivityDecisionStates.Created, ActivityDecisionStates.Scheduled],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.ScheduleFailed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Started],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Completed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Failed],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.TimedOut],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Canceled],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.CancelRequested],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.RequestCancelFailed],
 
 
     [ActivityDecisionStates.Sending, ActivityDecisionStates.Sent],
@@ -23,6 +15,8 @@ export const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
 
     [ActivityDecisionStates.Scheduled, ActivityDecisionStates.Started],
     [ActivityDecisionStates.Scheduled, ActivityDecisionStates.CancelRequested],
+    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.TimedOut],
+
 
     [ActivityDecisionStates.Started, ActivityDecisionStates.Completed],
     [ActivityDecisionStates.Started, ActivityDecisionStates.Failed],

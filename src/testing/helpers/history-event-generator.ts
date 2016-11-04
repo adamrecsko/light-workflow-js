@@ -19,4 +19,8 @@ export class HistoryGenerator {
         this.currentEventId++;
         return historyEvent;
     }
+
+    public seek(eventId: number): void {
+        this.currentEventId = eventId;
+    }
 }

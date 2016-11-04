@@ -1,6 +1,5 @@
 import {BaseDecisionRunContext} from "./decision-run-context";
 import {expect} from "chai";
-import Base = Mocha.reporters.Base;
 import {ActivityHistoryGenerator} from "../../testing/helpers/workflow-history-generator";
 import {ScheduleActivityTaskDecisionAttributes} from "../../aws/aws.types";
 import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
@@ -198,6 +197,22 @@ describe('BaseDecisionContext', ()=> {
             });
             runContext.processEventList(list);
             expect(status).to.eq(ActivityDecisionStates.Completed);
+        });
+
+        it('should handle transition to completed activity state machine', ()=> {
+
+            const parameters:any[][]  = [
+                []
+            ];
+
+            const runContext = new BaseDecisionRunContext();
+            const list = ActivityHistoryGenerator.generateList([
+                COMPLETED_TRANSITION
+            ]);
+
+
+
+
         });
     });
 });

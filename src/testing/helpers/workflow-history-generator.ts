@@ -25,6 +25,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     public activityType: ActivityType;
     public taskList: TaskList;
     public activityId: string;
+    public decisionTaskCompletedEventId: number;
 
 
     constructor(activityType?: ActivityType, taskList?: TaskList, activityId?: string) {
@@ -32,6 +33,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         this.activityType = activityType || randomActivityType();
         this.taskList = taskList || randomTaskList();
         this.activityId = activityId || uuid.v4();
+        this.decisionTaskCompletedEventId = 0;
     }
 
     createActivityScheduledEvent(params: any): HistoryEvent {
@@ -45,7 +47,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
             scheduleToCloseTimeout: params.scheduleToCloseTimeout || '100',
             startToCloseTimeout: params.startToCloseTimeout || '100',
             taskList: params.taskList || this.taskList,
-            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || -1,
+            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || this.decisionTaskCompletedEventId,
             heartbeatTimeout: params.heartbeatTimeout || '100'
         };
         return historyEvent;
@@ -57,7 +59,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
             activityType: params.activityType || this.activityType,
             activityId: params.activityId || this.activityId,
             cause: params.cause || `createScheduleActivityTaskFailed - cause ${uuid.v4()}`,
-            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || -1
+            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || this.decisionTaskCompletedEventId
         };
         return historyEvent;
     }
@@ -97,11 +99,10 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskTimedOut(params: any): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskTimedOut);
         historyEvent.activityTaskTimedOutEventAttributes = {
-            timeoutType: params.timeoutType || 'timeout type',
+            timeoutType: params.timeoutType || 'no_timeout_type_given',
             scheduledEventId: params.scheduledEventId || -1,
             startedEventId: params.startedEventId || -1,
             details: params.details || `details createActivityTaskTimedOut ${uuid.v4()}`
-
         };
         return historyEvent;
     }
@@ -121,7 +122,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskCancelRequested(params: any): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskCancelRequested);
         historyEvent.activityTaskCancelRequestedEventAttributes = {
-            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || -1,
+            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || this.decisionTaskCompletedEventId,
             activityId: params.activityId || this.activityId
         };
         return historyEvent;
@@ -132,70 +133,77 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
         historyEvent.requestCancelActivityTaskFailedEventAttributes = {
             activityId: params.activityId || this.activityId,
             cause: params.cause || `cause createRequestCancelActivityTaskFailed ${uuid.v4()}`,
-            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || -1,
+            decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || this.decisionTaskCompletedEventId,
 
         };
         return historyEvent;
     }
 
-    createActivityList(events: EventType[]): HistoryEvent[] {
+    createActivityList(events: EventType[], parameters?: any[]): HistoryEvent[] {
         let lastScheduledEventId: number;
         let lastStartedEventId: number;
         let lastCancelRequestEventId: number;
-        const createEvent = (eventType: EventType) => {
+
+        const defaultParameters = parameters || [];
+        const createEvent = (eventType: EventType, index: number) => {
+            const params = defaultParameters[index] || {};
             switch (eventType) {
                 case EventType.ActivityTaskCanceled:
-                    return this.createActivityTaskCanceled({
+                    const canceled = Object.assign({
                         scheduledEventId: lastScheduledEventId,
                         startedEventId: lastStartedEventId,
                         latestCancelRequestedEventId: lastCancelRequestEventId
-                    });
+                    }, params);
+                    return this.createActivityTaskCanceled(canceled);
                 case EventType.ActivityTaskCancelRequested:
                     lastCancelRequestEventId = this.currentEventId;
-                    return this.createActivityTaskCancelRequested({});
+                    return this.createActivityTaskCancelRequested(params);
                 case EventType.ActivityTaskTimedOut:
-                    return this.createActivityTaskTimedOut({
+                    const timeOut = Object.assign({
                         scheduledEventId: lastScheduledEventId,
                         startedEventId: lastStartedEventId
-                    });
+                    }, params);
+                    return this.createActivityTaskTimedOut(timeOut);
                 case EventType.ActivityTaskCompleted:
-                    return this.createActivityTaskCompleted(
-                        {
-                            scheduledEventId: lastScheduledEventId,
-                            startedEventId: lastStartedEventId
-                        }
-                    );
-                case EventType.ActivityTaskFailed:
-                    return this.createActivityTaskFailed({
+                    const completed = Object.assign({
                         scheduledEventId: lastScheduledEventId,
                         startedEventId: lastStartedEventId
-                    });
+                    }, params);
+                    return this.createActivityTaskCompleted(completed);
+                case EventType.ActivityTaskFailed:
+                    const failed = Object.assign({
+                        scheduledEventId: lastScheduledEventId,
+                        startedEventId: lastStartedEventId
+                    }, params);
+                    return this.createActivityTaskFailed(failed);
                 case EventType.ActivityTaskScheduled:
                     lastScheduledEventId = this.currentEventId;
-                    return this.createActivityScheduledEvent({});
+                    return this.createActivityScheduledEvent(params);
                 case EventType.ActivityTaskStarted:
                     lastStartedEventId = this.currentEventId;
-                    return this.createActivityTaskStarted({
+                    const started = Object.assign({
                         scheduledEventId: lastScheduledEventId
-                    });
+                    }, params);
+                    return this.createActivityTaskStarted(started);
                 case EventType.RequestCancelActivityTaskFailed:
-                    return this.createRequestCancelActivityTaskFailed({});
+                    return this.createRequestCancelActivityTaskFailed(params);
                 case EventType.ScheduleActivityTaskFailed:
-                    return this.createScheduleActivityTaskFailed({});
+                    return this.createScheduleActivityTaskFailed(params);
 
                 default:
                     throw new Error('Unknown event type');
-
             }
         };
         return events.map(createEvent);
     }
 
 
-    static generateList(events: EventType[][]): HistoryEvent[] {
-        const listOfList = events.map((evtList: EventType[])=> {
+    static generateList(events: EventType[][], paramsList?: any[][]): HistoryEvent[] {
+        const pList = paramsList || [];
+        const listOfList = events.map((evtList: EventType[], index: number)=> {
+            const params = pList[index];
             const generator = new ActivityHistoryGenerator();
-            return generator.createActivityList(evtList);
+            return generator.createActivityList(evtList, params);
         });
         return [].concat.apply([], listOfList);
     }

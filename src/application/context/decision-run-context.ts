@@ -5,7 +5,7 @@ import {ActivityDecisionStateMachine} from "../../state-machines/history-event-s
 import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
 export interface DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void;
-    getActivityDecisionStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
+    getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
     getStateMachines(): AbstractHistoryEventStateMachine<any>[];
 }
 
@@ -100,7 +100,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
         this.getStateMachines().forEach(notify);
     }
 
-    getActivityDecisionStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
+    public getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
         if (this.activityIdToStateMachine.has(attributes.activityId)) {
             return this.activityIdToStateMachine.get(attributes.activityId);
         } else {
@@ -108,8 +108,8 @@ export class BaseDecisionRunContext implements DecisionRunContext {
         }
     }
 
-    public createActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes, state?: ActivityDecisionStates): ActivityDecisionStateMachine {
-        const stateMachine = new ActivityDecisionStateMachine(attributes, state);
+    private createActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
+        const stateMachine = new ActivityDecisionStateMachine(attributes);
         this.activityIdToStateMachine.set(attributes.activityId, stateMachine);
         return stateMachine;
     }

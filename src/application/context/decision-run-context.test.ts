@@ -32,15 +32,15 @@ describe('BaseDecisionContext', ()=> {
         it('should return ActivityDecisionStateMachine', ()=> {
             const runContext = new BaseDecisionRunContext();
             const testAttribs = createNewActivityDecision();
-            const stateMachine = runContext.getActivityDecisionStateMachine(testAttribs);
+            const stateMachine = runContext.getOrCreateActivityStateMachine(testAttribs);
             expect(stateMachine).to.instanceOf(ActivityDecisionStateMachine);
         });
         context('if activityId registered', ()=> {
             it('should not create new ActivityDecisionStateMachine', ()=> {
                 const testAttribs = createNewActivityDecision();
                 const runContext = new BaseDecisionRunContext();
-                const stateMachine = runContext.getActivityDecisionStateMachine(testAttribs);
-                const stateMachine2 = runContext.getActivityDecisionStateMachine(testAttribs);
+                const stateMachine = runContext.getOrCreateActivityStateMachine(testAttribs);
+                const stateMachine2 = runContext.getOrCreateActivityStateMachine(testAttribs);
                 expect(stateMachine).to.eq(stateMachine2);
             });
         });
@@ -49,8 +49,8 @@ describe('BaseDecisionContext', ()=> {
                 const runContext = new BaseDecisionRunContext();
                 const dec1 = createNewActivityDecision('activity-1');
                 const dec2 = createNewActivityDecision('activity-2');
-                const stateMachine = runContext.getActivityDecisionStateMachine(dec1);
-                const stateMachine2 = runContext.getActivityDecisionStateMachine(dec2);
+                const stateMachine = runContext.getOrCreateActivityStateMachine(dec1);
+                const stateMachine2 = runContext.getOrCreateActivityStateMachine(dec2);
                 expect(stateMachine).to.not.eq(stateMachine2);
             });
         });
@@ -61,8 +61,8 @@ describe('BaseDecisionContext', ()=> {
             const runContext = new BaseDecisionRunContext();
             const dec1 = createNewActivityDecision('activity-1');
             const dec2 = createNewActivityDecision('activity-2');
-            const stateMachine = runContext.getActivityDecisionStateMachine(dec1);
-            const stateMachine2 = runContext.getActivityDecisionStateMachine(dec2);
+            const stateMachine = runContext.getOrCreateActivityStateMachine(dec1);
+            const stateMachine2 = runContext.getOrCreateActivityStateMachine(dec2);
             expect(runContext.getStateMachines()).to.eql([stateMachine, stateMachine2]);
         });
     });
@@ -249,4 +249,62 @@ describe('BaseDecisionContext', ()=> {
             }, ActivityDecisionStates.Failed);
         });
     });
+
+    describe('getActivityDecisionStateMachine', ()=> {
+        context('if activity state machine already created', ()=> {
+
+            it('should create activity state machine', ()=> {
+                const runContext = new BaseDecisionRunContext();
+                const attributes = {
+                    activityId: 'test actvity id',
+                    input: 'this is an input'
+                };
+                const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+                expect(stateMachine).to.be.instanceOf(ActivityDecisionStateMachine);
+            });
+            it('should store activity state machine', ()=> {
+                const runContext = new BaseDecisionRunContext();
+                const attributes = {
+                    activityId: 'test actvity id',
+                    input: 'this is an input'
+                };
+                const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+
+                const machines = runContext.getStateMachines();
+                expect(machines[0]).to.be.eq(stateMachine);
+
+            });
+
+
+        });
+
+        context('if activity state machine not created', ()=> {
+            it('should not create new activity state machine', ()=> {
+                const runContext = new BaseDecisionRunContext();
+                const attributes = {
+                    activityId: 'test actvity id',
+                    input: 'this is an input'
+                };
+                const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+                const stateMachine2 = runContext.getOrCreateActivityStateMachine(attributes);
+                expect(stateMachine).to.be.eq(stateMachine2);
+            });
+
+            it('should gives back stored activity state machine', ()=> {
+                const runContext = new BaseDecisionRunContext();
+                const historyGenerator = new ActivityHistoryGenerator();
+                runContext.processEventList(historyGenerator.createActivityList(
+                    COMPLETED_TRANSITION,
+                    [SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS]
+                ));
+                const attributes = {
+                    activityId: SCHEDULED_PARAMS.activityId,
+                };
+                const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+                expect(stateMachine.result).to.eq(COMPLETED_PARAMS.result);
+            });
+
+        });
+    });
+
 });

@@ -62,7 +62,7 @@ describe('ActivityDecisionStateMachine', ()=> {
         const event = historyGenerator.createActivityTaskStarted({});
         stateMachine.processHistoryEvent(event);
         expectActivityStateMachine(stateMachine,
-            null,
+            {identity: event.activityTaskStartedEventAttributes.identity},
             ActivityDecisionStates.Started
         );
     });

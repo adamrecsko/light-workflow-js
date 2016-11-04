@@ -21,6 +21,7 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
     public timeoutType: string;
     public startParams: ScheduleActivityTaskDecisionAttributes;
     public processedEventIds: Set<number>;
+    public identity: string;
 
 
     constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionStates) {
@@ -56,7 +57,7 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
                 break;
 
             case EventType.ActivityTaskStarted:
-                this.processActivityTaskStarted();
+                this.processActivityTaskStarted(event);
                 break;
 
             case EventType.ActivityTaskCompleted:
@@ -94,45 +95,46 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
 
     private processActivityTaskScheduled(event: HistoryEvent): void {
         const params = event.activityTaskScheduledEventAttributes;
+        this.currentState = ActivityDecisionStates.Scheduled;
         this.control = params.control;
         this.input = params.input;
-        this.currentState = ActivityDecisionStates.Scheduled;
     }
 
     private processScheduleActivityTaskFailed(event: HistoryEvent): void {
         const params = event.scheduleActivityTaskFailedEventAttributes;
-        this.cause = params.cause;
         this.currentState = ActivityDecisionStates.ScheduleFailed;
+        this.cause = params.cause;
     }
 
     private processActivityTaskFailed(event: HistoryEvent): void {
         const params = event.activityTaskFailedEventAttributes;
+        this.currentState = ActivityDecisionStates.Failed;
         this.details = params.details;
         this.reason = params.reason;
-        this.currentState = ActivityDecisionStates.Failed;
     }
 
-    private processActivityTaskStarted(): void {
+    private processActivityTaskStarted(event:HistoryEvent): void {
         this.currentState = ActivityDecisionStates.Started;
+        this.identity = event.activityTaskStartedEventAttributes.identity;
     }
 
     private processActivityTaskCompleted(event: HistoryEvent): void {
         const params = event.activityTaskCompletedEventAttributes;
-        this.result = params.result;
         this.currentState = ActivityDecisionStates.Completed;
+        this.result = params.result;
     }
 
     private processActivityTaskTimedOut(event: HistoryEvent): void {
         const params = event.activityTaskTimedOutEventAttributes;
+        this.currentState = ActivityDecisionStates.TimedOut;
         this.details = params.details;
         this.timeoutType = params.timeoutType;
-        this.currentState = ActivityDecisionStates.TimedOut;
     }
 
     private processActivityTaskCanceled(event: HistoryEvent): void {
         const params = event.activityTaskCanceledEventAttributes;
-        this.details = params.details;
         this.currentState = ActivityDecisionStates.Canceled;
+        this.details = params.details;
     }
 
     private processActivityTaskCancelRequested(): void {
@@ -141,7 +143,7 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
 
     private processRequestCancelActivityTaskFailed(event: HistoryEvent): void {
         const params = event.requestCancelActivityTaskFailedEventAttributes;
-        this.cause = params.cause;
         this.currentState = ActivityDecisionStates.RequestCancelFailed;
+        this.cause = params.cause;
     }
 }

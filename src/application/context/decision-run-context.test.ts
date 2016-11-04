@@ -13,6 +13,7 @@ import {
     CANCELLED_TRANSITION,
     TIMEOUTED_TRANSITION
 } from "../../testing/test-data/normal-transitions";
+import {SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS, FAILED_PARAMS} from "../../testing/test-data/event-params";
 
 
 function createNewActivityDecision(activityId?: string): ScheduleActivityTaskDecisionAttributes {
@@ -200,19 +201,52 @@ describe('BaseDecisionContext', ()=> {
         });
 
         it('should handle transition to completed activity state machine', ()=> {
-
-            const parameters:any[][]  = [
-                []
+            const parameters: any[][] = [
+                [
+                    SCHEDULED_PARAMS,
+                    STARTED_PARAMS,
+                    COMPLETED_PARAMS
+                ]
             ];
-
             const runContext = new BaseDecisionRunContext();
             const list = ActivityHistoryGenerator.generateList([
                 COMPLETED_TRANSITION
-            ]);
+            ], parameters);
 
+            runContext.processEventList(list);
+            const stateMachines: ActivityDecisionStateMachine[] = <ActivityDecisionStateMachine[]>runContext.getStateMachines();
 
+            expectActivityStateMachine(stateMachines[0], {
+                control: SCHEDULED_PARAMS.control,
+                input: SCHEDULED_PARAMS.input,
+                result: COMPLETED_PARAMS.result,
+                identity: STARTED_PARAMS.identity
+            }, ActivityDecisionStates.Completed);
+        });
 
+        it('should handle transition to failed activity state machine', ()=> {
+            const parameters: any[][] = [
+                [
+                    SCHEDULED_PARAMS,
+                    STARTED_PARAMS,
+                    FAILED_PARAMS
+                ]
+            ];
+            const runContext = new BaseDecisionRunContext();
+            const list = ActivityHistoryGenerator.generateList([
+                FAILED_TRANSITION
+            ], parameters);
 
+            runContext.processEventList(list);
+            const stateMachines: ActivityDecisionStateMachine[] = <ActivityDecisionStateMachine[]>runContext.getStateMachines();
+
+            expectActivityStateMachine(stateMachines[0], {
+                control: SCHEDULED_PARAMS.control,
+                input: SCHEDULED_PARAMS.input,
+                reason: FAILED_PARAMS.reason,
+                details: FAILED_PARAMS.details,
+                identity: STARTED_PARAMS.identity
+            }, ActivityDecisionStates.Failed);
         });
     });
 });

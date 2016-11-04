@@ -9,6 +9,10 @@ import {
     SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS, FAILED_PARAMS,
     REQUEST_CANCELLED_PARAMS, CANCELLED_PARAMS, TIMEOUT_PARAMS
 } from "../test-data/event-params";
+import {
+    COMPLETED_TRANSITION, FAILED_TRANSITION, CANCELLED_TRANSITION,
+    TIMEOUTED_TRANSITION
+} from "../test-data/normal-transitions";
 
 
 function getParams(event: HistoryEvent): any {
@@ -485,122 +489,161 @@ describe('ActivityHistoryGenerator', ()=> {
 
         });
 
+        describe('createActivityList', ()=> {
 
-        context('with given parameters', ()=> {
-            let historyGenerator: ActivityHistoryGenerator;
-            let fistEventId: number;
-            beforeEach(()=> {
-                historyGenerator = new ActivityHistoryGenerator();
-                fistEventId = 100;
-                historyGenerator.seek(fistEventId);
-            });
-
-            it('should generate a completed workflow history', ()=> {
-                const params = [SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS];
+            it('should generate a coherent workflow history', ()=> {
+                const historyGenerator = new ActivityHistoryGenerator();
+                historyGenerator.seek(10);
                 const list = historyGenerator.createActivityList([
                     EventType.ActivityTaskScheduled,
                     EventType.ActivityTaskStarted,
                     EventType.ActivityTaskCompleted
-                ], params);
-                expectHistoryEvent(list[0], {
-                    eventType: EventType.ActivityTaskScheduled,
-                    params: SCHEDULED_PARAMS,
-                    eventId: fistEventId
-                });
-                expectHistoryEvent(list[1], {
-                    eventType: EventType.ActivityTaskStarted,
-                    params: STARTED_PARAMS,
-                    eventId: fistEventId + 1
-                });
-                expectHistoryEvent(list[2], {
-                    eventType: EventType.ActivityTaskCompleted,
-                    params: COMPLETED_PARAMS,
-                    eventId: fistEventId + 2
-                });
+                ]);
+                const eventIds = list.map((event)=>event.eventId);
+                expect(eventIds).to.be.eql([10, 11, 12]);
             });
 
-            it('should generate a failed workflow history', ()=> {
-                const params = [SCHEDULED_PARAMS, STARTED_PARAMS, FAILED_PARAMS];
-                const list = historyGenerator.createActivityList([
-                    EventType.ActivityTaskScheduled,
-                    EventType.ActivityTaskStarted,
-                    EventType.ActivityTaskFailed
-                ], params);
-                expectHistoryEvent(list[0], {
-                    eventType: EventType.ActivityTaskScheduled,
-                    params: SCHEDULED_PARAMS,
-                    eventId: fistEventId
-                });
-                expectHistoryEvent(list[1], {
-                    eventType: EventType.ActivityTaskStarted,
-                    params: merge(STARTED_PARAMS, {
-                        scheduledEventId: fistEventId
-                    }),
-                    eventId: fistEventId + 1
-                });
-                expectHistoryEvent(list[2], {
-                    eventType: EventType.ActivityTaskFailed,
-                    params: merge(FAILED_PARAMS, {
-                        scheduledEventId: fistEventId,
-                        startedEventId: fistEventId + 1
-                    }),
-                    eventId: fistEventId + 2
-                });
-            });
 
-            it('should generate a canceled workflow history', ()=> {
-                const params = [SCHEDULED_PARAMS, STARTED_PARAMS, REQUEST_CANCELLED_PARAMS, CANCELLED_PARAMS];
-                const list = historyGenerator.createActivityList([
-                    EventType.ActivityTaskScheduled,
-                    EventType.ActivityTaskStarted,
-                    EventType.ActivityTaskCancelRequested,
-                    EventType.ActivityTaskCanceled
-                ], params);
-                expectHistoryEvent(list[0], {
-                    eventType: EventType.ActivityTaskScheduled,
-                    params: SCHEDULED_PARAMS,
-                    eventId: fistEventId
+            context('with given parameters', ()=> {
+                let historyGenerator: ActivityHistoryGenerator;
+                let fistEventId: number;
+                beforeEach(()=> {
+                    historyGenerator = new ActivityHistoryGenerator();
+                    fistEventId = 100;
+                    historyGenerator.seek(fistEventId);
                 });
-                expectHistoryEvent(list[1], {
-                    eventType: EventType.ActivityTaskStarted,
-                    params: STARTED_PARAMS,
-                    eventId: fistEventId + 1
-                });
-                expectHistoryEvent(list[2], {
-                    eventType: EventType.ActivityTaskCancelRequested,
-                    params: REQUEST_CANCELLED_PARAMS,
-                    eventId: fistEventId + 2
-                });
-                expectHistoryEvent(list[3], {
-                    eventType: EventType.ActivityTaskCanceled,
-                    params: CANCELLED_PARAMS,
-                    eventId: fistEventId + 3
-                });
-            });
 
-            it('should generate a timed out activity workflow history', ()=> {
-                const params = [SCHEDULED_PARAMS, STARTED_PARAMS, TIMEOUT_PARAMS];
-                const list = historyGenerator.createActivityList([
-                    EventType.ActivityTaskScheduled,
-                    EventType.ActivityTaskStarted,
-                    EventType.ActivityTaskTimedOut
-                ], params);
-                expectHistoryEvent(list[0], {
-                    eventType: EventType.ActivityTaskScheduled,
-                    params: SCHEDULED_PARAMS,
-                    eventId: fistEventId
+                it('should generate a completed workflow history', ()=> {
+                    const params = [SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS];
+                    const list = historyGenerator.createActivityList([
+                        EventType.ActivityTaskScheduled,
+                        EventType.ActivityTaskStarted,
+                        EventType.ActivityTaskCompleted
+                    ], params);
+                    expectHistoryEvent(list[0], {
+                        eventType: EventType.ActivityTaskScheduled,
+                        params: SCHEDULED_PARAMS,
+                        eventId: fistEventId
+                    });
+                    expectHistoryEvent(list[1], {
+                        eventType: EventType.ActivityTaskStarted,
+                        params: STARTED_PARAMS,
+                        eventId: fistEventId + 1
+                    });
+                    expectHistoryEvent(list[2], {
+                        eventType: EventType.ActivityTaskCompleted,
+                        params: COMPLETED_PARAMS,
+                        eventId: fistEventId + 2
+                    });
                 });
-                expectHistoryEvent(list[1], {
-                    eventType: EventType.ActivityTaskStarted,
-                    params: STARTED_PARAMS,
-                    eventId: fistEventId + 1
+
+                it('should generate a failed workflow history', ()=> {
+                    const params = [SCHEDULED_PARAMS, STARTED_PARAMS, FAILED_PARAMS];
+                    const list = historyGenerator.createActivityList([
+                        EventType.ActivityTaskScheduled,
+                        EventType.ActivityTaskStarted,
+                        EventType.ActivityTaskFailed
+                    ], params);
+                    expectHistoryEvent(list[0], {
+                        eventType: EventType.ActivityTaskScheduled,
+                        params: SCHEDULED_PARAMS,
+                        eventId: fistEventId
+                    });
+                    expectHistoryEvent(list[1], {
+                        eventType: EventType.ActivityTaskStarted,
+                        params: merge(STARTED_PARAMS, {
+                            scheduledEventId: fistEventId
+                        }),
+                        eventId: fistEventId + 1
+                    });
+                    expectHistoryEvent(list[2], {
+                        eventType: EventType.ActivityTaskFailed,
+                        params: merge(FAILED_PARAMS, {
+                            scheduledEventId: fistEventId,
+                            startedEventId: fistEventId + 1
+                        }),
+                        eventId: fistEventId + 2
+                    });
                 });
-                expectHistoryEvent(list[2], {
-                    eventType: EventType.ActivityTaskTimedOut,
-                    params: TIMEOUT_PARAMS,
-                    eventId: fistEventId + 2
+
+                it('should generate a canceled workflow history', ()=> {
+                    const params = [SCHEDULED_PARAMS, STARTED_PARAMS, REQUEST_CANCELLED_PARAMS, CANCELLED_PARAMS];
+                    const list = historyGenerator.createActivityList([
+                        EventType.ActivityTaskScheduled,
+                        EventType.ActivityTaskStarted,
+                        EventType.ActivityTaskCancelRequested,
+                        EventType.ActivityTaskCanceled
+                    ], params);
+                    expectHistoryEvent(list[0], {
+                        eventType: EventType.ActivityTaskScheduled,
+                        params: SCHEDULED_PARAMS,
+                        eventId: fistEventId
+                    });
+                    expectHistoryEvent(list[1], {
+                        eventType: EventType.ActivityTaskStarted,
+                        params: STARTED_PARAMS,
+                        eventId: fistEventId + 1
+                    });
+                    expectHistoryEvent(list[2], {
+                        eventType: EventType.ActivityTaskCancelRequested,
+                        params: REQUEST_CANCELLED_PARAMS,
+                        eventId: fistEventId + 2
+                    });
+                    expectHistoryEvent(list[3], {
+                        eventType: EventType.ActivityTaskCanceled,
+                        params: CANCELLED_PARAMS,
+                        eventId: fistEventId + 3
+                    });
+                });
+
+                it('should generate a timed out activity workflow history', ()=> {
+                    const params = [SCHEDULED_PARAMS, STARTED_PARAMS, TIMEOUT_PARAMS];
+                    const list = historyGenerator.createActivityList([
+                        EventType.ActivityTaskScheduled,
+                        EventType.ActivityTaskStarted,
+                        EventType.ActivityTaskTimedOut
+                    ], params);
+                    expectHistoryEvent(list[0], {
+                        eventType: EventType.ActivityTaskScheduled,
+                        params: SCHEDULED_PARAMS,
+                        eventId: fistEventId
+                    });
+                    expectHistoryEvent(list[1], {
+                        eventType: EventType.ActivityTaskStarted,
+                        params: STARTED_PARAMS,
+                        eventId: fistEventId + 1
+                    });
+                    expectHistoryEvent(list[2], {
+                        eventType: EventType.ActivityTaskTimedOut,
+                        params: TIMEOUT_PARAMS,
+                        eventId: fistEventId + 2
+                    });
                 });
             });
+        });
+    });
+
+
+    describe('generateList', ()=> {
+        it('should generate a coherent workflow history', ()=> {
+            const events = ActivityHistoryGenerator.generateList([
+                COMPLETED_TRANSITION,
+                TIMEOUTED_TRANSITION,
+                COMPLETED_TRANSITION,
+                FAILED_TRANSITION,
+                COMPLETED_TRANSITION,
+                CANCELLED_TRANSITION,
+                FAILED_TRANSITION,
+                CANCELLED_TRANSITION,
+                TIMEOUTED_TRANSITION
+            ]);
+
+            const expectedEventIds: number[] = [];
+            for (let i = 1; i <= events.length; i++) {
+                expectedEventIds.push(i);
+            }
+            const eventIds = events.map((event)=>event.eventId);
+            expect(eventIds).to.be.eql(expectedEventIds);
         });
     });
 });

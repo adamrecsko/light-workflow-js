@@ -200,10 +200,14 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
 
     static generateList(events: EventType[][], paramsList?: any[][]): HistoryEvent[] {
         const pList = paramsList || [];
+        let latestEventId = 1;
         const listOfList = events.map((evtList: EventType[], index: number)=> {
             const params = pList[index];
             const generator = new ActivityHistoryGenerator();
-            return generator.createActivityList(evtList, params);
+            generator.seek(latestEventId);
+            const result = generator.createActivityList(evtList, params);
+            latestEventId = generator.currentEventId;
+            return result;
         });
         return [].concat.apply([], listOfList);
     }

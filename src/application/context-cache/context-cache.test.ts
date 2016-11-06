@@ -9,7 +9,6 @@ describe('BaseContextCache', ()=> {
             const context = contextCache.getOrCreateContext('runidteest');
             expect(context).to.be.instanceOf(BaseDecisionRunContext);
         });
-
         it('should not create  context if context is exists', ()=> {
             const contextCache = new BaseContextCache();
             const context = contextCache.getOrCreateContext('runidteest');

@@ -6,6 +6,7 @@
   "author": "Adam Recsko <adam.recsko@gmail.com>",
   "license": "ISC",
   "scripts": {
+    "watch": "tsc -w",
     "pretest": "tsc",
     "test": "mocha src/**/*.test.js",
     "start": "tsc; node ./src/index.js",

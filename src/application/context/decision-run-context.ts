@@ -7,6 +7,7 @@ export interface DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void;
     getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
     getStateMachines(): AbstractHistoryEventStateMachine<any>[];
+    getNext
 }
 
 

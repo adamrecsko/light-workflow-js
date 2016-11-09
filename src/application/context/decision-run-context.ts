@@ -7,7 +7,7 @@ export interface DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void;
     getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
     getStateMachines(): AbstractHistoryEventStateMachine<any>[];
-    getNext
+    getNextId(): string;
 }
 
 
@@ -26,10 +26,13 @@ export class DecisionConflictException extends Error {
 export class BaseDecisionRunContext implements DecisionRunContext {
     private activityIdToStateMachine: Map<string,ActivityDecisionStateMachine>;
     private scheduleEventIdToActivityId: Map<number,string>;
+    private currentId: number;
+
 
     constructor() {
         this.activityIdToStateMachine = new Map();
         this.scheduleEventIdToActivityId = new Map();
+        this.currentId = 0;
     }
 
     processEventList(eventList: HistoryEvent[]): void {
@@ -117,5 +120,9 @@ export class BaseDecisionRunContext implements DecisionRunContext {
 
     getStateMachines(): AbstractHistoryEventStateMachine<any>[] {
         return Array.from(this.activityIdToStateMachine.values());
+    }
+
+    getNextId(): string {
+        return `${this.currentId++}`;
     }
 }

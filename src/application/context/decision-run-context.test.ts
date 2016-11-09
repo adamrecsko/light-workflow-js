@@ -305,6 +305,19 @@ describe('BaseDecisionContext', ()=> {
             });
 
         });
+
     });
 
+    describe('getNextId', ()=> {
+        it('should increase', ()=> {
+            const decisionRunContext = new BaseDecisionRunContext();
+            const ids: string[] = [];
+            ids.push(decisionRunContext.getNextId());
+            ids.push(decisionRunContext.getNextId());
+            ids.push(decisionRunContext.getNextId());
+            ids.push(decisionRunContext.getNextId());
+            ids.push(decisionRunContext.getNextId());
+            expect(ids).to.be.eql(['0', '1', '2', '3', '4']);
+        });
+    });
 });

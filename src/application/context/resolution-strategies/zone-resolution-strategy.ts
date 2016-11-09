@@ -9,12 +9,12 @@ export class ContextNotFoundException extends Error {
     }
 }
 
-export class ZoneContextResolutionStrategy implements ContextResolutionStrategy {
+export class ZoneContextResolutionStrategy<T> implements ContextResolutionStrategy<T> {
     constructor(private contextKey: string) {
     }
 
-    public getContext(): DecisionRunContext {
-        const context: DecisionRunContext = Zone.current.get(this.contextKey);
+    public getContext(): T {
+        const context: T = Zone.current.get(this.contextKey);
         if (!context) {
             throw new ContextNotFoundException(`Context with key: ${this.contextKey} not found in current zone: ${ Zone.current.name}`)
         }

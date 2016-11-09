@@ -1,5 +1,5 @@
-import {ActivityDefinitionProperty} from "./activity-deinition-property";
 import {activityDefinitionPropertySetterDecoratorFactory} from "./activity-decorator-utils";
+import {ActivityDefinitionProperty} from "../activity-deinition-property";
 
 
 //decorators

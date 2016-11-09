@@ -1,4 +1,4 @@
-import {ActivityDefinition} from "./activity-definition";
+import {ActivityDefinition} from "../activity-definition";
 export class ActivityDefinitionsContainer {
     private activityMap: Map<string,ActivityDefinition> = new Map();
 

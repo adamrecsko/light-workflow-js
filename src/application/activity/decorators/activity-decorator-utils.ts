@@ -1,6 +1,6 @@
-import {ActivityDefinition} from "./activity-definition";
-import {ActivityDefinitionsContainer} from "./activity-decorator-conainer";
-import {ActivityDefinitionProperty} from "./activity-deinition-property";
+import {ActivityDefinition} from "../activity-definition";
+import {ActivityDefinitionProperty} from "../activity-deinition-property";
+import {ActivityDefinitionsContainer} from "./activity-decorator-container";
 
 export const ACTIVITY_DEFINITIONS = Symbol('ACTIVITY_DEFINITIONS');
 

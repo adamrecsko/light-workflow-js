@@ -9,9 +9,10 @@ import {WorkflowClient, GenericWorkflowClient} from "../aws/workflow-client";
 import {ActivityPollerFactory, GenericActivityPollerFactory} from "../aws/swf/activity-poller-factory";
 import {DecisionPollerFactory, GenericDecisionPollerFactory} from "../aws/swf/decision-poller-factory";
 import {
-    ActivityClientImplementationHelper,
-    BaseActivityClientImplementationHelper
-} from "./helpers/activity-client-implementation-helper";
+    ActorClientImplementationHelper,
+    BaseActorClientImplementationHelper
+} from "./actor/helpers/actor-client-implementation-helper";
+
 
 
 export const CORE: KernelModule = new KernelModule((bind: Bind) => {
@@ -23,6 +24,6 @@ export const CORE: KernelModule = new KernelModule((bind: Bind) => {
         .to(GenericActivityPollerFactory).inSingletonScope();
     bind<DecisionPollerFactory>(DECISION_POLLER_FACTORY)
         .to(GenericDecisionPollerFactory).inSingletonScope();
-    bind<ActivityClientImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER)
-        .to(BaseActivityClientImplementationHelper).inSingletonScope();
+    bind<ActorClientImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER)
+        .to(BaseActorClientImplementationHelper).inSingletonScope();
 });

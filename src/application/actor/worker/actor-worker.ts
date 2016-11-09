@@ -1,12 +1,13 @@
 import {Kernel} from "inversify";
-import {TaskPollerObservable} from "../../aws/swf/task-poller-observable";
-import {ActivityTask, TaskList, ActivityPollParameters} from "../../aws/aws.types";
-import {ActivityPollerFactory} from "../../aws/swf/activity-poller-factory";
+import {TaskPollerObservable} from "../../../aws/swf/task-poller-observable";
+import {ActivityTask, TaskList, ActivityPollParameters} from "../../../aws/aws.types";
+import {ActivityPollerFactory} from "../../../aws/swf/activity-poller-factory";
 
-export interface ActivityWorker {
+
+export interface ActorWorker {
 }
 
-export class GenericActivityWorker implements ActivityWorker {
+export class BaseActorWorker implements ActorWorker {
     private activityPoller: TaskPollerObservable<ActivityTask>;
 
     constructor(private domain: string,
@@ -15,6 +16,4 @@ export class GenericActivityWorker implements ActivityWorker {
         this.activityPoller = this.activityPollerFactory
             .createPoller(new ActivityPollParameters(domain, taskList));
     }
-
-
 }

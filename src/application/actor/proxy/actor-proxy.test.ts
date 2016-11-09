@@ -1,7 +1,9 @@
 import {BaseDecisionRunContext, DecisionRunContext} from "../../context/decision-run-context";
 import {expect} from "chai";
-import {ActivityClientFacade} from "./activity-client-facade";
-describe('ActivityClientFacade', ()=> {
+import {ActorProxy} from "./actor-proxy";
+
+
+describe('ActorProxy', ()=> {
     describe('getContext', ()=> {
         it('should use the given context resolution strategy', ()=> {
             class MockTestActivity {
@@ -12,7 +14,7 @@ describe('ActivityClientFacade', ()=> {
                     return runContext;
                 }
             };
-            const client = new ActivityClientFacade(MockTestActivity, mockResolutionStrategy);
+            const client = new ActorProxy(MockTestActivity, mockResolutionStrategy);
             expect(client.getContext()).to.be.eq(runContext);
         });
     });
@@ -26,8 +28,9 @@ describe('ActivityClientFacade', ()=> {
                     return null;
                 }
             };
-            const client = new ActivityClientFacade(MockTestActivity, mockResolutionStrategy);
+            const client = new ActorProxy(MockTestActivity, mockResolutionStrategy);
             expect(client.getImplementation()).to.be.eq(MockTestActivity);
         });
     });
+
 });

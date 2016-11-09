@@ -1,13 +1,13 @@
 import "reflect-metadata";
-import {
-    BaseActivityClientImplementationHelper, ActivityImplementation,
-    ActivityClient
-} from "./activity-client-implementation-helper";
 import {Kernel} from "inversify";
 import {expect} from "chai";
 import {injectable} from "inversify";
-describe('BaseActivityClientImplementationHelper', ()=> {
-    it('should load activity\'s implementation to kernel', ()=> {
+import {
+    BaseActorClientImplementationHelper, ActorImplementation,
+    ACTOR_TAG, ActivityClient, ACTOR_CLIENT_TAG
+} from "./actor-client-implementation-helper";
+describe('BaseActorClientImplementationHelper', ()=> {
+    it('should load actor\'s implementation to kernel', ()=> {
         @injectable()
         class TestImpl {
             method() {
@@ -15,20 +15,21 @@ describe('BaseActivityClientImplementationHelper', ()=> {
         }
         const testImplSymbol = Symbol('TestImpl');
         const kernel = new Kernel();
-        const helper = new BaseActivityClientImplementationHelper(kernel);
+        const helper = new BaseActorClientImplementationHelper(kernel);
 
-        const binding: ActivityImplementation = {
+        const binding: ActorImplementation = {
             impl: TestImpl,
             binding: testImplSymbol
         };
         helper.addImplementations(
             [binding]
         );
-        const testInstance = kernel.getTagged<TestImpl>(testImplSymbol, 'activity', true);
+        const testInstance = kernel.getTagged<TestImpl>(testImplSymbol, ACTOR_TAG, true);
         expect(testInstance).to.instanceOf(TestImpl);
     });
 
-    it('should load activity\'s client to kernel', ()=> {
+
+    it('should load actor\'s client to kernel', ()=> {
         @injectable()
         class TestImpl {
             method() {
@@ -36,16 +37,17 @@ describe('BaseActivityClientImplementationHelper', ()=> {
         }
         const testImplSymbol = Symbol('TestImpl');
         const kernel = new Kernel();
-        const helper = new BaseActivityClientImplementationHelper(kernel);
+        const helper = new BaseActorClientImplementationHelper(kernel);
 
-        const binding: ActivityImplementation = {
+        const binding: ActorImplementation = {
             impl: TestImpl,
             binding: testImplSymbol
         };
+
         helper.addImplementations(
             [binding]
         );
-        const testInstance = kernel.getTagged<ActivityClient<TestImpl>>(testImplSymbol, 'activity-client', true);
+        const testInstance = kernel.getTagged<ActivityClient<TestImpl>>(testImplSymbol, ACTOR_CLIENT_TAG, true);
         expect(testInstance).to.instanceOf(ActivityClient);
     });
 });

@@ -11,5 +11,6 @@ export enum ActivityDefinitionProperty{
     scheduleToCloseTimeout,
     scheduleToStartTimeout,
     startToCloseTimeout,
-    taskPriority
+    taskPriority,
+    serializer
 }

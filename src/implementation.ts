@@ -1,0 +1,1 @@
+export type Implementation<T> = { new(...args: any[]): T; };

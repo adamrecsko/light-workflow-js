@@ -3,8 +3,8 @@ import {APPLICATION_CONFIGURATION, APP_KERNEL, ACTIVITY_CLIENT_IMPLEMENTATION_HE
 import {ApplicationConfigurationProvider} from "./application-configuration-provider";
 import {CORE} from "./core-module";
 import {ActorClientImplementationHelper} from "./actor/helpers/actor-client-implementation-helper";
+import {Implementation} from "../implementation";
 
-export type Implementation<T> = { new(...args: any[]): T; };
 export interface ApplicationFactory {
     createApplication<T>(applicationClass: T): T;
 }

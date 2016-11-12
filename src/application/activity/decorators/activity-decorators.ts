@@ -1,5 +1,7 @@
 import {activityDefinitionPropertySetterDecoratorFactory} from "./activity-decorator-utils";
 import {ActivityDefinitionProperty} from "../activity-deinition-property";
+import {Serializer} from "../serializer";
+import {Implementation} from "../../../implementation";
 
 
 //decorators
@@ -15,4 +17,6 @@ export const scheduleToCloseTimeout = activityDefinitionPropertySetterDecoratorF
 export const scheduleToStartTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.scheduleToStartTimeout);
 export const startToCloseTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.startToCloseTimeout);
 export const taskPriority = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.taskPriority);
+export const serializer = activityDefinitionPropertySetterDecoratorFactory<Implementation<Serializer>>(ActivityDefinitionProperty.serializer);
+
 

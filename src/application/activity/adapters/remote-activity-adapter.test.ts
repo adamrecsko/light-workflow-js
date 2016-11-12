@@ -1,4 +1,4 @@
-describe('LocalActivityAdapter', ()=> {
+describe('RemoteActivityAdapter', ()=> {
     it('should create activity observable', ()=> {
 
 

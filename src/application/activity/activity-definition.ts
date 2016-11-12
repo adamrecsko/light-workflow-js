@@ -1,3 +1,5 @@
+import {Serializer} from "./serializer";
+import {Implementation} from "../../implementation";
 export class ActivityDefinition {
     name: string;
     version: string = '1';
@@ -12,8 +14,9 @@ export class ActivityDefinition {
     scheduleToStartTimeout: string;
     startToCloseTimeout: string;
     taskPriority: string;
-    [key: string]: any;
+    serializer: Implementation<Serializer>;
 
+    [key: string]: any;
     constructor(name: string) {
         this.name = name;
     }

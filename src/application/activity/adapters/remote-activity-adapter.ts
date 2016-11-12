@@ -4,8 +4,9 @@ import {ContextResolutionStrategy} from "../../context/resolution-strategies/res
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {ScheduleActivityTaskDecisionAttributes} from "../../../aws/aws.types";
 import {ActivityDefinition} from "../activity-definition";
+import {Implementation} from "../../../implementation";
 
-export class LocalActivityAdapter<T> implements ActivityAdapter<any[],T> {
+export class RemoteActivityAdapter<T> implements ActivityAdapter<any[],T> {
 
 
     constructor(private contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
@@ -16,7 +17,8 @@ export class LocalActivityAdapter<T> implements ActivityAdapter<any[],T> {
         return null;
     }
 
-    getObservable(callParams: any[]): Observable<T> {
+
+    createObservable(callParams: any[], observableConstructor?: Implementation<Observable<String>>): Observable<T> {
         return null;
     }
 }

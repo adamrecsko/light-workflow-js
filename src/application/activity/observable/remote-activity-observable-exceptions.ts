@@ -1,5 +1,6 @@
 import {ActivityDecisionStateMachine} from "../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
 import {ActivityTimeoutType} from "../../../aws/workflow-history/activity-timeout-type";
+
 export class ScheduleFailedException extends Error {
     public cause: string;
 

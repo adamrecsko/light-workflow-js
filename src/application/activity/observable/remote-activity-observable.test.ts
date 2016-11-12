@@ -8,11 +8,14 @@ import {ActivityDecisionStateMachine} from "../../../state-machines/history-even
 import {ChaiTestScheduler} from "../../../testing/helpers/chai-test-scheduler";
 import {RemoteActivityObservable} from "./remote-activity-observable";
 import {
-    FailedException, ScheduleFailedException,
-    RequestCancelFailedException, StartToCloseTimeoutException, ScheduleToStartTimeoutException,
-    ScheduleToCloseTimeoutException, HeartbeatTimeoutException
+    FailedException,
+    ScheduleFailedException,
+    RequestCancelFailedException,
+    StartToCloseTimeoutException,
+    ScheduleToStartTimeoutException,
+    ScheduleToCloseTimeoutException,
+    HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
-
 
 
 const activityId = '12345';

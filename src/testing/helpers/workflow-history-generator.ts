@@ -99,7 +99,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     createActivityTaskTimedOut(params: any): HistoryEvent {
         const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.ActivityTaskTimedOut);
         historyEvent.activityTaskTimedOutEventAttributes = {
-            timeoutType: params.timeoutType || 'no_timeout_type_given',
+            timeoutType: params.timeoutType || 'SCHEDULE_TO_START',
             scheduledEventId: params.scheduledEventId || -1,
             startedEventId: params.startedEventId || -1,
             details: params.details || `details createActivityTaskTimedOut ${uuid.v4()}`

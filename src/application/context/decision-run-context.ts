@@ -1,12 +1,14 @@
 import {HistoryEvent, ScheduleActivityTaskDecisionAttributes} from "../../aws/aws.types";
 import {EventType} from "../../aws/workflow-history/event-types";
-import {AbstractHistoryEventStateMachine} from "../../state-machines/history-event-state-machines/abstract-history-event-state-machine";
-import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
-import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
+import {
+    BaseActivityDecisionStateMachine,
+    ActivityDecisionStateMachine
+} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {HistoryEventProcessor} from "../../state-machines/history-event-state-machines/history-event-processor";
 export interface DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void;
     getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
-    getStateMachines(): AbstractHistoryEventStateMachine<any>[];
+    getStateMachines(): HistoryEventProcessor<any>[];
     getNextId(): string;
 }
 
@@ -24,7 +26,7 @@ export class DecisionConflictException extends Error {
 }
 
 export class BaseDecisionRunContext implements DecisionRunContext {
-    private activityIdToStateMachine: Map<string,ActivityDecisionStateMachine>;
+    private activityIdToStateMachine: Map<string,HistoryEventProcessor<any>>;
     private scheduleEventIdToActivityId: Map<number,string>;
     private currentId: number;
 
@@ -86,12 +88,12 @@ export class BaseDecisionRunContext implements DecisionRunContext {
                     throw new NotSupportedEventTypeException(`Not supported event type ${event.eventType}`);
             }
 
-            let stateMachine: ActivityDecisionStateMachine;
+            let stateMachine: HistoryEventProcessor<any>;
             if (this.activityIdToStateMachine.has(activityId)) {
                 stateMachine = this.activityIdToStateMachine.get(activityId);
             } else {
                 if (eventType === EventType.ActivityTaskScheduled) {
-                    stateMachine = new ActivityDecisionStateMachine(null);
+                    stateMachine = new BaseActivityDecisionStateMachine(null);
                     this.activityIdToStateMachine.set(activityId, stateMachine);
                 } else {
                     throw new DecisionConflictException(`Missing decision machine for activity id ${activityId}`);
@@ -99,26 +101,26 @@ export class BaseDecisionRunContext implements DecisionRunContext {
             }
             stateMachine.processHistoryEvent(event);
         };
-        const notify = (stateMachine: AbstractHistoryEventStateMachine<any>)=>stateMachine.notify();
+        const notify = (stateMachine: HistoryEventProcessor<any>)=>stateMachine.notify();
         eventList.forEach(process);
         this.getStateMachines().forEach(notify);
     }
 
     public getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
         if (this.activityIdToStateMachine.has(attributes.activityId)) {
-            return this.activityIdToStateMachine.get(attributes.activityId);
+            return <ActivityDecisionStateMachine> this.activityIdToStateMachine.get(attributes.activityId);
         } else {
             return this.createActivityStateMachine(attributes);
         }
     }
 
     private createActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
-        const stateMachine = new ActivityDecisionStateMachine(attributes);
+        const stateMachine = new BaseActivityDecisionStateMachine(attributes);
         this.activityIdToStateMachine.set(attributes.activityId, stateMachine);
         return stateMachine;
     }
 
-    getStateMachines(): AbstractHistoryEventStateMachine<any>[] {
+    getStateMachines(): HistoryEventProcessor<any>[] {
         return Array.from(this.activityIdToStateMachine.values());
     }
 

@@ -35,7 +35,7 @@ describe('GenericActivityPollerFactory', ()=> {
         const testPollForActivityTask = sinon.stub(mockSwfRx, "pollForActivityTask", ()=>mockObs);
         const gpf = new GenericActivityPollerFactory(mockSwfRx);
         const activityPollParameters = new ActivityPollParameters('domain', {name: 'taskList'}, 'identity');
-        const poller = gpf.createPoller(activityPollParameters);
+        gpf.createPoller(activityPollParameters);
         sinon.assert.calledWith(testPollForActivityTask, activityPollParameters);
     });
 });

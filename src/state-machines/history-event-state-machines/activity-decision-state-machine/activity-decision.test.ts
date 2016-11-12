@@ -2,9 +2,10 @@ import {expect} from "chai";
 import {ActivityHistoryGenerator} from "../../../testing/helpers/workflow-history-generator";
 import {ScheduleActivityTaskDecisionAttributes} from "../../../aws/aws.types";
 import {InvalidStateTransitionException} from "../../state-machine";
-import {ActivityDecisionStateMachine} from "./activity-decision";
-import {ActivityDecisionStates} from "./activity-decision-states";
+import {BaseActivityDecisionStateMachine} from "./activity-decision";
+import {ActivityDecisionState} from "./activity-decision-states";
 import {expectActivityState, expectActivityStateMachine} from "../../../testing/helpers/expectation-helpers";
+import {ActivityTimeoutType} from "../../../aws/workflow-history/activity-timeout-type";
 
 
 describe('ActivityDecisionStateMachine', ()=> {
@@ -22,14 +23,14 @@ describe('ActivityDecisionStateMachine', ()=> {
     });
 
     it('should initialized with start params', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Created);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Created);
 
-        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Created);
+        expectActivityState(stateMachine.currentState, ActivityDecisionState.Created);
         expect(stateMachine.startParams).to.eq(startParams);
     });
 
     it('should handle ActivityTaskScheduled event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Created);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Created);
 
         const activityId = '1';
         const event = historyGenerator.createActivityScheduledEvent(activityId);
@@ -41,10 +42,10 @@ describe('ActivityDecisionStateMachine', ()=> {
                 control: params.control,
                 input: params.input
             },
-            ActivityDecisionStates.Scheduled);
+            ActivityDecisionState.Scheduled);
     });
     it('should handle ScheduleActivityTaskFailed event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Sent);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Sent);
 
         const event = historyGenerator.createScheduleActivityTaskFailed('1001');
         const params = event.scheduleActivityTaskFailedEventAttributes;
@@ -53,21 +54,21 @@ describe('ActivityDecisionStateMachine', ()=> {
             {
                 cause: params.cause
             },
-            ActivityDecisionStates.ScheduleFailed
+            ActivityDecisionState.ScheduleFailed
         );
     });
     it('should handle ActivityTaskStarted event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Scheduled);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Scheduled);
 
         const event = historyGenerator.createActivityTaskStarted({});
         stateMachine.processHistoryEvent(event);
         expectActivityStateMachine(stateMachine,
             {identity: event.activityTaskStartedEventAttributes.identity},
-            ActivityDecisionStates.Started
+            ActivityDecisionState.Started
         );
     });
     it('should handle ActivityTaskCompleted event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Started);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Started);
 
         const event = historyGenerator.createActivityTaskCompleted({});
         const params = event.activityTaskCompletedEventAttributes;
@@ -76,11 +77,11 @@ describe('ActivityDecisionStateMachine', ()=> {
             {
                 result: params.result
             },
-            ActivityDecisionStates.Completed
+            ActivityDecisionState.Completed
         );
     });
     it('should handle ActivityTaskFailed event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Started);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Started);
 
         const event = historyGenerator.createActivityTaskFailed({});
         const params = event.activityTaskFailedEventAttributes;
@@ -91,11 +92,11 @@ describe('ActivityDecisionStateMachine', ()=> {
                 details: params.details,
                 reason: params.reason
             },
-            ActivityDecisionStates.Failed
+            ActivityDecisionState.Failed
         );
     });
     it('should handle ActivityTaskTimedOut event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Started);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Started);
 
         const event = historyGenerator.createActivityTaskTimedOut({});
         const params = event.activityTaskTimedOutEventAttributes;
@@ -104,13 +105,13 @@ describe('ActivityDecisionStateMachine', ()=> {
         expectActivityStateMachine(stateMachine,
             {
                 details: params.details,
-                timeoutType: params.timeoutType
+                timeoutType: ActivityTimeoutType.fromString(params.timeoutType)
             },
-            ActivityDecisionStates.TimedOut
+            ActivityDecisionState.Timeout
         );
     });
     it('should handle ActivityTaskCanceled event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.CancelRequested);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.CancelRequested);
 
         const event = historyGenerator.createActivityTaskCanceled({});
         const params = event.activityTaskCanceledEventAttributes;
@@ -120,22 +121,22 @@ describe('ActivityDecisionStateMachine', ()=> {
             {
                 details: params.details
             },
-            ActivityDecisionStates.Canceled
+            ActivityDecisionState.Canceled
         );
     });
     it('should handle ActivityTaskCancelRequested event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Started);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Started);
 
         const activityId = '1';
         const event = historyGenerator.createActivityTaskCancelRequested(activityId);
         stateMachine.processHistoryEvent(event);
         expectActivityStateMachine(stateMachine,
             null,
-            ActivityDecisionStates.CancelRequested
+            ActivityDecisionState.CancelRequested
         );
     });
     it('should handle RequestCancelActivityTaskFailed event', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.CancelRequested);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.CancelRequested);
 
         const activityId = '1';
         const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
@@ -145,27 +146,27 @@ describe('ActivityDecisionStateMachine', ()=> {
             {
                 cause: params.cause
             },
-            ActivityDecisionStates.RequestCancelFailed
+            ActivityDecisionState.RequestCancelFailed
         );
     });
 
     it('should set state to sending', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Created);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Created);
 
         stateMachine.setStateToSending();
-        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Sending);
+        expectActivityState(stateMachine.currentState, ActivityDecisionState.Sending);
     });
 
     it('should it should set state to sent', ()=> {
-        const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.Sending);
+        const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.Sending);
         stateMachine.setStateToSent();
-        expectActivityState(stateMachine.currentState, ActivityDecisionStates.Sent);
+        expectActivityState(stateMachine.currentState, ActivityDecisionState.Sent);
     });
 
 
     context('if already in the state', ()=> {
         it('should not process event', ()=> {
-            const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.CancelRequested);
+            const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.CancelRequested);
 
             const activityId = '1';
             const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);
@@ -176,12 +177,12 @@ describe('ActivityDecisionStateMachine', ()=> {
                 {
                     cause: params.cause
                 },
-                ActivityDecisionStates.RequestCancelFailed
+                ActivityDecisionState.RequestCancelFailed
             );
         });
 
         it('should throw InvalidStateTransitionException in state conflict', ()=> {
-            const stateMachine = new ActivityDecisionStateMachine(startParams, ActivityDecisionStates.CancelRequested);
+            const stateMachine = new BaseActivityDecisionStateMachine(startParams, ActivityDecisionState.CancelRequested);
 
             const activityId = '1';
             const event = historyGenerator.createRequestCancelActivityTaskFailed(activityId);

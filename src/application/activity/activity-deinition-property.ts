@@ -1,5 +1,5 @@
 export enum ActivityDefinitionProperty{
-    name=1,
+    name = 1,
     version,
     defaultTaskHeartbeatTimeout,
     defaultTaskPriority,

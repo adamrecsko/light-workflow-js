@@ -1,28 +1,27 @@
-import {ActivityDecisionStates} from "./activity-decision-states";
+import {ActivityDecisionState} from "./activity-decision-states";
 import {TransitionTable} from "../../state-machine";
-export const TRANSITION_TABLE: TransitionTable<ActivityDecisionStates> = [
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Sending],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.CanceledBeforeSent],
-    [ActivityDecisionStates.Created, ActivityDecisionStates.Scheduled],
+export const TRANSITION_TABLE: TransitionTable<ActivityDecisionState> = [
+    [ActivityDecisionState.Created, ActivityDecisionState.Sending],
+    [ActivityDecisionState.Created, ActivityDecisionState.CanceledBeforeSent],
+    [ActivityDecisionState.Created, ActivityDecisionState.Scheduled],
+
+    [ActivityDecisionState.Sending, ActivityDecisionState.Sent],
+
+    [ActivityDecisionState.Sent, ActivityDecisionState.Scheduled],
+    [ActivityDecisionState.Sent, ActivityDecisionState.ScheduleFailed],
+    [ActivityDecisionState.Sent, ActivityDecisionState.CancelledAfterSent],
 
 
-    [ActivityDecisionStates.Sending, ActivityDecisionStates.Sent],
-
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.Scheduled],
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.ScheduleFailed],
-    [ActivityDecisionStates.Sent, ActivityDecisionStates.CancelledAfterSent],
+    [ActivityDecisionState.Scheduled, ActivityDecisionState.Started],
+    [ActivityDecisionState.Scheduled, ActivityDecisionState.CancelRequested],
+    [ActivityDecisionState.Scheduled, ActivityDecisionState.Timeout],
 
 
-    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.Started],
-    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.CancelRequested],
-    [ActivityDecisionStates.Scheduled, ActivityDecisionStates.TimedOut],
+    [ActivityDecisionState.Started, ActivityDecisionState.Completed],
+    [ActivityDecisionState.Started, ActivityDecisionState.Failed],
+    [ActivityDecisionState.Started, ActivityDecisionState.Timeout],
+    [ActivityDecisionState.Started, ActivityDecisionState.CancelRequested],
 
-
-    [ActivityDecisionStates.Started, ActivityDecisionStates.Completed],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.Failed],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.TimedOut],
-    [ActivityDecisionStates.Started, ActivityDecisionStates.CancelRequested],
-
-    [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.Canceled],
-    [ActivityDecisionStates.CancelRequested, ActivityDecisionStates.RequestCancelFailed],
+    [ActivityDecisionState.CancelRequested, ActivityDecisionState.Canceled],
+    [ActivityDecisionState.CancelRequested, ActivityDecisionState.RequestCancelFailed],
 ];

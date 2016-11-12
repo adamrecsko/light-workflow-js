@@ -1,16 +1,34 @@
-import {AbstractHistoryEventStateMachine} from "../abstract-history-event-state-machine";
-import {ActivityDecisionStates} from "./activity-decision-states";
+import {ActivityDecisionState} from "./activity-decision-states";
 import {ScheduleActivityTaskDecisionAttributes, HistoryEvent} from "../../../aws/aws.types";
 import {TRANSITION_TABLE} from "./transition-table";
 import {EventType} from "../../../aws/workflow-history/event-types";
+import {BaseNotifyableStateMachine} from "../../notifyable-state-machine";
+import {HistoryEventProcessor} from "../history-event-processor";
+import {StateMachine} from "../../state-machine";
+import {ActivityTimeoutType} from "../../../aws/workflow-history/activity-timeout-type";
+
+
 export class UnknownEventTypeException extends Error {
     constructor(message: string) {
         super(message);
     }
 }
 
+export interface ActivityDecisionStateMachine extends HistoryEventProcessor<ActivityDecisionState>,StateMachine<ActivityDecisionState> {
+    input: string;
+    control: string;
+    cause: string;
+    details: string;
+    reason: string;
+    result: string;
+    timeoutType: ActivityTimeoutType;
+    startParams: ScheduleActivityTaskDecisionAttributes;
+    identity: string;
+    setStateToSending(): void;
+    setStateToSent(): void;
+}
 
-export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachine<ActivityDecisionStates> {
+export class BaseActivityDecisionStateMachine extends BaseNotifyableStateMachine<ActivityDecisionState> implements ActivityDecisionStateMachine {
 
     public input: string;
     public control: string;
@@ -18,23 +36,19 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
     public details: string;
     public reason: string;
     public result: string;
-    public timeoutType: string;
+    public timeoutType: ActivityTimeoutType;
     public startParams: ScheduleActivityTaskDecisionAttributes;
-    public processedEventIds: Set<number>;
     public identity: string;
+    private processedEventIds: Set<number>;
 
 
-    constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionStates) {
-        super(TRANSITION_TABLE, currentState || ActivityDecisionStates.Created);
+    constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionState) {
+        super(TRANSITION_TABLE, currentState || ActivityDecisionState.Created);
         this.startParams = startParams;
         this.processedEventIds = new Set<number>();
     }
 
-    isProcessed(event: HistoryEvent): boolean {
-        return !this.processedEventIds.has(event.eventId);
-    }
-
-    processHistoryEvent(event: HistoryEvent): void {
+    public processHistoryEvent(event: HistoryEvent): void {
         /*
          Do not process if already in the state
          */
@@ -85,65 +99,69 @@ export class ActivityDecisionStateMachine extends AbstractHistoryEventStateMachi
     }
 
     public setStateToSending(): void {
-        this.currentState = ActivityDecisionStates.Sending;
+        this.currentState = ActivityDecisionState.Sending;
     }
 
     public setStateToSent(): void {
-        this.currentState = ActivityDecisionStates.Sent;
+        this.currentState = ActivityDecisionState.Sent;
     }
 
 
+    private isProcessed(event: HistoryEvent): boolean {
+        return !this.processedEventIds.has(event.eventId);
+    }
+
     private processActivityTaskScheduled(event: HistoryEvent): void {
         const params = event.activityTaskScheduledEventAttributes;
-        this.currentState = ActivityDecisionStates.Scheduled;
+        this.currentState = ActivityDecisionState.Scheduled;
         this.control = params.control;
         this.input = params.input;
     }
 
     private processScheduleActivityTaskFailed(event: HistoryEvent): void {
         const params = event.scheduleActivityTaskFailedEventAttributes;
-        this.currentState = ActivityDecisionStates.ScheduleFailed;
+        this.currentState = ActivityDecisionState.ScheduleFailed;
         this.cause = params.cause;
     }
 
     private processActivityTaskFailed(event: HistoryEvent): void {
         const params = event.activityTaskFailedEventAttributes;
-        this.currentState = ActivityDecisionStates.Failed;
+        this.currentState = ActivityDecisionState.Failed;
         this.details = params.details;
         this.reason = params.reason;
     }
 
-    private processActivityTaskStarted(event:HistoryEvent): void {
-        this.currentState = ActivityDecisionStates.Started;
+    private processActivityTaskStarted(event: HistoryEvent): void {
+        this.currentState = ActivityDecisionState.Started;
         this.identity = event.activityTaskStartedEventAttributes.identity;
     }
 
     private processActivityTaskCompleted(event: HistoryEvent): void {
         const params = event.activityTaskCompletedEventAttributes;
-        this.currentState = ActivityDecisionStates.Completed;
+        this.currentState = ActivityDecisionState.Completed;
         this.result = params.result;
     }
 
     private processActivityTaskTimedOut(event: HistoryEvent): void {
         const params = event.activityTaskTimedOutEventAttributes;
-        this.currentState = ActivityDecisionStates.TimedOut;
+        this.currentState = ActivityDecisionState.Timeout;
         this.details = params.details;
-        this.timeoutType = params.timeoutType;
+        this.timeoutType = ActivityTimeoutType.fromString(params.timeoutType);
     }
 
     private processActivityTaskCanceled(event: HistoryEvent): void {
         const params = event.activityTaskCanceledEventAttributes;
-        this.currentState = ActivityDecisionStates.Canceled;
+        this.currentState = ActivityDecisionState.Canceled;
         this.details = params.details;
     }
 
     private processActivityTaskCancelRequested(): void {
-        this.currentState = ActivityDecisionStates.CancelRequested;
+        this.currentState = ActivityDecisionState.CancelRequested;
     }
 
     private processRequestCancelActivityTaskFailed(event: HistoryEvent): void {
         const params = event.requestCancelActivityTaskFailedEventAttributes;
-        this.currentState = ActivityDecisionStates.RequestCancelFailed;
+        this.currentState = ActivityDecisionState.RequestCancelFailed;
         this.cause = params.cause;
     }
 }

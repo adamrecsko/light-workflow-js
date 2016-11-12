@@ -9,7 +9,7 @@ export enum ActivityDecisionState{
     Started,
     Completed,
     Failed,
-    TimedOut,
+    Timeout,
     Canceled,
     CancelRequested,
     RequestCancelFailed

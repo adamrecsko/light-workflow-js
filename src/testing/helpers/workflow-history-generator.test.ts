@@ -481,7 +481,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     params: {
                         scheduledEventId: 1,
                         startedEventId: 2,
-                        timeoutType: 'no_timeout_type_given'
+                        timeoutType: 'SCHEDULE_TO_START'
                     },
                     eventId: 3
                 });

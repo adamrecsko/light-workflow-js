@@ -2,9 +2,8 @@ import {BaseDecisionRunContext} from "./decision-run-context";
 import {expect} from "chai";
 import {ActivityHistoryGenerator} from "../../testing/helpers/workflow-history-generator";
 import {ScheduleActivityTaskDecisionAttributes} from "../../aws/aws.types";
-import {ActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
-import {AbstractHistoryEventStateMachine} from "../../state-machines/history-event-state-machines/abstract-history-event-state-machine";
-import {ActivityDecisionStates} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
+import {BaseActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {ActivityDecisionState} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
 import {expectActivityStateMachine} from "../../testing/helpers/expectation-helpers";
 import {
     COMPLETED_TRANSITION,
@@ -14,6 +13,7 @@ import {
     TIMEOUTED_TRANSITION
 } from "../../testing/test-data/normal-transitions";
 import {SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS, FAILED_PARAMS} from "../../testing/test-data/event-params";
+import {HistoryEventProcessor} from "../../state-machines/history-event-state-machines/history-event-processor";
 
 
 function createNewActivityDecision(activityId?: string): ScheduleActivityTaskDecisionAttributes {
@@ -33,7 +33,7 @@ describe('BaseDecisionContext', ()=> {
             const runContext = new BaseDecisionRunContext();
             const testAttribs = createNewActivityDecision();
             const stateMachine = runContext.getOrCreateActivityStateMachine(testAttribs);
-            expect(stateMachine).to.instanceOf(ActivityDecisionStateMachine);
+            expect(stateMachine).to.instanceOf(BaseActivityDecisionStateMachine);
         });
         context('if activityId registered', ()=> {
             it('should not create new ActivityDecisionStateMachine', ()=> {
@@ -77,10 +77,10 @@ describe('BaseDecisionContext', ()=> {
 
                 const completedEvent = eventList[2];
                 runContext.processEventList(eventList);
-                const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-                expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+                const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+                expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], {
                     result: completedEvent.activityTaskCompletedEventAttributes.result
-                }, ActivityDecisionStates.Completed);
+                }, ActivityDecisionState.Completed);
             });
         });
 
@@ -90,8 +90,8 @@ describe('BaseDecisionContext', ()=> {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const eventList = historyGenerator.createActivityList(FAILED_TRANSITION);
                 runContext.processEventList(eventList);
-                const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-                expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionStates.Failed);
+                const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+                expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionState.Failed);
             });
         });
 
@@ -102,8 +102,8 @@ describe('BaseDecisionContext', ()=> {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const eventList = historyGenerator.createActivityList(TIMEOUTED_TRANSITION);
                 runContext.processEventList(eventList);
-                const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-                expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionStates.TimedOut);
+                const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+                expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionState.Timeout);
             });
         });
 
@@ -113,8 +113,8 @@ describe('BaseDecisionContext', ()=> {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const eventList = historyGenerator.createActivityList(CANCELLED_TRANSITION);
                 runContext.processEventList(eventList);
-                const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-                expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionStates.Canceled);
+                const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+                expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionState.Canceled);
             });
         });
 
@@ -124,8 +124,8 @@ describe('BaseDecisionContext', ()=> {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const eventList = historyGenerator.createActivityList(CANCEL_FAILED_TRANSITION);
                 runContext.processEventList(eventList);
-                const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-                expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionStates.RequestCancelFailed);
+                const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+                expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], null, ActivityDecisionState.RequestCancelFailed);
             });
         });
 
@@ -138,16 +138,16 @@ describe('BaseDecisionContext', ()=> {
             ]);
 
             runContext.processEventList(list);
-            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
-            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[0], {
+            const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
+            expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], {
                 reason: list[2].activityTaskFailedEventAttributes.reason,
                 details: list[2].activityTaskFailedEventAttributes.details
-            }, ActivityDecisionStates.Failed);
+            }, ActivityDecisionState.Failed);
 
-            expectActivityStateMachine(<ActivityDecisionStateMachine>stateMachines[1], {
+            expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[1], {
                 reason: list[5].activityTaskFailedEventAttributes.reason,
                 details: list[5].activityTaskFailedEventAttributes.details
-            }, ActivityDecisionStates.Failed);
+            }, ActivityDecisionState.Failed);
         });
 
         it('should create unique state machines for each activity', ()=> {
@@ -161,7 +161,7 @@ describe('BaseDecisionContext', ()=> {
             ]);
 
             runContext.processEventList(list);
-            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
+            const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
             expect(stateMachines.length).to.eq(5);
         });
 
@@ -179,7 +179,7 @@ describe('BaseDecisionContext', ()=> {
             runContext.processEventList(list);
             runContext.processEventList(list);
 
-            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
+            const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
             expect(stateMachines.length).to.eq(5);
         });
 
@@ -189,15 +189,15 @@ describe('BaseDecisionContext', ()=> {
                 COMPLETED_TRANSITION
             ]);
             runContext.processEventList(list.slice(0, 1));
-            const stateMachines: AbstractHistoryEventStateMachine<ActivityDecisionStates>[] = runContext.getStateMachines();
+            const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
             const stateMachine = stateMachines[0];
 
-            let status: ActivityDecisionStates;
-            stateMachine.onChange.subscribe((s: ActivityDecisionStates)=> {
+            let status: ActivityDecisionState;
+            stateMachine.onChange.subscribe((s: ActivityDecisionState)=> {
                 status = s;
             });
             runContext.processEventList(list);
-            expect(status).to.eq(ActivityDecisionStates.Completed);
+            expect(status).to.eq(ActivityDecisionState.Completed);
         });
 
         it('should handle transition to completed activity state machine', ()=> {
@@ -214,14 +214,14 @@ describe('BaseDecisionContext', ()=> {
             ], parameters);
 
             runContext.processEventList(list);
-            const stateMachines: ActivityDecisionStateMachine[] = <ActivityDecisionStateMachine[]>runContext.getStateMachines();
+            const stateMachines: BaseActivityDecisionStateMachine[] = <BaseActivityDecisionStateMachine[]>runContext.getStateMachines();
 
             expectActivityStateMachine(stateMachines[0], {
                 control: SCHEDULED_PARAMS.control,
                 input: SCHEDULED_PARAMS.input,
                 result: COMPLETED_PARAMS.result,
                 identity: STARTED_PARAMS.identity
-            }, ActivityDecisionStates.Completed);
+            }, ActivityDecisionState.Completed);
         });
 
         it('should handle transition to failed activity state machine', ()=> {
@@ -238,7 +238,7 @@ describe('BaseDecisionContext', ()=> {
             ], parameters);
 
             runContext.processEventList(list);
-            const stateMachines: ActivityDecisionStateMachine[] = <ActivityDecisionStateMachine[]>runContext.getStateMachines();
+            const stateMachines: BaseActivityDecisionStateMachine[] = <BaseActivityDecisionStateMachine[]>runContext.getStateMachines();
 
             expectActivityStateMachine(stateMachines[0], {
                 control: SCHEDULED_PARAMS.control,
@@ -246,7 +246,7 @@ describe('BaseDecisionContext', ()=> {
                 reason: FAILED_PARAMS.reason,
                 details: FAILED_PARAMS.details,
                 identity: STARTED_PARAMS.identity
-            }, ActivityDecisionStates.Failed);
+            }, ActivityDecisionState.Failed);
         });
     });
 
@@ -260,7 +260,7 @@ describe('BaseDecisionContext', ()=> {
                     input: 'this is an input'
                 };
                 const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
-                expect(stateMachine).to.be.instanceOf(ActivityDecisionStateMachine);
+                expect(stateMachine).to.be.instanceOf(BaseActivityDecisionStateMachine);
             });
             it('should store activity state machine', ()=> {
                 const runContext = new BaseDecisionRunContext();

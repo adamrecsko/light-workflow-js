@@ -1,8 +1,15 @@
 import {BaseStateMachine} from "./base-state-machine";
 import {Subject, Observable, BehaviorSubject} from "rxjs";
 import {TransitionTable} from "./state-machine";
-export class NotifyableStateMachine<T> extends BaseStateMachine<T> {
-    public stateObservable: Subject<T>;
+
+export interface Notifiable<T> {
+    notify(): void;
+    onChange: Observable<T>;
+}
+
+
+export class BaseNotifyableStateMachine<T> extends BaseStateMachine<T> implements Notifiable<T> {
+    private stateObservable: Subject<T>;
     public onChange: Observable<T>;
 
     constructor(transitionTable: TransitionTable<T>, currentState: T) {
@@ -15,7 +22,7 @@ export class NotifyableStateMachine<T> extends BaseStateMachine<T> {
         super.goTo(state);
     }
 
-    notify() {
+    notify(): void {
         this.stateObservable.next(this.currentState);
     }
 }

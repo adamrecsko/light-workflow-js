@@ -1,8 +1,3 @@
-import {
-    RemoteActivityObservable, FailedException,
-    StartToCloseTimeoutException, ScheduleToStartTimeoutException, ScheduleToCloseTimeoutException,
-    HeartbeatTimeoutException, ScheduleFailedException, RequestCancelFailedException
-} from "./remote-activity-observable";
 import * as sinon from 'sinon';
 import {MockDecisionRunContext, MockActivityDecisionStateMachine} from "./mocks/remote-activity-observable-mocks";
 import {Observable, TestScheduler} from "rxjs";
@@ -11,6 +6,15 @@ import {ActivityTimeoutType} from "../../../aws/workflow-history/activity-timeou
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {ActivityDecisionStateMachine} from "../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
 import {ChaiTestScheduler} from "../../../testing/helpers/chai-test-scheduler";
+import {RemoteActivityObservable} from "./remote-activity-observable";
+import {
+    FailedException, ScheduleFailedException,
+    RequestCancelFailedException, StartToCloseTimeoutException, ScheduleToStartTimeoutException,
+    ScheduleToCloseTimeoutException, HeartbeatTimeoutException
+} from "./remote-activity-observable-exceptions";
+
+
+
 const activityId = '12345';
 const activityType = {
     name: 'type',

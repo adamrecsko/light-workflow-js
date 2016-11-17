@@ -9,7 +9,7 @@ import {DefaultRemoteObservableFactory} from "../observable/remote-activity-obse
 import {Serializer} from "../serializer";
 
 
-export class RemoteActivityAdapter<T> implements ActivityAdapter<any[],string> {
+export class RemoteActivityAdapter implements ActivityAdapter<any[],string> {
     constructor(private contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
                 private activityDefinition: ActivityDefinition,
                 private taskList: string,
@@ -46,4 +46,18 @@ export class RemoteActivityAdapter<T> implements ActivityAdapter<any[],string> {
         return attributes;
     }
 
+}
+
+
+export interface RemoteActivityAdapterFactory {
+    create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
+           activityDefinition: ActivityDefinition,
+           taskList: string,
+           observableFactory?: ObservableFactory<string>): RemoteActivityAdapter;
+}
+
+export class DefaultRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
+    create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>, activityDefinition: ActivityDefinition, taskList: string, observableFactory?: ObservableFactory<string>): RemoteActivityAdapter {
+        return new RemoteActivityAdapter(contextResolutionStrategy, activityDefinition, taskList, observableFactory);
+    }
 }

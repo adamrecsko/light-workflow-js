@@ -11,12 +11,14 @@ import {
     ScheduleToStartTimeoutException, ScheduleToCloseTimeoutException, HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
 import {ObservableFactory} from "../../observable-factory";
+import {Serializer} from "../serializer";
 
 
 export class RemoteActivityObservable extends Observable<String> {
 
     constructor(private decisionContext: DecisionRunContext,
-                private scheduleParameters: ScheduleActivityTaskDecisionAttributes) {
+                private scheduleParameters: ScheduleActivityTaskDecisionAttributes,
+                private serializer: Serializer) {
         super();
     }
 
@@ -29,8 +31,14 @@ export class RemoteActivityObservable extends Observable<String> {
                         subscriber.error(new ScheduleFailedException(activityDecisionStateMachine));
                         break;
                     case ActivityDecisionState.Completed:
-                        subscriber.next(activityDecisionStateMachine.result);
-                        subscriber.complete();
+
+                        try {
+                            subscriber.next(this.serializer.parse(activityDecisionStateMachine.result));
+                            subscriber.complete();
+                        } catch (e) {
+                            subscriber.error(e);
+                        }
+
                         break;
                     case ActivityDecisionState.Failed:
                         subscriber.error(new FailedException(activityDecisionStateMachine));
@@ -85,13 +93,14 @@ export class RemoteActivityObservable extends Observable<String> {
 
 export interface RemoteObservableFactory extends ObservableFactory<string> {
     create(decisionContext: DecisionRunContext,
-           scheduleParameters: ScheduleActivityTaskDecisionAttributes): RemoteActivityObservable;
+           scheduleParameters: ScheduleActivityTaskDecisionAttributes, serializer: Serializer): RemoteActivityObservable;
 }
 
 export class DefaultRemoteObservableFactory implements RemoteObservableFactory {
     public create(decisionContext: DecisionRunContext,
-                  scheduleParameters: ScheduleActivityTaskDecisionAttributes): RemoteActivityObservable {
-        return new RemoteActivityObservable(decisionContext, scheduleParameters);
+                  scheduleParameters: ScheduleActivityTaskDecisionAttributes,
+                  serializer: Serializer): RemoteActivityObservable {
+        return new RemoteActivityObservable(decisionContext, scheduleParameters, serializer);
     }
 }
 

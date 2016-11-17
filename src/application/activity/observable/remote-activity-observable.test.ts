@@ -17,6 +17,8 @@ import {
     HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
 import {MockDecisionRunContext} from "../../../testing/mocks/decision-run-context";
+import {Serializer} from "../serializer";
+import {MockSerializer} from "../../../testing/mocks/serializer";
 
 
 const activityId = '12345';
@@ -33,30 +35,37 @@ describe('RemoteActivityObservable', ()=> {
     let mockDecisionRunContext: DecisionRunContext;
     let mockActivityStateMachine: ActivityDecisionStateMachine;
     let testScheduler: TestScheduler;
+    let mockSerializer: Serializer = new MockSerializer();
+
 
     beforeEach(()=> {
         mockDecisionRunContext = new MockDecisionRunContext();
         mockActivityStateMachine = new MockActivityDecisionStateMachine();
         testScheduler = new ChaiTestScheduler();
+        mockSerializer = new MockSerializer();
     });
 
     it('should create an activity state machine with the schedule parameters during the subscription', ()=> {
         mockActivityStateMachine.onChange = Observable.never();
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
         remoteActivityObservable.subscribe();
         sinon.assert.calledWith(mockGetOrCreateActivity, scheduleParams);
     });
     it('should fire next and complete if activity completed', ()=> {
         const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Completed});
         const result = 'test activity result';
+        const serializedResult: any = {
+            data: result
+        };
+        mockSerializer.parse = sinon.stub().returns(serializedResult);
         mockActivityStateMachine.result = result;
         mockActivityStateMachine.onChange = onChange;
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
-        testScheduler.expectObservable(remoteActivityObservable).toBe('(a|)', {a: result});
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
+        testScheduler.expectObservable(remoteActivityObservable).toBe('(a|)', {a: serializedResult});
         testScheduler.flush();
     });
     it('should throw FailedException if activity failed', ()=> {
@@ -68,7 +77,7 @@ describe('RemoteActivityObservable', ()=> {
         mockActivityStateMachine.onChange = onChange;
         mockActivityStateMachine.details = details;
         mockActivityStateMachine.reason = reason;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
         testScheduler.expectObservable(remoteActivityObservable).toBe('#', null, new FailedException(mockActivityStateMachine));
         testScheduler.flush();
     });
@@ -79,7 +88,7 @@ describe('RemoteActivityObservable', ()=> {
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
         mockActivityStateMachine.onChange = onChange;
         mockActivityStateMachine.cause = cause;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
         testScheduler.expectObservable(remoteActivityObservable)
             .toBe('#', null, new ScheduleFailedException(mockActivityStateMachine));
         testScheduler.flush();
@@ -91,7 +100,7 @@ describe('RemoteActivityObservable', ()=> {
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
         mockActivityStateMachine.onChange = onChange;
         mockActivityStateMachine.cause = cause;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
         testScheduler.expectObservable(remoteActivityObservable)
             .toBe('#', null, new RequestCancelFailedException(mockActivityStateMachine));
         testScheduler.flush();
@@ -102,7 +111,7 @@ describe('RemoteActivityObservable', ()=> {
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
         mockActivityStateMachine.onChange = onChange;
-        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+        const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
         testScheduler.expectObservable(remoteActivityObservable)
             .toBe('|', null);
         testScheduler.flush();
@@ -118,7 +127,7 @@ describe('RemoteActivityObservable', ()=> {
                 mockActivityStateMachine.onChange = onChange;
                 mockActivityStateMachine.details = details;
                 mockActivityStateMachine.timeoutType = ActivityTimeoutType.START_TO_CLOSE;
-                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
                 testScheduler.expectObservable(remoteActivityObservable).toBe('#', null, new StartToCloseTimeoutException(mockActivityStateMachine));
                 testScheduler.flush();
             });
@@ -133,7 +142,7 @@ describe('RemoteActivityObservable', ()=> {
                 mockActivityStateMachine.onChange = onChange;
                 mockActivityStateMachine.details = details;
                 mockActivityStateMachine.timeoutType = ActivityTimeoutType.SCHEDULE_TO_START;
-                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
                 testScheduler.expectObservable(remoteActivityObservable).toBe('#', null, new ScheduleToStartTimeoutException(mockActivityStateMachine));
                 testScheduler.flush();
             });
@@ -148,7 +157,7 @@ describe('RemoteActivityObservable', ()=> {
                 mockActivityStateMachine.onChange = onChange;
                 mockActivityStateMachine.details = details;
                 mockActivityStateMachine.timeoutType = ActivityTimeoutType.SCHEDULE_TO_CLOSE;
-                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
                 testScheduler.expectObservable(remoteActivityObservable).toBe('#', null, new ScheduleToCloseTimeoutException(mockActivityStateMachine));
                 testScheduler.flush();
             });
@@ -163,7 +172,7 @@ describe('RemoteActivityObservable', ()=> {
                 mockActivityStateMachine.onChange = onChange;
                 mockActivityStateMachine.details = details;
                 mockActivityStateMachine.timeoutType = ActivityTimeoutType.HEARTBEAT;
-                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams);
+                const remoteActivityObservable = new RemoteActivityObservable(mockDecisionRunContext, scheduleParams, mockSerializer);
                 testScheduler.expectObservable(remoteActivityObservable).toBe('#', null, new HeartbeatTimeoutException(mockActivityStateMachine));
                 testScheduler.flush();
             });

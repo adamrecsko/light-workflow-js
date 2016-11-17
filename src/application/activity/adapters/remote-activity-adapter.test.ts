@@ -4,13 +4,14 @@ import {ContextResolutionStrategy} from "../../context/resolution-strategies/res
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {MockDecisionRunContext} from "../../../testing/mocks/decision-run-context";
 import {ObservableFactory} from "../../observable-factory";
-import {Observable, TestScheduler} from "rxjs";
+import {TestScheduler} from "rxjs";
 import {ChaiTestScheduler} from "../../../testing/helpers/chai-test-scheduler";
 import {Serializer} from "../serializer";
 import {expect} from "chai";
 import * as sinon from "sinon";
-import {ScheduleActivityTaskDecisionAttributes, ActivityType} from "../../../aws/aws.types";
+import {ScheduleActivityTaskDecisionAttributes} from "../../../aws/aws.types";
 import {RemoteObservableFactory, RemoteActivityObservable} from "../observable/remote-activity-observable";
+import {MockSerializer} from "../../../testing/mocks/serializer";
 
 
 class MockContextResolutionStrategy implements ContextResolutionStrategy<DecisionRunContext> {
@@ -25,15 +26,7 @@ class MockObservableFactory implements RemoteObservableFactory {
     }
 }
 
-class MockSerializer implements Serializer {
-    parse(str: string): any {
-        return null;
-    }
 
-    stringify(obj: any): string {
-        return null;
-    }
-}
 
 
 const testActivityName = 'TestActivityName';
@@ -60,7 +53,6 @@ describe('RemoteActivityAdapter', ()=> {
         definition = new ActivityDefinition(testActivityName);
         mockSerializer = new MockSerializer();
         testValue = 'test';
-
 
         definition.defaultTaskHeartbeatTimeout = '1111';
         definition.defaultTaskPriority = ' def task priority';

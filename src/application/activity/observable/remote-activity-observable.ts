@@ -10,10 +10,10 @@ import {
     RequestCancelFailedException, UnknownStateException, TimeoutException, StartToCloseTimeoutException,
     ScheduleToStartTimeoutException, ScheduleToCloseTimeoutException, HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
+import {ObservableFactory} from "../../observable-factory";
 
 
 export class RemoteActivityObservable extends Observable<String> {
-    public activityDecisionStateMachine: ActivityDecisionStateMachine;
 
     constructor(private decisionContext: DecisionRunContext,
                 private scheduleParameters: ScheduleActivityTaskDecisionAttributes) {
@@ -21,22 +21,22 @@ export class RemoteActivityObservable extends Observable<String> {
     }
 
     protected _subscribe(subscriber: Subscriber<String>): TeardownLogic {
-        this.activityDecisionStateMachine = this.decisionContext.getOrCreateActivityStateMachine(this.scheduleParameters);
-        const subscription = this.activityDecisionStateMachine
+        const activityDecisionStateMachine: ActivityDecisionStateMachine = this.decisionContext.getOrCreateActivityStateMachine(this.scheduleParameters);
+        const subscription = activityDecisionStateMachine
             .onChange.subscribe((state: ActivityDecisionState)=> {
                 switch (state) {
                     case ActivityDecisionState.ScheduleFailed:
-                        subscriber.error(new ScheduleFailedException(this.activityDecisionStateMachine));
+                        subscriber.error(new ScheduleFailedException(activityDecisionStateMachine));
                         break;
                     case ActivityDecisionState.Completed:
-                        subscriber.next(this.activityDecisionStateMachine.result);
+                        subscriber.next(activityDecisionStateMachine.result);
                         subscriber.complete();
                         break;
                     case ActivityDecisionState.Failed:
-                        subscriber.error(new FailedException(this.activityDecisionStateMachine));
+                        subscriber.error(new FailedException(activityDecisionStateMachine));
                         break;
                     case ActivityDecisionState.Timeout:
-                        subscriber.error(RemoteActivityObservable.createTimeoutException(this.activityDecisionStateMachine));
+                        subscriber.error(RemoteActivityObservable.createTimeoutException(activityDecisionStateMachine));
                         break;
                     case ActivityDecisionState.Canceled:
                         subscriber.complete();
@@ -44,7 +44,7 @@ export class RemoteActivityObservable extends Observable<String> {
                     case ActivityDecisionState.CancelRequested:
                         break;
                     case ActivityDecisionState.RequestCancelFailed:
-                        subscriber.error(new RequestCancelFailedException(this.activityDecisionStateMachine));
+                        subscriber.error(new RequestCancelFailedException(activityDecisionStateMachine));
                         break;
                     case ActivityDecisionState.Created:
                     case ActivityDecisionState.CanceledBeforeSent:
@@ -79,4 +79,19 @@ export class RemoteActivityObservable extends Observable<String> {
         }
         return null;
     }
+
 }
+
+
+export interface RemoteObservableFactory extends ObservableFactory<string> {
+    create(decisionContext: DecisionRunContext,
+           scheduleParameters: ScheduleActivityTaskDecisionAttributes): RemoteActivityObservable;
+}
+
+export class DefaultRemoteObservableFactory implements RemoteObservableFactory {
+    public create(decisionContext: DecisionRunContext,
+                  scheduleParameters: ScheduleActivityTaskDecisionAttributes): RemoteActivityObservable {
+        return new RemoteActivityObservable(decisionContext, scheduleParameters);
+    }
+}
+

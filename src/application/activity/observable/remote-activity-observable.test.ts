@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import {MockDecisionRunContext, MockActivityDecisionStateMachine} from "./mocks/remote-activity-observable-mocks";
+import {MockActivityDecisionStateMachine} from "./mocks/remote-activity-observable-mocks";
 import {Observable, TestScheduler} from "rxjs";
 import {ActivityDecisionState} from "../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states";
 import {ActivityTimeoutType} from "../../../aws/workflow-history/activity-timeout-type";
@@ -16,6 +16,7 @@ import {
     ScheduleToCloseTimeoutException,
     HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
+import {MockDecisionRunContext} from "../../../testing/mocks/decision-run-context";
 
 
 const activityId = '12345';
@@ -83,7 +84,7 @@ describe('RemoteActivityObservable', ()=> {
             .toBe('#', null, new ScheduleFailedException(mockActivityStateMachine));
         testScheduler.flush();
     });
-    it('should throw RequestCancelFailedException if cancel request faield', ()=> {
+    it('should throw RequestCancelFailedException if cancel request failed', ()=> {
         const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.RequestCancelFailed});
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         const cause = 'cancel failed because TEST';

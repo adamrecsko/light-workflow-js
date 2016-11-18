@@ -75,17 +75,20 @@ describe('RemoteActorProxyFactory', ()=> {
         expect(actor.test2).to.be.a('function');
     });
 
-    it('should create proxy for activity adapter', ()=> {
+    it('should call adapter', ()=> {
         const adapter = new MockRemoteActivityAdapter();
         const testResult = {
             d: 'test'
         };
-        adapter.createObservable = sinon.stub().returns(testResult);
+        const createObservableStub = sinon.stub().returns(testResult);
+        adapter.createObservable = createObservableStub;
         remoteActivityAdapterFactory.create = sinon.stub().returns(adapter);
         const remoteActorProxyFactory = new RemoteActorProxyFactory(contextResolutionStrategy, remoteActivityAdapterFactory);
         const actor = remoteActorProxyFactory.create<Test>(TestImpl, testTaskList);
         const test = actor.test1('hello');
         expect(test).to.be.eq(testResult);
+        expect(createObservableStub.getCall(0).args).to.be.eql([['hello']]);
+
     });
 
     it('should create adapter with proper data', ()=> {
@@ -106,6 +109,4 @@ describe('RemoteActorProxyFactory', ()=> {
             testTaskList
         ]);
     });
-
-
 });

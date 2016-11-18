@@ -9,7 +9,11 @@ import {DefaultRemoteObservableFactory} from "../observable/remote-activity-obse
 import {Serializer} from "../serializer";
 
 
-export class RemoteActivityAdapter implements ActivityAdapter<any[],string> {
+export interface RemoteActivityAdapter extends ActivityAdapter<any[],string>{
+    createObservable(callParams: any[]): Observable<string>;
+}
+
+export class DefaultRemoteActivityAdapter implements RemoteActivityAdapter {
     constructor(private contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
                 private activityDefinition: ActivityDefinition,
                 private taskList: string,
@@ -20,7 +24,7 @@ export class RemoteActivityAdapter implements ActivityAdapter<any[],string> {
     public createObservable(callParams: any[]): Observable<string> {
         const context: DecisionRunContext = this.contextResolutionStrategy.getContext();
         const activityId = context.getNextId();
-        const attributes = RemoteActivityAdapter.createScheduleAttributes(this.activityDefinition, this.taskList, callParams, activityId);
+        const attributes = DefaultRemoteActivityAdapter.createScheduleAttributes(this.activityDefinition, this.taskList, callParams, activityId);
         return this.observableFactory.create(context, attributes);
     }
 
@@ -53,11 +57,11 @@ export interface RemoteActivityAdapterFactory {
     create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
            activityDefinition: ActivityDefinition,
            taskList: string,
-           observableFactory?: ObservableFactory<string>): RemoteActivityAdapter;
+           observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter;
 }
 
 export class DefaultRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
-    create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>, activityDefinition: ActivityDefinition, taskList: string, observableFactory?: ObservableFactory<string>): RemoteActivityAdapter {
-        return new RemoteActivityAdapter(contextResolutionStrategy, activityDefinition, taskList, observableFactory);
+    create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>, activityDefinition: ActivityDefinition, taskList: string, observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter {
+        return new DefaultRemoteActivityAdapter(contextResolutionStrategy, activityDefinition, taskList, observableFactory);
     }
 }

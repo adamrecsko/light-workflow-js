@@ -1,4 +1,4 @@
-import {RemoteActivityAdapter} from "./remote-activity-adapter";
+import {DefaultRemoteActivityAdapter} from "./remote-activity-adapter";
 import {ActivityDefinition} from "../activity-definition";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
 import {DecisionRunContext} from "../../context/decision-run-context";
@@ -25,8 +25,6 @@ class MockObservableFactory implements RemoteObservableFactory {
         return null;
     }
 }
-
-
 
 
 const testActivityName = 'TestActivityName';
@@ -97,7 +95,7 @@ describe('RemoteActivityAdapter', ()=> {
         mockObservableFactory.create = createStub;
         mockSerializer.stringify = stringifyStub;
         definition.serializer = mockSerializer;
-        const remoteActivityAdapter = new RemoteActivityAdapter(contextResolution, definition, testTaskList, mockObservableFactory);
+        const remoteActivityAdapter = new DefaultRemoteActivityAdapter(contextResolution, definition, testTaskList, mockObservableFactory);
         remoteActivityAdapter.createObservable(testCallAttributes);
         expect(createStub.getCall(0).args).to.be.eql([runContext, expectedScheduleParameters]);
         expect(stringifyStub.getCall(0).args).to.be.eql([testCallAttributes]);

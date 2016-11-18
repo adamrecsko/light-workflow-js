@@ -14,8 +14,10 @@ export class ActivityDefinition {
     startToCloseTimeout: string;
     taskPriority: string;
     serializer: Serializer = defaultSerializer;
+    _decoratedMethodName: string;
     [key: string]: any;
-    constructor(name: string) {
-        this.name = name;
+    constructor(decoratedMethodName: string) {
+        this._decoratedMethodName = decoratedMethodName;
+        this.name = decoratedMethodName;
     }
 }

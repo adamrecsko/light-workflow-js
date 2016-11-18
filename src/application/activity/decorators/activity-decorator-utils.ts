@@ -1,13 +1,14 @@
 import {ActivityDefinition} from "../activity-definition";
 import {ActivityDefinitionProperty} from "../activity-deinition-property";
 import {ActivityDefinitionsContainer} from "./activity-decorator-container";
+import {Class} from "../../../implementation";
 
 export const ACTIVITY_DEFINITIONS = Symbol('ACTIVITY_DEFINITIONS');
 
 export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor)=>void;
 
 export class DefinitionNotAvailableException extends Error {
-    constructor(clazz: any) {
+    constructor(clazz: Class<any>) {
         super(`Activity definition not found on class: ${clazz}.`);
     }
 }
@@ -30,7 +31,7 @@ export function activityDefinitionPropertySetterDecoratorFactory<T>(activityDefi
 }
 
 
-export function getActivityDefinitionsFromClass(clazz: any): ActivityDefinition[] {
+export function getActivityDefinitionsFromClass(clazz: Class<any>): ActivityDefinition[] {
     const defContainer: ActivityDefinitionsContainer = (<ActivityDefinitionsContainer>clazz.prototype[ACTIVITY_DEFINITIONS]);
     if (defContainer) {
         return defContainer.toArray();

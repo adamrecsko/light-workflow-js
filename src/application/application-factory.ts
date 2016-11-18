@@ -3,7 +3,7 @@ import {APPLICATION_CONFIGURATION, APP_KERNEL, ACTIVITY_CLIENT_IMPLEMENTATION_HE
 import {ApplicationConfigurationProvider} from "./application-configuration-provider";
 import {CORE} from "./core-module";
 import {ActorClientImplementationHelper} from "./actor/helpers/actor-client-implementation-helper";
-import {Implementation} from "../implementation";
+import {Class} from "../implementation";
 
 export interface ApplicationFactory {
     createApplication<T>(applicationClass: T): T;
@@ -28,7 +28,7 @@ export class ConfigurableApplicationFactory implements ApplicationFactory {
             this.coreKernel.get(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
     }
 
-    public createApplication<T>(applicationClass: Implementation<T>): T {
+    public createApplication<T>(applicationClass: Class<T>): T {
         const applicationSymbol = Symbol('applicationSymbol');
         this.applicationKernel.bind<T>(applicationSymbol).to(applicationClass);
         return this.applicationKernel.get<T>(applicationSymbol);

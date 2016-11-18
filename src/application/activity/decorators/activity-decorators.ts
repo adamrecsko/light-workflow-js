@@ -1,18 +1,19 @@
-import {activityDefinitionPropertySetterDecoratorFactory} from "./activity-decorator-utils";
+import {activityDefinitionPropertySetterDecoratorFactory as decoratorFactory} from "./activity-decorator-utils";
 import {ActivityDefinitionProperty} from "../activity-deinition-property";
 import {Serializer} from "../serializer";
 
 //decorators
-export const version = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.version);
-export const defaultTaskHeartbeatTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskHeartbeatTimeout);
-export const defaultTaskPriority = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
-export const defaultTaskScheduleToCloseTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskScheduleToCloseTimeout);
-export const defaultTaskScheduleToStartTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskScheduleToStartTimeout);
-export const defaultTaskStartToCloseTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskStartToCloseTimeout);
-export const description = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.description);
-export const heartbeatTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.heartbeatTimeout);
-export const scheduleToCloseTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.scheduleToCloseTimeout);
-export const scheduleToStartTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.scheduleToStartTimeout);
-export const startToCloseTimeout = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.startToCloseTimeout);
-export const taskPriority = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.taskPriority);
-export const serializer = activityDefinitionPropertySetterDecoratorFactory<Serializer>(ActivityDefinitionProperty.serializer);
+export const name = decoratorFactory<string>(ActivityDefinitionProperty.name);
+export const version = decoratorFactory<string>(ActivityDefinitionProperty.version);
+export const defaultTaskHeartbeatTimeout = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskHeartbeatTimeout);
+export const defaultTaskPriority = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+export const defaultTaskScheduleToCloseTimeout = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskScheduleToCloseTimeout);
+export const defaultTaskScheduleToStartTimeout = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskScheduleToStartTimeout);
+export const defaultTaskStartToCloseTimeout = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskStartToCloseTimeout);
+export const description = decoratorFactory<string>(ActivityDefinitionProperty.description);
+export const heartbeatTimeout = decoratorFactory<string>(ActivityDefinitionProperty.heartbeatTimeout);
+export const scheduleToCloseTimeout = decoratorFactory<string>(ActivityDefinitionProperty.scheduleToCloseTimeout);
+export const scheduleToStartTimeout = decoratorFactory<string>(ActivityDefinitionProperty.scheduleToStartTimeout);
+export const startToCloseTimeout = decoratorFactory<string>(ActivityDefinitionProperty.startToCloseTimeout);
+export const taskPriority = decoratorFactory<string>(ActivityDefinitionProperty.taskPriority);
+export const serializer = decoratorFactory<Serializer>(ActivityDefinitionProperty.serializer);

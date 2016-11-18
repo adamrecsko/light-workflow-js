@@ -2,10 +2,20 @@ import "reflect-metadata";
 import {Kernel} from "inversify";
 import {expect} from "chai";
 import {injectable} from "inversify";
+import * as sinon from "sinon";
 import {
     BaseActorClientImplementationHelper, ActorImplementation,
-    ACTOR_TAG, ActivityClient, ACTOR_CLIENT_TAG
+    ACTOR_TAG, ACTOR_CLIENT_TAG
 } from "./actor-client-implementation-helper";
+import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
+import {Class} from "../../../implementation";
+
+class MockRemoteActorProxyFactory implements ActorProxyFactory {
+    create<T>(implementation: Class<T>, taskList: string): T {
+        return null;
+    }
+}
+
 describe('BaseActorClientImplementationHelper', ()=> {
     it('should load actor\'s implementation to kernel', ()=> {
         @injectable()
@@ -15,7 +25,8 @@ describe('BaseActorClientImplementationHelper', ()=> {
         }
         const testImplSymbol = Symbol('TestImpl');
         const kernel = new Kernel();
-        const helper = new BaseActorClientImplementationHelper(kernel);
+        const mockActorFactory = new MockRemoteActorProxyFactory();
+        const helper = new BaseActorClientImplementationHelper(kernel, mockActorFactory);
 
         const binding: ActorImplementation = {
             impl: TestImpl,
@@ -37,7 +48,15 @@ describe('BaseActorClientImplementationHelper', ()=> {
         }
         const testImplSymbol = Symbol('TestImpl');
         const kernel = new Kernel();
-        const helper = new BaseActorClientImplementationHelper(kernel);
+        const mockActorFactory = new MockRemoteActorProxyFactory();
+
+        const mockActor = {
+            d: 'mock actor'
+        };
+        const createStub = sinon.stub().returns(mockActor);
+        const helper = new BaseActorClientImplementationHelper(kernel, mockActorFactory);
+
+        mockActorFactory.create = createStub;
 
         const binding: ActorImplementation = {
             impl: TestImpl,
@@ -47,7 +66,7 @@ describe('BaseActorClientImplementationHelper', ()=> {
         helper.addImplementations(
             [binding]
         );
-        const testInstance = kernel.getTagged<ActivityClient<TestImpl>>(testImplSymbol, ACTOR_CLIENT_TAG, true);
-        expect(testInstance).to.instanceOf(ActivityClient);
+        const testInstance = kernel.getTagged<TestImpl>(testImplSymbol, ACTOR_CLIENT_TAG, true);
+        expect(testInstance).to.be.eq(mockActor);
     });
 });

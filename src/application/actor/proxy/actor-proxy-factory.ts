@@ -2,7 +2,7 @@ import {Class} from "../../../implementation";
 import {injectable, inject} from "inversify";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
 import {DecisionRunContext} from "../../context/decision-run-context";
-import {DECISION_CONTEX_RESOLUTION, REMOTE_ACTIVITY_ADAPTER_FACTORY} from "../../../symbols";
+import {DECISION_CONTEXT_RESOLUTION, REMOTE_ACTIVITY_ADAPTER_FACTORY} from "../../../symbols";
 import {
     RemoteActivityAdapterFactory,
     DefaultRemoteActivityAdapter
@@ -12,12 +12,17 @@ import {getActivityDefinitionsFromClass} from "../../activity/decorators/activit
 
 
 export interface ActorProxyFactory {
-    create(implementation: Class<any>, taskList: string): any
+    create<T>(implementation: Class<T>, taskList: string): T;
+}
+
+
+export class ActorProxy {
+
 }
 
 @injectable()
 export class RemoteActorProxyFactory implements ActorProxyFactory {
-    constructor(@inject(DECISION_CONTEX_RESOLUTION)
+    constructor(@inject(DECISION_CONTEXT_RESOLUTION)
                 private contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
                 @inject(REMOTE_ACTIVITY_ADAPTER_FACTORY)
                 private remoteActivityAdapterFactory: RemoteActivityAdapterFactory) {
@@ -25,7 +30,7 @@ export class RemoteActorProxyFactory implements ActorProxyFactory {
 
     create<T>(implementation: Class<T>, taskList: string): T {
         const activityDefinitions: ActivityDefinition[] = getActivityDefinitionsFromClass(implementation);
-        const actorProxy: any = {};
+        const actorProxy: any = new ActorProxy();
         const caller = function (): any {
             return this.createObservable(Array.from(arguments));
         };

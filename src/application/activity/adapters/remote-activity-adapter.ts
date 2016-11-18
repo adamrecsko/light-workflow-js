@@ -7,6 +7,7 @@ import {ActivityDefinition} from "../activity-definition";
 import {ObservableFactory} from "../../observable-factory";
 import {DefaultRemoteObservableFactory} from "../observable/remote-activity-observable";
 import {Serializer} from "../serializer";
+import {injectable} from "inversify";
 
 
 export interface RemoteActivityAdapter extends ActivityAdapter<any[],string>{
@@ -60,6 +61,7 @@ export interface RemoteActivityAdapterFactory {
            observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter;
 }
 
+@injectable()
 export class DefaultRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
     create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>, activityDefinition: ActivityDefinition, taskList: string, observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter {
         return new DefaultRemoteActivityAdapter(contextResolutionStrategy, activityDefinition, taskList, observableFactory);

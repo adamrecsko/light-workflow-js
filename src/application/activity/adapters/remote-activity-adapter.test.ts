@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {DefaultRemoteActivityAdapter} from "./remote-activity-adapter";
 import {ActivityDefinition} from "../activity-definition";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";

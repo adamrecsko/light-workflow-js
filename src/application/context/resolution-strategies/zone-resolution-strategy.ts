@@ -1,7 +1,5 @@
 import "zone.js";
 import {ContextResolutionStrategy} from "./resolution-stategy";
-import {DecisionRunContext} from "../decision-run-context";
-
 
 export class ContextNotFoundException extends Error {
     constructor(message: string) {

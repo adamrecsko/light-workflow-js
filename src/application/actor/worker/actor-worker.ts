@@ -1,4 +1,3 @@
-import {Kernel} from "inversify";
 import {TaskPollerObservable} from "../../../aws/swf/task-poller-observable";
 import {ActivityTask, TaskList, ActivityPollParameters} from "../../../aws/aws.types";
 import {ActivityPollerFactory} from "../../../aws/swf/activity-poller-factory";

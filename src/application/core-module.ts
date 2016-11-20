@@ -1,4 +1,4 @@
-import {KernelModule, interfaces} from "inversify";
+import {ContainerModule, interfaces} from "inversify";
 import Bind = interfaces.Bind;
 import {AWSAdapter, GenericAWSAdapter} from "../aws/aws-adapter";
 import {
@@ -24,7 +24,7 @@ import {
 } from "./activity/adapters/remote-activity-adapter";
 
 
-export const CORE: KernelModule = new KernelModule((bind: Bind) => {
+export const CORE: ContainerModule = new ContainerModule((bind: Bind) => {
     bind<AWSAdapter>(AWS_ADAPTER)
         .to(GenericAWSAdapter).inSingletonScope();
     bind<WorkflowClient>(WORKFLOW_CLIENT)

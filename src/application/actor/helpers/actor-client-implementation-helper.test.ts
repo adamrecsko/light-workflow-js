@@ -1,14 +1,16 @@
 import "reflect-metadata";
-import {Kernel} from "inversify";
+import {Container} from "inversify";
 import {expect} from "chai";
 import {injectable} from "inversify";
 import * as sinon from "sinon";
 import {
-    BaseActorClientImplementationHelper, ActorImplementation,
-    ACTOR_TAG, ACTOR_CLIENT_TAG
+    BaseActorClientImplementationHelper, Binding,
+    actorClient, taskList
 } from "./actor-client-implementation-helper";
 import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
 import {Class} from "../../../implementation";
+import {inject} from "inversify";
+import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
 
 class MockRemoteActorProxyFactory implements ActorProxyFactory {
     create<T>(implementation: Class<T>, taskList: string): T {
@@ -16,57 +18,116 @@ class MockRemoteActorProxyFactory implements ActorProxyFactory {
     }
 }
 
-describe('BaseActorClientImplementationHelper', ()=> {
-    it('should load actor\'s implementation to kernel', ()=> {
-        @injectable()
-        class TestImpl {
-            method() {
-            }
-        }
-        const testImplSymbol = Symbol('TestImpl');
-        const kernel = new Kernel();
-        const mockActorFactory = new MockRemoteActorProxyFactory();
-        const helper = new BaseActorClientImplementationHelper(kernel, mockActorFactory);
+const testActorSymbol = Symbol('testActorSymbol');
+const testDeciderSymbol = Symbol('testDeciderSymbol');
+const testTaskLists = ['test-task-list', 'test-task-list2'];
 
-        const binding: ActorImplementation = {
-            impl: TestImpl,
-            binding: testImplSymbol
+interface TestActor {
+    method(): any;
+}
+
+@injectable()
+class TestActorImpl implements TestActor {
+    method() {
+    }
+}
+
+describe('BaseActorClientImplementationHelper', ()=> {
+
+    let container: Container;
+    let mockActorFactory: ActorProxyFactory;
+
+    beforeEach(()=> {
+        container = new Container();
+        mockActorFactory = new MockRemoteActorProxyFactory();
+    });
+
+    it('should load actor\'s implementation to Container', ()=> {
+        const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+        const binding: Binding = {
+            impl: TestActorImpl,
+            key: testActorSymbol,
+            taskLists: []
         };
         helper.addImplementations(
             [binding]
         );
-        const testInstance = kernel.getTagged<TestImpl>(testImplSymbol, ACTOR_TAG, true);
-        expect(testInstance).to.instanceOf(TestImpl);
+        const testInstance = container.get<TestActor>(testActorSymbol);
+        expect(testInstance).to.instanceOf(TestActorImpl);
     });
 
 
     it('should load actor\'s client to kernel', ()=> {
         @injectable()
-        class TestImpl {
-            method() {
+        class TestDecider {
+            constructor(@actorClient
+                        @inject(testActorSymbol)
+                        public actor: TestActor,
+                        @actorClient
+                        @taskList('test-task-list2')
+                        @inject(testActorSymbol)
+                        public actor2: TestActor) {
             }
         }
-        const testImplSymbol = Symbol('TestImpl');
-        const kernel = new Kernel();
-        const mockActorFactory = new MockRemoteActorProxyFactory();
-
         const mockActor = {
             d: 'mock actor'
         };
         const createStub = sinon.stub().returns(mockActor);
-        const helper = new BaseActorClientImplementationHelper(kernel, mockActorFactory);
-
-        mockActorFactory.create = createStub;
-
-        const binding: ActorImplementation = {
-            impl: TestImpl,
-            binding: testImplSymbol
+        const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+        const binding: Binding = {
+            impl: TestActorImpl,
+            key: testActorSymbol,
+            taskLists: testTaskLists
         };
 
+        mockActorFactory.create = createStub;
         helper.addImplementations(
             [binding]
         );
-        const testInstance = kernel.getTagged<TestImpl>(testImplSymbol, ACTOR_CLIENT_TAG, true);
-        expect(testInstance).to.be.eq(mockActor);
+
+        container.bind<TestDecider>(testDeciderSymbol).to(TestDecider);
+        const testInstance: TestDecider = container.get<TestDecider>(testDeciderSymbol);
+        expect(testInstance.actor).to.be.eq(mockActor);
+        expect(testInstance.actor2).to.be.eq(mockActor);
+    });
+
+    it('should create client to taskList', ()=> {
+        @injectable()
+        class TestDecider {
+            constructor(@actorClient
+                        @inject(testActorSymbol)
+                        public actor: TestActor,
+                        @actorClient
+                        @taskList('test-task-list')
+                        @inject(testActorSymbol)
+                        public actor2: TestActor,
+                        @actorClient
+                        @taskList('test-task-list2')
+                        @inject(testActorSymbol)
+                        public actor3: TestActor) {
+            }
+        }
+        const mockActor = {
+            d: 'mock actor'
+        };
+        const createStub = sinon.stub().returns(mockActor);
+        const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+        const binding: Binding = {
+            impl: TestActorImpl,
+            key: testActorSymbol,
+            taskLists: testTaskLists
+        };
+
+        mockActorFactory.create = createStub;
+        helper.addImplementations(
+            [binding]
+        );
+
+        container.bind<TestDecider>(testDeciderSymbol).to(TestDecider);
+        const testInstance: TestDecider = container.get<TestDecider>(testDeciderSymbol);
+        expect(createStub.getCall(0).args).to.be.eql([TestActorImpl, DEFAULT_ACTOR_TASK_LIST]);
+        expect(createStub.getCall(1).args).to.be.eql([TestActorImpl, 'test-task-list']);
+        expect(createStub.getCall(2).args).to.be.eql([TestActorImpl, 'test-task-list2']);
+
     });
 });

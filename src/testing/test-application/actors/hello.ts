@@ -10,6 +10,11 @@ export interface Hello {
 
 @injectable()
 export class HelloImpl implements Hello {
+
+    private printer(text: string) {
+        console.log(text);
+    }
+
     @version('1')
     @description('this thing is a text formatter')
     formatText(text: string): Observable<string> {
@@ -18,6 +23,8 @@ export class HelloImpl implements Hello {
 
     @version('1')
     printIt(text: string): Observable<any> {
-        return Observable.of(text).do(console.log);
+        return Observable.of(text).do((text: string)=> {
+            this.printer(text);
+        });
     }
 }

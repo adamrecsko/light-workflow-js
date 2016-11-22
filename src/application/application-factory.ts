@@ -7,7 +7,8 @@ import {Class} from "../implementation";
 import {ContainerModule} from "inversify";
 
 export interface ApplicationFactory {
-    createApplication<T>(applicationClass: T): T;
+    createApplication<T>(application: Class<T>): T;
+    addActorImplementations(implementationList: Binding[]): void;
 }
 
 
@@ -23,7 +24,7 @@ interface ApplicationBuilder<T> {
 export class ConfigurableApplicationFactory implements ApplicationFactory {
     private coreKernel: Container;
     private applicationKernel: Container;
-    private activityClientImplementationHelper: ActorClientImplementationHelper;
+    private actorClientImplementationHelper: ActorClientImplementationHelper;
 
     constructor(private configurationProvider: ApplicationConfigurationProvider) {
         this.coreKernel = new Container();
@@ -35,8 +36,12 @@ export class ConfigurableApplicationFactory implements ApplicationFactory {
         this.coreKernel.bind<Container>(APP_CONTAINER)
             .toConstantValue(this.applicationKernel);
         this.coreKernel.load(CORE);
-        this.activityClientImplementationHelper =
+        this.actorClientImplementationHelper =
             this.coreKernel.get<ActorClientImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
+    }
+
+    public addActorImplementations(implementationList: Binding[]): void {
+        this.actorClientImplementationHelper.addImplementations(implementationList);
     }
 
     public createApplication<T>(application: Class<T>): T {

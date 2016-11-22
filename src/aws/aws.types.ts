@@ -5,7 +5,6 @@ export type ActivityType = Swf.ActivityType;
 export type DecisionTask = Swf.DecisionTask;
 export type HistoryEvent = Swf.HistoryEvent;
 
-
 export type ScheduleActivityTaskDecisionAttributes = Swf.ScheduleActivityTaskDecisionAttributes;
 
 export class TaskList {

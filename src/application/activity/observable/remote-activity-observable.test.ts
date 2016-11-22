@@ -162,6 +162,7 @@ describe('RemoteActivityObservable', ()=> {
                 testScheduler.flush();
             });
         });
+
         context('in case of HEARTBEAT timeout', ()=> {
             it('should throw HeartbeatTimeoutException', ()=> {
                 const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});

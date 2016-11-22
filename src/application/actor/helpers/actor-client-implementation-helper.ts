@@ -7,21 +7,13 @@ import {APP_CONTAINER, REMOTE_ACTOR_PROXY_FACTORY} from "../../../symbols";
 import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
 import {Class} from "../../../implementation";
 import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
-
-
-export const ACTOR_TAG = 'actor';
-export const ACTOR_CLIENT_TAG = 'actor-client';
-export const TASK_LIST_TAG = 'task-list-tag';
-
-export const actor = tagged(ACTOR_TAG, true);
-export const actorClient = tagged(ACTOR_CLIENT_TAG, true);
-export const taskList = tagged.bind(null, TASK_LIST_TAG);
+import {ACTOR_CLIENT_TAG, TASK_LIST_TAG} from "../decorators/actor-decorators";
 
 
 export type Binding = {
     impl: Class<any>,
     key: symbol,
-    taskLists: string[]
+    taskLists?: string[]
 };
 
 export interface ActorClientImplementationHelper {
@@ -30,12 +22,10 @@ export interface ActorClientImplementationHelper {
 
 @injectable()
 export class BaseActorClientImplementationHelper implements ActorClientImplementationHelper {
-
-
     constructor(@inject(APP_CONTAINER)
                 private appContainer: Container,
                 @inject(REMOTE_ACTOR_PROXY_FACTORY)
-                private proxyFactory: ActorProxyFactory) {
+                private actorProxyFactory: ActorProxyFactory) {
     }
 
     public addImplementations(implementationList: Binding[]): void {
@@ -53,7 +43,7 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
              Load actor proxy for default task list
              */
             this.appContainer.bind<Class<any>>(binding.key)
-                .toDynamicValue(()=>this.proxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
+                .toDynamicValue(()=>this.actorProxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
                 .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && !r.target.hasTag(TASK_LIST_TAG));
 
             /*
@@ -62,7 +52,7 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
             if (taskLists)
                 taskLists.forEach((taskList)=>
                     this.appContainer.bind<Class<any>>(binding.key)
-                        .toDynamicValue(()=>this.proxyFactory.create(impl, taskList))
+                        .toDynamicValue(()=>this.actorProxyFactory.create(impl, taskList))
                         .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && taggedConstraint(TASK_LIST_TAG)(taskList)(r)));
         });
     }

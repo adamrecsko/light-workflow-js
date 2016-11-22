@@ -11,7 +11,7 @@ export interface Hello {
 @injectable()
 export class HelloImpl implements Hello {
     @version('1')
-    @description('this thing is format a text')
+    @description('this thing is a text formatter')
     formatText(text: string): Observable<string> {
         return Observable.of(text + ' hello world');
     }

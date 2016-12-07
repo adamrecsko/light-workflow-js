@@ -11,6 +11,6 @@ export class MyApp {
     }
 
     public runTheHello(text: string): Promise<any> {
-        return this.helloWorkflow.helloWorld(text).toPromise();
+        return this.helloWorkflow.helloWorld(text);
     }
 }

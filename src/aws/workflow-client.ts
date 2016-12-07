@@ -2,7 +2,7 @@ import {SWF} from "aws-sdk";
 import {Observable, Observer} from "rxjs/Rx";
 import {ActivityPollParameters, DecisionTask, ActivityTask, DecisionPollParameters} from "./aws.types";
 import {injectable, inject} from "inversify";
-import {AWSAdapter} from "./aws-adapter";
+import {AWSClientProvider} from "./aws-adapter";
 import {AWS_ADAPTER} from "../symbols";
 
 export interface WorkflowClient {
@@ -11,19 +11,19 @@ export interface WorkflowClient {
 }
 
 @injectable()
-export class GenericWorkflowClient implements WorkflowClient {
+export class BaseWorkflowClient implements WorkflowClient {
     private swfClient: SWF;
 
-    constructor(@inject(AWS_ADAPTER) private awsAdapter: AWSAdapter) {
+    constructor(@inject(AWS_ADAPTER) private awsAdapter: AWSClientProvider) {
         this.swfClient = awsAdapter.getNativeSWFClient();
     }
 
     pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask> {
-        return GenericWorkflowClient.fromSwfFunction<ActivityTask>(this.swfClient.pollForActivityTask, params);
+        return BaseWorkflowClient.fromSwfFunction<ActivityTask>(this.swfClient.pollForActivityTask, params);
     }
 
     pollForDecisionTask(params: DecisionPollParameters): Observable<DecisionTask> {
-        return GenericWorkflowClient.fromSwfFunction<DecisionTask>(this.swfClient.pollForDecisionTask, params);
+        return BaseWorkflowClient.fromSwfFunction<DecisionTask>(this.swfClient.pollForDecisionTask, params);
     }
 
 

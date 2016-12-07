@@ -2,22 +2,14 @@ import {expect} from "chai";
 import {description} from "./activity-decorators";
 import {
     getActivityDefinitionsFromClass,
-    activityDefinitionPropertySetterDecoratorFactory, DefinitionNotAvailableException, ACTIVITY_DEFINITIONS
+    activityDefinitionDecoratorFactory,
+    DefinitionNotAvailableException,
+    DEFINITION_SYMBOL,
 } from "./activity-decorator-utils";
 import {ActivityDefinition} from "../activity-definition";
 import {ActivityDefinitionProperty} from "../activity-deinition-property";
-import {ActivityDefinitionsContainer} from "./activity-decorator-container";
+import {DefinitionContainer} from "../../definition-container";
 
-
-describe('ActivityDefinitionsContainer', ()=> {
-    it('should store given activity definition', ()=> {
-        const container = new ActivityDefinitionsContainer();
-        const name = 'testActivity';
-        const def = new ActivityDefinition(name);
-        container.addDefinition(def);
-        expect(container.getDefinitionToProperty(name)).to.eq(def);
-    });
-});
 
 
 describe('getActivityDefinitionsFromClass', ()=> {
@@ -47,15 +39,15 @@ describe('getActivityDefinitionsFromClass', ()=> {
     });
 });
 
-describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
+describe('definitionDecoratorPropertySetterFactory', ()=> {
     it('should return a function', ()=> {
-        const decorator = activityDefinitionPropertySetterDecoratorFactory(ActivityDefinitionProperty.defaultTaskPriority);
+        const decorator = activityDefinitionDecoratorFactory(ActivityDefinitionProperty.defaultTaskPriority);
         expect(decorator).to.be.a('Function');
     });
 
     describe('decoratorFactory', ()=> {
         it('should return a function', ()=> {
-            const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+            const decoratorFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
             const decorator = decoratorFactory('value');
             expect(decorator).to.be.a('Function');
         });
@@ -63,36 +55,36 @@ describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
         describe('decorator', ()=> {
             context('if ActivityDefinitionsContainer exists class already annotated', ()=> {
                 it('should not add new ActivityDefinitionsContainer', ()=> {
-                    const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+                    const decoratorFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     decorator(testObject, 'testMethod', {});
-                    const container = testObject[ACTIVITY_DEFINITIONS];
+                    const container = testObject[DEFINITION_SYMBOL];
                     decorator(testObject, 'testMethod2', {});
-                    const container2 = testObject[ACTIVITY_DEFINITIONS];
+                    const container2 = testObject[DEFINITION_SYMBOL];
                     expect(container).to.eq(container2);
                 });
             });
 
             context('if ActivityContainer not exists class is not yet annotated', ()=> {
                 it('should add ActivityDefinitionsContainer', ()=> {
-                    const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+                    const decoratorFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     decorator(testObject, 'testMethod', {});
-                    expect(testObject[ACTIVITY_DEFINITIONS]).to.instanceOf(ActivityDefinitionsContainer);
+                    expect(testObject[DEFINITION_SYMBOL]).to.instanceOf(DefinitionContainer);
                 });
             });
 
 
             context('if ActivityDefinition not exists on property', ()=> {
                 it('should add ActivityDefinition to container and use the name of the method as the activity\'s name', ()=> {
-                    const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+                    const decoratorFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     const propertyName = 'testMethod';
                     decorator(testObject, propertyName, {});
-                    const container = testObject[ACTIVITY_DEFINITIONS];
+                    const container = testObject[DEFINITION_SYMBOL];
                     const definition = container.getDefinitionToProperty(propertyName);
                     expect(definition).to.instanceOf(ActivityDefinition);
                     expect(definition.name).to.eq(propertyName);
@@ -100,13 +92,13 @@ describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
 
                 it('should add ActivityDefinition to container and set the ', ()=> {
                     const definitionProperty = ActivityDefinitionProperty.defaultTaskPriority;
-                    const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(definitionProperty);
+                    const decoratorFactory = activityDefinitionDecoratorFactory<string>(definitionProperty);
                     const propertyValue = '1234';
                     const decorator = decoratorFactory(propertyValue);
                     const testObject: any = {};
                     const propertyName = 'testMethod';
                     decorator(testObject, propertyName, {});
-                    const container = testObject[ACTIVITY_DEFINITIONS];
+                    const container = testObject[DEFINITION_SYMBOL];
                     const definition: ActivityDefinition = container.getDefinitionToProperty(propertyName);
                     expect(definition.defaultTaskPriority).to.eq(propertyValue);
                 });
@@ -115,12 +107,12 @@ describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
 
             context('if ActivityDefinition exists on property', ()=> {
                 it('should not add new ActivityDefinition to container', ()=> {
-                    const decoratorFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+                    const decoratorFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     const propertyName = 'testMethod';
                     decorator(testObject, propertyName, {});
-                    const container = testObject[ACTIVITY_DEFINITIONS];
+                    const container = testObject[DEFINITION_SYMBOL];
                     const definition = container.getDefinitionToProperty(propertyName);
                     decorator(testObject, propertyName, {});
                     const definition2 = container.getDefinitionToProperty(propertyName);
@@ -128,8 +120,8 @@ describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
                 });
 
                 it('should set existing ActivityDefinition property', ()=> {
-                    const defaultTaskPriorityFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
-                    const descriptionFactory = activityDefinitionPropertySetterDecoratorFactory<string>(ActivityDefinitionProperty.description);
+                    const defaultTaskPriorityFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.defaultTaskPriority);
+                    const descriptionFactory = activityDefinitionDecoratorFactory<string>(ActivityDefinitionProperty.description);
                     const taskPriorityValue = '1234';
                     const descriptionValue = 'description';
                     const decorator = defaultTaskPriorityFactory(taskPriorityValue);
@@ -137,7 +129,7 @@ describe('activityDefinitionPropertySetterDecoratorFactory', ()=> {
                     const testObject: any = {};
                     const propertyName = 'testMethod';
                     decorator(testObject, propertyName, {});
-                    const container = testObject[ACTIVITY_DEFINITIONS];
+                    const container = testObject[DEFINITION_SYMBOL];
                     const definition: ActivityDefinition = container.getDefinitionToProperty(propertyName);
                     decorator2(testObject, propertyName, {});
                     expect(definition.description).to.eq(descriptionValue);

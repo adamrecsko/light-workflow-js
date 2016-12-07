@@ -5,7 +5,7 @@ import {Subscriber} from "rxjs/Subscriber";
 
 
 export class TaskPollerObservable<T> extends Observable<T> {
-    constructor(private activityPollRequest: Observable<T>,
+    constructor(private request: Observable<T>,
                 private scheduler?: Scheduler,
                 private timerInterval?: number) {
         super();
@@ -14,12 +14,12 @@ export class TaskPollerObservable<T> extends Observable<T> {
 
     protected _subscribe(subscriber: Subscriber<T>): TeardownLogic {
         return Observable.timer(0, this.timerInterval, this.scheduler)
-            .exhaustMap(()=>this.activityPollRequest)
+            .exhaustMap(()=>this.request)
             .subscribe(subscriber);
     }
 
     public get innerObservable() {
-        return this.activityPollRequest;
+        return this.request;
     }
 }
 

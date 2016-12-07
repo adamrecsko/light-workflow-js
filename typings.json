@@ -9,7 +9,7 @@
     "aws-sdk": "registry:dt/aws-sdk#0.0.0+20160927141703",
     "faker": "registry:dt/faker#3.1.0+20161003184239",
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "node": "registry:dt/node#6.0.0+20161014191813"
+    "node": "registry:env/node#6.0.0+20161105011511"
   },
   "globalDevDependencies": {}
 }

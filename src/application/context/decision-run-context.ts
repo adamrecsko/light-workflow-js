@@ -41,6 +41,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
     }
 
     processEventList(eventList: HistoryEvent[]): void {
+        const notify = (stateMachine: HistoryEventProcessor<any>)=>stateMachine.notify();
         const process = (event: HistoryEvent)=> {
             const eventType: EventType = (<any> EventType)[event.eventType];
             let activityId: string;
@@ -104,7 +105,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
             }
             stateMachine.processHistoryEvent(event);
         };
-        const notify = (stateMachine: HistoryEventProcessor<any>)=>stateMachine.notify();
+
         eventList.forEach(process);
         this.getStateMachines().forEach(notify);
     }

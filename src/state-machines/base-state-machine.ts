@@ -1,4 +1,5 @@
 import {StateMachine, TransitionTable, InvalidStateTransitionException} from "./state-machine";
+
 export class BaseStateMachine<T> implements StateMachine<T> {
     public stateHistory: T[] = [];
     private _currentState: T;

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {ActivityAdapter} from "./actvity-adapter";
 import {Observable} from "rxjs";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
@@ -58,7 +59,7 @@ export interface RemoteActivityAdapterFactory {
     create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
            activityDefinition: ActivityDefinition,
            taskList: string,
-           observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter;
+           observableFactory?: ObservableFactory<string>): RemoteActivityAdapter;
 }
 
 @injectable()

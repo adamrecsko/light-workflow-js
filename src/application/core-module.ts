@@ -1,12 +1,12 @@
 import {ContainerModule, interfaces} from "inversify";
 import Bind = interfaces.Bind;
-import {AWSAdapter, GenericAWSAdapter} from "../aws/aws-adapter";
+import {AWSClientProvider, DefaultAWSClientProvider} from "../aws/aws-adapter";
 import {
     AWS_ADAPTER, WORKFLOW_CLIENT, ACTIVITY_POLLER_FACTORY, DECISION_POLLER_FACTORY,
     ACTIVITY_CLIENT_IMPLEMENTATION_HELPER, REMOTE_ACTOR_PROXY_FACTORY, DECISION_CONTEXT_RESOLUTION,
     REMOTE_ACTIVITY_ADAPTER_FACTORY
 } from "../symbols";
-import {WorkflowClient, GenericWorkflowClient} from "../aws/workflow-client";
+import {WorkflowClient, BaseWorkflowClient} from "../aws/workflow-client";
 import {ActivityPollerFactory, GenericActivityPollerFactory} from "../aws/swf/activity-poller-factory";
 import {DecisionPollerFactory, GenericDecisionPollerFactory} from "../aws/swf/decision-poller-factory";
 import {
@@ -25,10 +25,10 @@ import {
 
 
 export const CORE: ContainerModule = new ContainerModule((bind: Bind) => {
-    bind<AWSAdapter>(AWS_ADAPTER)
-        .to(GenericAWSAdapter).inSingletonScope();
+    bind<AWSClientProvider>(AWS_ADAPTER)
+        .to(DefaultAWSClientProvider).inSingletonScope();
     bind<WorkflowClient>(WORKFLOW_CLIENT)
-        .to(GenericWorkflowClient).inSingletonScope();
+        .to(BaseWorkflowClient).inSingletonScope();
     bind<ActivityPollerFactory>(ACTIVITY_POLLER_FACTORY)
         .to(GenericActivityPollerFactory).inSingletonScope();
     bind<DecisionPollerFactory>(DECISION_POLLER_FACTORY)

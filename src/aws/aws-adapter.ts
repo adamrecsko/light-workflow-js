@@ -3,12 +3,12 @@ import {SWF} from "aws-sdk";
 import {ApplicationConfigurationProvider} from "../application/application-configuration-provider";
 import {APPLICATION_CONFIGURATION} from "../symbols";
 
-export interface AWSAdapter {
+export interface AWSClientProvider {
     getNativeSWFClient(): SWF
 }
 
 @injectable()
-export class GenericAWSAdapter implements AWSAdapter {
+export class DefaultAWSClientProvider implements AWSClientProvider {
     constructor(@inject(APPLICATION_CONFIGURATION) private configProvider: ApplicationConfigurationProvider) {
     }
 

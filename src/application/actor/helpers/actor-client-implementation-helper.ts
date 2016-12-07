@@ -5,13 +5,13 @@ import {
 } from "inversify";
 import {APP_CONTAINER, REMOTE_ACTOR_PROXY_FACTORY} from "../../../symbols";
 import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
-import {Class} from "../../../implementation";
+import {Newable} from "../../../implementation";
 import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
 import {ACTOR_CLIENT_TAG, TASK_LIST_TAG} from "../decorators/actor-decorators";
 
 
 export type Binding = {
-    impl: Class<any>,
+    impl: Newable<any>,
     key: symbol,
     taskLists?: string[]
 };
@@ -30,19 +30,19 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
 
     public addImplementations(implementationList: Binding[]): void {
         implementationList.forEach((binding)=> {
-            const impl: Class<any> = binding.impl;
+            const impl: Newable<any> = binding.impl;
             const taskLists = binding.taskLists;
 
             /*
              Load default actor implementation
              */
-            this.appContainer.bind<Class<any>>(binding.key)
+            this.appContainer.bind<Newable<any>>(binding.key)
                 .to(impl).whenTargetIsDefault();
 
             /*
              Load actor proxy for default task list
              */
-            this.appContainer.bind<Class<any>>(binding.key)
+            this.appContainer.bind<Newable<any>>(binding.key)
                 .toDynamicValue(()=>this.actorProxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
                 .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && !r.target.hasTag(TASK_LIST_TAG));
 
@@ -51,7 +51,7 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
              */
             if (taskLists)
                 taskLists.forEach((taskList)=>
-                    this.appContainer.bind<Class<any>>(binding.key)
+                    this.appContainer.bind<Newable<any>>(binding.key)
                         .toDynamicValue(()=>this.actorProxyFactory.create(impl, taskList))
                         .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && taggedConstraint(TASK_LIST_TAG)(taskList)(r)));
         });

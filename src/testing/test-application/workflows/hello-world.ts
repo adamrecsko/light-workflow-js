@@ -1,12 +1,12 @@
-import {Observable} from "rxjs";
 import {actorClient} from "../../../application/actor/decorators/actor-decorators";
 import {inject} from "inversify";
 import {helloSymbol, Hello} from "../actors/hello";
 
 export const helloWorkflowSymbol = Symbol('helloWorkflow');
 
+
 export interface HelloWorkflow {
-    helloWorld(text: string): Observable<any>
+    helloWorld(text: string): Promise<any>
 }
 
 export class HelloWorkflowImpl implements HelloWorkflow {
@@ -14,10 +14,8 @@ export class HelloWorkflowImpl implements HelloWorkflow {
     @inject(helloSymbol)
     private hello: Hello;
 
-
-    helloWorld(text: string): Observable<any> {
-        return this.hello
-            .formatText(text)
-            .flatMap((fText: string)=> this.hello.printIt(fText));
+    async helloWorld(text: string): Promise<string> {
+        const formattedText = await this.hello.formatText(text).toPromise();
+        return this.hello.printIt(formattedText).toPromise();
     }
 }

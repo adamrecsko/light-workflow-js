@@ -8,7 +8,7 @@ import {
     Binding
 } from "./actor-client-implementation-helper";
 import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
-import {Class} from "../../../implementation";
+import {Newable} from "../../../implementation";
 import {inject} from "inversify";
 import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
 import {taskList, actorClient} from "../decorators/actor-decorators";
@@ -19,7 +19,7 @@ const testDeciderSymbol = Symbol('testDeciderSymbol');
 const testTaskLists = ['test-task-list', 'test-task-list2'];
 
 class MockRemoteActorProxyFactory implements ActorProxyFactory {
-    create<T>(implementation: Class<T>, taskList: string): T {
+    create<T>(implementation: Newable<T>, taskList: string): T {
         return null;
     }
 }

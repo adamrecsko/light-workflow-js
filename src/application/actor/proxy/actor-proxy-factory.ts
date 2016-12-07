@@ -1,18 +1,18 @@
-import {Class} from "../../../implementation";
+import {Newable} from "../../../implementation";
 import {injectable, inject} from "inversify";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {DECISION_CONTEXT_RESOLUTION, REMOTE_ACTIVITY_ADAPTER_FACTORY} from "../../../symbols";
 import {
     RemoteActivityAdapterFactory,
-    DefaultRemoteActivityAdapter
+    DefaultRemoteActivityAdapter, RemoteActivityAdapter
 } from "../../activity/adapters/remote-activity-adapter";
 import {ActivityDefinition} from "../../activity/activity-definition";
 import {getActivityDefinitionsFromClass} from "../../activity/decorators/activity-decorator-utils";
 
 
 export interface ActorProxyFactory {
-    create<T>(implementation: Class<T>, taskList: string): T;
+    create<T>(implementation: Newable<T>, taskList: string): T;
 }
 
 
@@ -28,14 +28,14 @@ export class RemoteActorProxyFactory implements ActorProxyFactory {
                 private remoteActivityAdapterFactory: RemoteActivityAdapterFactory) {
     }
 
-    create<T>(implementation: Class<T>, taskList: string): T {
+    create<T>(implementation: Newable<T>, taskList: string): T {
         const activityDefinitions: ActivityDefinition[] = getActivityDefinitionsFromClass(implementation);
         const actorProxy: any = new ActorProxy();
         const caller = function (): any {
             return this.createObservable(Array.from(arguments));
         };
         activityDefinitions.forEach((definition: ActivityDefinition)=> {
-            const adapter: DefaultRemoteActivityAdapter = this.remoteActivityAdapterFactory
+            const adapter: RemoteActivityAdapter = this.remoteActivityAdapterFactory
                 .create(this.contextResolutionStrategy, definition, taskList);
             actorProxy[definition._decoratedMethodName] = caller.bind(adapter);
         });

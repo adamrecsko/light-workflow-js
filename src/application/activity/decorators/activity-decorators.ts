@@ -1,4 +1,4 @@
-import {activityDefinitionPropertySetterDecoratorFactory as decoratorFactory} from "./activity-decorator-utils";
+import {activityDefinitionDecoratorFactory as decoratorFactory} from "./activity-decorator-utils";
 import {ActivityDefinitionProperty} from "../activity-deinition-property";
 import {Serializer} from "../serializer";
 

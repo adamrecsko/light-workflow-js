@@ -3,11 +3,11 @@ import {APPLICATION_CONFIGURATION, APP_CONTAINER, ACTIVITY_CLIENT_IMPLEMENTATION
 import {ApplicationConfigurationProvider} from "./application-configuration-provider";
 import {CORE} from "./core-module";
 import {ActorClientImplementationHelper, Binding} from "./actor/helpers/actor-client-implementation-helper";
-import {Class} from "../implementation";
+import {Newable} from "../implementation";
 import {ContainerModule} from "inversify";
 
 export interface ApplicationFactory {
-    createApplication<T>(application: Class<T>): T;
+    createApplication<T>(application: Newable<T>): T;
     addActorImplementations(implementationList: Binding[]): void;
 }
 
@@ -16,7 +16,7 @@ interface ApplicationBuilder<T> {
     setConfiguration(configurationProvider: ApplicationConfigurationProvider): ApplicationBuilder<T>;
     setModules(modules: ContainerModule[]): ApplicationBuilder<T>;
     setActors(actorBinding: Binding[]): ApplicationBuilder<T>;
-    setApplicationClass(application: Class<T>): ApplicationBuilder<T>;
+    setApplicationClass(application: Newable<T>): ApplicationBuilder<T>;
     createApplication(): T;
 }
 
@@ -44,7 +44,7 @@ export class ConfigurableApplicationFactory implements ApplicationFactory {
         this.actorClientImplementationHelper.addImplementations(implementationList);
     }
 
-    public createApplication<T>(application: Class<T>): T {
+    public createApplication<T>(application: Newable<T>): T {
         const applicationSymbol = Symbol('applicationSymbol');
         this.applicationKernel.bind<T>(applicationSymbol).to(application);
         return this.applicationKernel.get<T>(applicationSymbol);

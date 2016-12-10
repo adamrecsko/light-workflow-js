@@ -1,13 +1,13 @@
-import {BaseDefinition} from "./definition";
-export class DefinitionContainer<T extends BaseDefinition> {
+import {AbstractDecoratorDefinition} from "./abstract-decorator-definition";
+export class DefinitionContainer<T extends AbstractDecoratorDefinition> {
     private definitionMap: Map<string,T> = new Map();
 
     public addDefinition(definition: T): void {
-        this.definitionMap.set(definition.name, definition);
+        this.definitionMap.set(definition.decoratedMethodName, definition);
     }
 
-    public getDefinitionToProperty(propertyKey: string): T {
-        return this.definitionMap.get(propertyKey);
+    public getDefinitionToProperty(decoratedPropertyName: string): T {
+        return this.definitionMap.get(decoratedPropertyName);
     }
 
     public hasDefinition(propertyKey: string): boolean {
@@ -17,4 +17,7 @@ export class DefinitionContainer<T extends BaseDefinition> {
     public toArray(): T[] {
         return Array.from<T>(this.definitionMap.values());
     }
+
+
 }
+

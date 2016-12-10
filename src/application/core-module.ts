@@ -1,6 +1,6 @@
 import {ContainerModule, interfaces} from "inversify";
 import Bind = interfaces.Bind;
-import {AWSClientProvider, DefaultAWSClientProvider} from "../aws/aws-adapter";
+import {AWSClientProvider, DefaultAWSClientProvider} from "../aws/aws-client-provider";
 import {
     AWS_ADAPTER, WORKFLOW_CLIENT, ACTIVITY_POLLER_FACTORY, DECISION_POLLER_FACTORY,
     ACTIVITY_CLIENT_IMPLEMENTATION_HELPER, REMOTE_ACTOR_PROXY_FACTORY, DECISION_CONTEXT_RESOLUTION,

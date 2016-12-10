@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {ActivityAdapter} from "./actvity-adapter";
 import {Observable} from "rxjs";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";

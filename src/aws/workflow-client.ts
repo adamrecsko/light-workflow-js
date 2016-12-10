@@ -2,7 +2,7 @@ import {SWF} from "aws-sdk";
 import {Observable, Observer} from "rxjs/Rx";
 import {ActivityPollParameters, DecisionTask, ActivityTask, DecisionPollParameters} from "./aws.types";
 import {injectable, inject} from "inversify";
-import {AWSClientProvider} from "./aws-adapter";
+import {AWSClientProvider} from "./aws-client-provider";
 import {AWS_ADAPTER} from "../symbols";
 
 export interface WorkflowClient {

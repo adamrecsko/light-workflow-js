@@ -1,5 +1,5 @@
-import {BaseDefinition} from "../definition";
-export class ActivityDefinition extends BaseDefinition {
+import {AbstractDecoratorDefinition} from "../abstract-decorator-definition";
+export class ActivityDefinition extends AbstractDecoratorDefinition {
     defaultTaskHeartbeatTimeout: string;
     defaultTaskScheduleToCloseTimeout: string;
     defaultTaskScheduleToStartTimeout: string;

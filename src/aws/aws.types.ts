@@ -10,6 +10,7 @@ export type ScheduleActivityTaskDecisionAttributes = Swf.ScheduleActivityTaskDec
 export class TaskList {
     public name: string;
 }
+
 export class ActivityRegistrationParameters {
     public domain: string;
     public name: string;

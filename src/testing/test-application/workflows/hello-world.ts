@@ -1,4 +1,4 @@
-import {actorClient} from "../../../application/actor/decorators/actor-decorators";
+import {actorClient} from "../../../core/actor/decorators/actor-decorators";
 import {inject} from "inversify";
 import {helloSymbol, Hello} from "../actors/hello";
 

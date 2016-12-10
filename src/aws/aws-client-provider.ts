@@ -1,6 +1,6 @@
 import {injectable, inject} from 'inversify';
 import {SWF} from "aws-sdk";
-import {ApplicationConfigurationProvider} from "../application/application-configuration-provider";
+import {ApplicationConfigurationProvider} from "../core/application/application-configuration-provider";
 import {APPLICATION_CONFIGURATION} from "../symbols";
 
 export interface AWSClientProvider {

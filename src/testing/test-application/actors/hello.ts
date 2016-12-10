@@ -1,6 +1,6 @@
 import {Observable} from "rxjs";
 import {injectable} from "inversify";
-import {description, version} from "../../../application/activity/decorators/activity-decorators";
+import {description, version} from "../../../core/activity/decorators/activity-decorators";
 export const helloSymbol = Symbol('hello');
 
 export interface Hello {

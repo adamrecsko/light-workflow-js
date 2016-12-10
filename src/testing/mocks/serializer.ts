@@ -1,4 +1,4 @@
-import {Serializer} from "../../application/activity/serializer";
+import {Serializer} from "../../core/application/serializer";
 export class MockSerializer implements Serializer {
     parse(str: string): any {
         return null;

@@ -1,7 +1,7 @@
-import {HistoryEventProcessor} from "../../state-machines/history-event-state-machines/history-event-processor";
+import {HistoryEventProcessor} from "../../core/state-machines/history-event-state-machines/history-event-processor";
 import {ScheduleActivityTaskDecisionAttributes, HistoryEvent} from "../../aws/aws.types";
-import {DecisionRunContext} from "../../application/context/decision-run-context";
-import {BaseActivityDecisionStateMachine} from "../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
+import {DecisionRunContext} from "../../core/context/decision-run-context";
+import {BaseActivityDecisionStateMachine} from "../../core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision";
 export class MockDecisionRunContext implements DecisionRunContext {
     processEventList(eventList: HistoryEvent[]): void {
     }

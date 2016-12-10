@@ -1,37 +1,38 @@
-const w = {
-    "childPolicy": "string",
-    "domain": "string",
-    "executionStartToCloseTimeout": "string",
-    "input": "string",
-    "lambdaRole": "string",
-    "tagList": [
-        "string"
-    ],
-    "taskList": {
-        "name": "string"
-    },
-    "taskPriority": "string",
-    "taskStartToCloseTimeout": "string",
-    "workflowId": "string",
-    "workflowType": {
-        "name": "string",
-        "version": "string"
-    }
-};
+import {AbstractDecoratorDefinition} from "../decorators/abstract-decorator-definition";
+import {TaskList} from "../../aws/aws.types";
 
-const rw = {
-    "defaultChildPolicy": "string",
-    "defaultExecutionStartToCloseTimeout": "string",
-    "defaultLambdaRole": "string",
-    "defaultTaskList": {
-        "name": "string"
-    },
-    "defaultTaskPriority": "string",
-    "defaultTaskStartToCloseTimeout": "string",
-    "description": "string",
-    "domain": "string",
-    "name": "string",
-    "version": "string"
-};
+export class WorkflowDefinition extends AbstractDecoratorDefinition {
+    childPolicy: string;
+    executionStartToCloseTimeout: string;
+    lambdaRole: string;
+    tagList: string[];
+    taskList: TaskList;
+    taskPriority: string;
+    taskStartToCloseTimeout: string;
+    defaultChildPolicy: string;
+    defaultExecutionStartToCloseTimeout: string;
+    defaultLambdaRole: string;
+    defaultTaskList: TaskList;
+    defaultTaskPriority: string;
+    defaultTaskStartToCloseTimeout: string;
+}
 
-
+export enum WorkflowDefinitionProperties{
+    name = 1,
+    version,
+    description,
+    taskPriority,
+    defaultTaskPriority,
+    serializer,
+    childPolicy,
+    executionStartToCloseTimeout,
+    lambdaRole,
+    tagList,
+    taskList,
+    taskStartToCloseTimeout,
+    defaultChildPolicy,
+    defaultExecutionStartToCloseTimeout,
+    defaultLambdaRole,
+    defaultTaskList,
+    defaultTaskStartToCloseTimeout
+}

@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {
     activityDefinitionDecoratorFactory
-} from "./activity-decorator-utils";
+} from "./activity-decorator-factory";
 import {ActivityDefinitionProperty} from "../activity-definition";
 
 

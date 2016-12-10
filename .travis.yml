@@ -2,5 +2,13 @@ language: node_js
 before_install:
 - npm install -g typings
 node_js:
-  - "6.9"
+  - "7"
+  - "6"
   - "5"
+  - "4"
+  - "3"
+  - "2"
+  - "1"
+  - "0.12"
+  - "0.11"
+  - "0.10"

@@ -4,7 +4,6 @@ import {
 } from "./activity-decorator-factory";
 import {ActivityDefinitionProperty} from "../activity-definition";
 
-
 describe('definitionDecoratorPropertySetterFactory', () => {
     it('should return a function', () => {
         const decorator = activityDefinitionDecoratorFactory(ActivityDefinitionProperty.defaultTaskPriority);

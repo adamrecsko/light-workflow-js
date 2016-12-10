@@ -3,3 +3,4 @@ before_install:
 - npm install -g typings
 node_js:
   - "6.9"
+  - "5"

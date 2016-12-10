@@ -24,6 +24,7 @@ import {
 } from "./core/activity/adapters/remote-activity-adapter";
 
 
+
 export const CORE: ContainerModule = new ContainerModule((bind: Bind) => {
     bind<AWSClientProvider>(AWS_ADAPTER)
         .to(DefaultAWSClientProvider).inSingletonScope();

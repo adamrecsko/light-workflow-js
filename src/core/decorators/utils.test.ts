@@ -4,12 +4,20 @@ import {
 } from "./utils";
 import {AbstractDecoratorDefinition} from "./abstract-decorator-definition";
 import {expect} from "chai";
-import {DefinitionContainer} from "./definition-container";
+import {AbstractDefinitionContainer} from "./definition-container";
 
-class MockDefinition extends AbstractDecoratorDefinition {
+class TestDefinition extends AbstractDecoratorDefinition {
     public testProperty: string;
     public testProperty2: string;
 }
+
+
+class TestDefinitionContainer extends AbstractDefinitionContainer<TestDefinition> {
+    protected createDefinition(decoratedPropertyName: string): TestDefinition {
+        return new TestDefinition(decoratedPropertyName);
+    }
+}
+
 
 const TEST_PROPERTY = "testProperty";
 const TEST_PROPERTY_2 = "testProperty2";
@@ -17,7 +25,7 @@ const TEST_PROPERTY_2 = "testProperty2";
 describe('definitionDecoratorPropertySetterFactory', () => {
     let decoratorFactory: ValueSetterDecoratorFactory<string>;
     beforeEach(() => {
-        decoratorFactory = definitionPropertySetterFactory<string,MockDefinition>(TEST_PROPERTY, MockDefinition);
+        decoratorFactory = definitionPropertySetterFactory<string,TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
     });
 
     it('should return a function', () => {
@@ -28,8 +36,8 @@ describe('definitionDecoratorPropertySetterFactory', () => {
 
 
         describe('decorator', () => {
-            context('if DefinitionContainer exists class and already annotated', () => {
-                it('should not add new DefinitionContainer', () => {
+            context('if AbstractDefinitionContainer exists class and already annotated', () => {
+                it('should not add new AbstractDefinitionContainer', () => {
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     decorator(testObject, 'testMethod', {});
@@ -41,24 +49,24 @@ describe('definitionDecoratorPropertySetterFactory', () => {
             });
 
 
-            context('if DefinitionContainer not exists class is not yet annotated', () => {
-                it('should add DefinitionContainer', () => {
+            context('if AbstractDefinitionContainer not exists class is not yet annotated', () => {
+                it('should add AbstractDefinitionContainer', () => {
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     decorator(testObject, 'testMethod', {});
-                    expect(testObject[DEFINITION_SYMBOL]).to.instanceOf(DefinitionContainer);
+                    expect(testObject[DEFINITION_SYMBOL]).to.instanceOf(AbstractDefinitionContainer);
                 });
             });
 
-            context('if DefinitionContainer not exists on property', () => {
-                it('should add Definition instance to DefinitionContainer', () => {
+            context('if AbstractDefinitionContainer not exists on property', () => {
+                it('should add Definition instance to AbstractDefinitionContainer', () => {
                     const decorator = decoratorFactory('value');
                     const testObject: any = {};
                     const methodName = 'testMethod';
                     decorator(testObject, methodName, {});
                     const container = testObject[DEFINITION_SYMBOL];
                     const definition = container.getDefinitionToProperty(methodName);
-                    expect(definition).to.instanceOf(MockDefinition);
+                    expect(definition).to.instanceOf(TestDefinition);
                     expect(definition.name).to.eq(methodName);
                 });
 
@@ -68,7 +76,7 @@ describe('definitionDecoratorPropertySetterFactory', () => {
                     const testObject: any = {};
                     decorator(testObject, TEST_PROPERTY, {});
                     const container = testObject[DEFINITION_SYMBOL];
-                    const definition: MockDefinition = container.getDefinitionToProperty(TEST_PROPERTY);
+                    const definition: TestDefinition = container.getDefinitionToProperty(TEST_PROPERTY);
                     expect(definition.testProperty).to.eq(propertyValue);
                 });
 
@@ -90,8 +98,8 @@ describe('definitionDecoratorPropertySetterFactory', () => {
                 it('should set existing DecoratorDefinition property', () => {
                     const testPropertyValue = '1234';
                     const testProperty2Value = 'ABC';
-                    const decoratorFactory = definitionPropertySetterFactory<string,MockDefinition>(TEST_PROPERTY, MockDefinition);
-                    const decorator2Factory = definitionPropertySetterFactory<string,MockDefinition>(TEST_PROPERTY_2, MockDefinition);
+                    const decoratorFactory = definitionPropertySetterFactory<string,TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
+                    const decorator2Factory = definitionPropertySetterFactory<string,TestDefinition>(TEST_PROPERTY_2, TestDefinitionContainer);
 
                     const decorator = decoratorFactory(testPropertyValue);
                     const decorator2 = decorator2Factory(testProperty2Value);
@@ -101,7 +109,7 @@ describe('definitionDecoratorPropertySetterFactory', () => {
                     const propertyName = 'testMethod';
                     decorator(testObject, propertyName, {});
                     const container = testObject[DEFINITION_SYMBOL];
-                    const definition: MockDefinition = container.getDefinitionToProperty(propertyName);
+                    const definition: TestDefinition = container.getDefinitionToProperty(propertyName);
                     decorator2(testObject, propertyName, {});
                     expect(definition.testProperty).to.eq(testPropertyValue);
                     expect(definition.testProperty2).to.eq(testProperty2Value);
@@ -119,14 +127,14 @@ describe('getDefinitionsFromClass', () => {
 
     context('if definition exist', () => {
         it('should give back an array of activity definitions from the class', () => {
-            const decorator = definitionPropertySetterFactory<string, MockDefinition>('name', MockDefinition);
+            const decorator = definitionPropertySetterFactory<string, TestDefinition>('name', TestDefinitionContainer);
 
             class Clazz {
                 @decorator('test')
                 testMethodName() {
                 }
             }
-            const definitions: MockDefinition[] = getDefinitionsFromClass<MockDefinition>(Clazz);
+            const definitions: TestDefinition[] = getDefinitionsFromClass<TestDefinition>(Clazz);
             expect(definitions).to.be.an('array');
         });
     });

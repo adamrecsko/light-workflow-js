@@ -1,8 +1,11 @@
 import {workflowDecoratorFactory as decoratorFactory} from "./workflow-decorator-factory";
 import {WorkflowDefinitionProperties} from "../workflow-definition";
 import {Serializer} from "../../application/serializer";
+import {WorkflowDecoratorDefinitionContainer} from "./workflow-decorator-definition-conatiner";
+import {definitionCreatorFactory} from "../../decorators/utils";
 
 
+export const workflow = definitionCreatorFactory(WorkflowDecoratorDefinitionContainer);
 export const name = decoratorFactory<string>(WorkflowDefinitionProperties.name);
 export const version = decoratorFactory<string>(WorkflowDefinitionProperties.version);
 export const description = decoratorFactory<string>(WorkflowDefinitionProperties.description);

@@ -1,6 +1,6 @@
 import {Observable} from "rxjs";
 import {injectable} from "inversify";
-import {description, version} from "../../../core/activity/decorators/activity-decorators";
+import {description, version, activity} from "../../../core/activity/decorators/activity-decorators";
 export const helloSymbol = Symbol('hello');
 
 export interface Hello {
@@ -15,15 +15,16 @@ export class HelloImpl implements Hello {
         console.log(text);
     }
 
-    @version('1')
-    @description('this thing is a text formatter')
+    @activity
     formatText(text: string): Observable<string> {
         return Observable.of(text + ' hello world');
     }
 
-    @version('1')
+    @activity
+    @version('23-b')
+    @description('print the text out')
     printIt(text: string): Observable<any> {
-        return Observable.of(text).do((text: string)=> {
+        return Observable.of(text).do((text: string) => {
             this.printer(text);
         });
     }

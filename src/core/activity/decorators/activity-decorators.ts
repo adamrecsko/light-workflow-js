@@ -1,8 +1,13 @@
 import {activityDefinitionDecoratorFactory as decoratorFactory} from "./activity-decorator-factory";
 import {Serializer} from "../../application/serializer";
 import {ActivityDefinitionProperty} from "../activity-definition";
+import {definitionCreatorFactory} from "../../decorators/utils";
+import {ActivityDecoratorDefinitionContainer} from "./activity-decorator-definition-container";
 
 //decorators
+export const activity = definitionCreatorFactory(ActivityDecoratorDefinitionContainer);
+
+//definition property setters
 export const name = decoratorFactory<string>(ActivityDefinitionProperty.name);
 export const version = decoratorFactory<string>(ActivityDefinitionProperty.version);
 export const defaultTaskHeartbeatTimeout = decoratorFactory<string>(ActivityDefinitionProperty.defaultTaskHeartbeatTimeout);

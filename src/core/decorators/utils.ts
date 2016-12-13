@@ -1,6 +1,6 @@
 import {Newable} from "../../implementation";
 import {AbstractDecoratorDefinition} from "./abstract-decorator-definition";
-import {DefinitionContainer} from "./definition-container";
+import {AbstractDefinitionContainer} from "./definition-container";
 
 
 export const DEFINITION_SYMBOL = Symbol('DEFINITION_SYMBOL');
@@ -14,18 +14,19 @@ export class DefinitionNotAvailableException extends Error {
     }
 }
 
-export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDefinition>(definitionProperty: string,
-                                                                                         definitionClass: Newable<D>): ValueSetterDecoratorFactory<T> {
+
+export function definitionCreatorFactory<T extends AbstractDecoratorDefinition>(definitionContainerClass: Newable<AbstractDefinitionContainer<T>>) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+        target[DEFINITION_SYMBOL] = target[DEFINITION_SYMBOL] || new definitionContainerClass();
+    }
+}
+
+export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDefinition>(definitionProperty: string, definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
     return function (value: T): Decorator {
         return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
-            const definitionContainer: DefinitionContainer<D> = target[DEFINITION_SYMBOL] = target[DEFINITION_SYMBOL] || new DefinitionContainer<D>();
-            let definition: D;
-            if (definitionContainer.hasDefinition(propertyKey)) {
-                definition = definitionContainer.getDefinitionToProperty(propertyKey);
-            } else {
-                definition = new definitionClass(propertyKey);
-                definitionContainer.addDefinition(definition);
-            }
+            definitionCreatorFactory(definitionContainerClass)(target, propertyKey, descriptor);
+            const definitionContainer: AbstractDefinitionContainer<D> = target[DEFINITION_SYMBOL];
+            const definition: D = definitionContainer.createOrGetDefinitionToDecoratedProperty(propertyKey);
             definition[definitionProperty] = value;
         }
     }
@@ -33,7 +34,7 @@ export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDef
 
 
 export function getDefinitionsFromClass<T extends AbstractDecoratorDefinition>(clazz: Newable<any>): T[] {
-    const defContainer: DefinitionContainer<T> = (<DefinitionContainer<T>>clazz.prototype[DEFINITION_SYMBOL]);
+    const defContainer: AbstractDefinitionContainer<T> = (<AbstractDefinitionContainer<T>>clazz.prototype[DEFINITION_SYMBOL]);
     if (defContainer) {
         return defContainer.toArray();
     } else {

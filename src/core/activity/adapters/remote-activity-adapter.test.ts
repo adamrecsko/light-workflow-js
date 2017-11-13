@@ -34,17 +34,15 @@ const testTaskList = 'test-task-list';
 
 describe('RemoteActivityAdapter', ()=> {
 
-    let obsFactory: ObservableFactory<string>;
     let testScheduler: TestScheduler;
     let runContext: DecisionRunContext;
     let testValue: string;
     let contextResolution: ContextResolutionStrategy<DecisionRunContext>;
-    let mockObservableFactory: ObservableFactory<string>;
+    let mockObservableFactory: RemoteObservableFactory;
     let definition: ActivityDefinition;
     let mockSerializer: Serializer;
 
     beforeEach(()=> {
-        obsFactory = new MockObservableFactory();
         testScheduler = new ChaiTestScheduler();
         runContext = new MockDecisionRunContext();
         contextResolution = new MockContextResolutionStrategy();

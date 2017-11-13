@@ -256,6 +256,10 @@ describe('BaseDecisionContext', ()=> {
             it('should create activity state machine', ()=> {
                 const runContext = new BaseDecisionRunContext();
                 const attributes = {
+                  activityType: {
+                    name: 'test name',
+                    version: '123'
+                  },
                     activityId: 'test actvity id',
                     input: 'this is an input'
                 };
@@ -265,6 +269,10 @@ describe('BaseDecisionContext', ()=> {
             it('should store activity state machine', ()=> {
                 const runContext = new BaseDecisionRunContext();
                 const attributes = {
+                  activityType: {
+                    name: 'test name',
+                    version: '123'
+                  },
                     activityId: 'test actvity id',
                     input: 'this is an input'
                 };
@@ -282,6 +290,10 @@ describe('BaseDecisionContext', ()=> {
             it('should not create new activity state machine', ()=> {
                 const runContext = new BaseDecisionRunContext();
                 const attributes = {
+                  activityType: {
+                    name: 'test name',
+                    version: '123'
+                  },
                     activityId: 'test actvity id',
                     input: 'this is an input'
                 };
@@ -298,7 +310,11 @@ describe('BaseDecisionContext', ()=> {
                     [SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS]
                 ));
                 const attributes = {
-                    activityId: SCHEDULED_PARAMS.activityId,
+                  activityType: {
+                    name: 'test name',
+                    version: '123'
+                  },
+                  activityId: SCHEDULED_PARAMS.activityId
                 };
                 const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
                 expect(stateMachine.result).to.eq(COMPLETED_PARAMS.result);

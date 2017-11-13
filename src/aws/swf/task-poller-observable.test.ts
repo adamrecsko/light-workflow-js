@@ -10,7 +10,17 @@ describe('ActivityTaskPollerObservable', ()=> {
     context('when no error happens', ()=> {
         it('should repeat subscribe to the given observable', ()=> {
             const testData: ActivityTask = {
-                taskToken: 'token'
+                activityId: '12',
+                taskToken: 'token',
+                startedEventId: 1,
+                activityType: {
+                    name: 'activity',
+                    version: '123'
+                },
+                workflowExecution: {
+                    workflowId: '1',
+                    runId: '2'
+                }
             };
             const testScheduler = new TestScheduler((a: TestMessage, b: TestMessage)=> {
                 expect(a).to.eql(b);

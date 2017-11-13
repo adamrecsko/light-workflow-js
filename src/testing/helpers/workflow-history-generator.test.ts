@@ -353,7 +353,7 @@ describe('ActivityHistoryGenerator', ()=> {
 
     describe('createActivityList', ()=> {
         context('with default parameters', ()=> {
-            it('should generate completed workflow history', ()=> {
+          it('should generate completed Workflow history', () => {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const list = historyGenerator.createActivityList([
                     EventType.ActivityTaskScheduled,
@@ -384,7 +384,7 @@ describe('ActivityHistoryGenerator', ()=> {
                 });
             });
 
-            it('should generate a failed workflow history', ()=> {
+          it('should generate a failed Workflow history', () => {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const list = historyGenerator.createActivityList([
                     EventType.ActivityTaskScheduled,
@@ -414,7 +414,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     eventId: 3
                 });
             });
-            it('should generate a canceled workflow history', ()=> {
+          it('should generate a canceled Workflow history', () => {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const list = historyGenerator.createActivityList([
                     EventType.ActivityTaskScheduled,
@@ -455,7 +455,7 @@ describe('ActivityHistoryGenerator', ()=> {
                 });
             });
 
-            it('should generate a timed out activity workflow history', ()=> {
+          it('should generate a timed out activity Workflow history', () => {
                 const historyGenerator = new ActivityHistoryGenerator();
                 const list = historyGenerator.createActivityList([
                     EventType.ActivityTaskScheduled,
@@ -491,7 +491,7 @@ describe('ActivityHistoryGenerator', ()=> {
 
         describe('createActivityList', ()=> {
 
-            it('should generate a coherent workflow history', ()=> {
+          it('should generate a coherent Workflow history', () => {
                 const historyGenerator = new ActivityHistoryGenerator();
                 historyGenerator.seek(10);
                 const list = historyGenerator.createActivityList([
@@ -513,7 +513,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     historyGenerator.seek(fistEventId);
                 });
 
-                it('should generate a completed workflow history', ()=> {
+              it('should generate a completed Workflow history', () => {
                     const params = [SCHEDULED_PARAMS, STARTED_PARAMS, COMPLETED_PARAMS];
                     const list = historyGenerator.createActivityList([
                         EventType.ActivityTaskScheduled,
@@ -537,7 +537,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     });
                 });
 
-                it('should generate a failed workflow history', ()=> {
+              it('should generate a failed Workflow history', () => {
                     const params = [SCHEDULED_PARAMS, STARTED_PARAMS, FAILED_PARAMS];
                     const list = historyGenerator.createActivityList([
                         EventType.ActivityTaskScheduled,
@@ -566,7 +566,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     });
                 });
 
-                it('should generate a canceled workflow history', ()=> {
+              it('should generate a canceled Workflow history', () => {
                     const params = [SCHEDULED_PARAMS, STARTED_PARAMS, REQUEST_CANCELLED_PARAMS, CANCELLED_PARAMS];
                     const list = historyGenerator.createActivityList([
                         EventType.ActivityTaskScheduled,
@@ -596,7 +596,7 @@ describe('ActivityHistoryGenerator', ()=> {
                     });
                 });
 
-                it('should generate a timed out activity workflow history', ()=> {
+              it('should generate a timed out activity Workflow history', () => {
                     const params = [SCHEDULED_PARAMS, STARTED_PARAMS, TIMEOUT_PARAMS];
                     const list = historyGenerator.createActivityList([
                         EventType.ActivityTaskScheduled,
@@ -625,7 +625,7 @@ describe('ActivityHistoryGenerator', ()=> {
 
 
     describe('generateList', ()=> {
-        it('should generate a coherent workflow history', ()=> {
+      it('should generate a coherent Workflow history', () => {
             const events = ActivityHistoryGenerator.generateList([
                 COMPLETED_TRANSITION,
                 TIMEOUTED_TRANSITION,

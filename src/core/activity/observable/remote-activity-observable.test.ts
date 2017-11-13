@@ -54,7 +54,7 @@ describe('RemoteActivityObservable', ()=> {
         sinon.assert.calledWith(mockGetOrCreateActivity, scheduleParams);
     });
     it('should fire next and complete if activity completed', ()=> {
-        const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Completed});
+      const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Completed});
         const result = 'test activity result';
         const serializedResult: any = {
             data: result
@@ -69,7 +69,7 @@ describe('RemoteActivityObservable', ()=> {
         testScheduler.flush();
     });
     it('should throw FailedException if activity failed', ()=> {
-        const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Failed});
+      const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Failed});
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         const details = 'failed activity test details';
         const reason = 'failed activity test reason';
@@ -82,7 +82,7 @@ describe('RemoteActivityObservable', ()=> {
         testScheduler.flush();
     });
     it('should throw ScheduleFailedException if schedule failed', ()=> {
-        const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.ScheduleFailed});
+      const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.ScheduleFailed});
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         const cause = 'schedule failed because TEST';
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
@@ -94,7 +94,7 @@ describe('RemoteActivityObservable', ()=> {
         testScheduler.flush();
     });
     it('should throw RequestCancelFailedException if cancel request failed', ()=> {
-        const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.RequestCancelFailed});
+      const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.RequestCancelFailed});
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         const cause = 'cancel failed because TEST';
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
@@ -107,7 +107,7 @@ describe('RemoteActivityObservable', ()=> {
     });
 
     it('should complete if activity cancelled', ()=> {
-        const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Canceled});
+      const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Canceled});
         const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
         mockDecisionRunContext.getOrCreateActivityStateMachine = mockGetOrCreateActivity;
         mockActivityStateMachine.onChange = onChange;
@@ -119,7 +119,7 @@ describe('RemoteActivityObservable', ()=> {
     describe('if activity has timed out', ()=> {
         context('in case of START_TO_CLOSE timeout', ()=> {
             it('should throw StartToCloseTimeoutException', ()=> {
-                const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
+              const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
                 const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
                 const details = 'time out activity test details';
                 const timeoutType = 'timeout activity timeoutType';
@@ -134,7 +134,7 @@ describe('RemoteActivityObservable', ()=> {
         });
         context('in case of SCHEDULE_TO_START timeout', ()=> {
             it('should throw ScheduleToStartTimeoutException', ()=> {
-                const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
+              const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
                 const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
                 const details = 'time out activity test details';
                 const timeoutType = 'timeout activity timeoutType';
@@ -149,7 +149,7 @@ describe('RemoteActivityObservable', ()=> {
         });
         context('in case of SCHEDULE_TO_CLOSE timeout', ()=> {
             it('should throw ScheduleToCloseTimeoutException', ()=> {
-                const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
+              const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
                 const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
                 const details = 'time out activity test details';
                 const timeoutType = 'timeout activity timeoutType';
@@ -165,7 +165,7 @@ describe('RemoteActivityObservable', ()=> {
 
         context('in case of HEARTBEAT timeout', ()=> {
             it('should throw HeartbeatTimeoutException', ()=> {
-                const onChange = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
+              const onChange: Observable<ActivityDecisionState> = testScheduler.createColdObservable('a', {a: ActivityDecisionState.Timeout});
                 const mockGetOrCreateActivity = sinon.stub().returns(mockActivityStateMachine);
                 const details = 'time out activity test details';
                 const timeoutType = 'timeout activity timeoutType';

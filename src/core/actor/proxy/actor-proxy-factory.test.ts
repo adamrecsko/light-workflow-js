@@ -14,12 +14,13 @@ import {expect} from "chai";
 import {Observable} from "rxjs";
 import * as sinon from "sinon";
 import {getDefinitionsFromClass} from "../../decorators/utils";
+import {RemoteObservableFactory, RemoteActivityObservable} from "../../activity/observable/remote-activity-observable";
 
 class MockRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
     create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,
            activityDefinition: ActivityDefinition,
            taskList: string,
-           observableFactory?: ObservableFactory<string>): DefaultRemoteActivityAdapter {
+           observableFactory?: RemoteObservableFactory): DefaultRemoteActivityAdapter {
         return null;
     }
 }
@@ -31,7 +32,7 @@ class MockContextResolutionStrategy implements ContextResolutionStrategy<Decisio
 }
 
 class MockRemoteActivityAdapter implements RemoteActivityAdapter {
-    public createObservable(callParams: any[]): Observable<string> {
+  public createObservable(callParams: any[]): RemoteActivityObservable {
         return null;
     }
 }

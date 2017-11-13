@@ -28,8 +28,9 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
                 private actorProxyFactory: ActorProxyFactory) {
     }
 
+
     public addImplementations(implementationList: Binding[]): void {
-        implementationList.forEach((binding)=> {
+      implementationList.forEach((binding) => {
             const impl: Newable<any> = binding.impl;
             const taskLists = binding.taskLists;
 
@@ -43,17 +44,17 @@ export class BaseActorClientImplementationHelper implements ActorClientImplement
              Load actor proxy for default task list
              */
             this.appContainer.bind<Newable<any>>(binding.key)
-                .toDynamicValue(()=>this.actorProxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
-                .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && !r.target.hasTag(TASK_LIST_TAG));
+              .toDynamicValue(() => this.actorProxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
+              .when((request: interfaces.Request) => request.target.hasTag(ACTOR_CLIENT_TAG) && !request.target.hasTag(TASK_LIST_TAG));
 
             /*
              Load actor proxy for custom task lists
              */
             if (taskLists)
-                taskLists.forEach((taskList)=>
+              taskLists.forEach((taskList) =>
                     this.appContainer.bind<Newable<any>>(binding.key)
-                        .toDynamicValue(()=>this.actorProxyFactory.create(impl, taskList))
-                        .when((r: interfaces.Request)=>r.target.hasTag(ACTOR_CLIENT_TAG) && taggedConstraint(TASK_LIST_TAG)(taskList)(r)));
+                      .toDynamicValue(() => this.actorProxyFactory.create(impl, taskList))
+                      .when((r: interfaces.Request) => r.target.hasTag(ACTOR_CLIENT_TAG) && taggedConstraint(TASK_LIST_TAG)(taskList)(r)));
         });
     }
 }

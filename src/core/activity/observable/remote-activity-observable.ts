@@ -92,7 +92,7 @@ export class RemoteActivityObservable extends Observable<String> {
 }
 
 
-export interface RemoteObservableFactory extends ObservableFactory<string> {
+export interface RemoteObservableFactory {
     create(decisionContext: DecisionRunContext,
            scheduleParameters: ScheduleActivityTaskDecisionAttributes, serializer: Serializer): RemoteActivityObservable;
 }

@@ -9,18 +9,18 @@ import {
 } from "../../activity/adapters/remote-activity-adapter";
 import {ActivityDefinition} from "../../activity/activity-definition";
 import {getDefinitionsFromClass} from "../../decorators/utils";
+import {ActorProxy} from "./actor-proxy";
+import {Observable} from "rxjs";
+import {RemoteActivityObservable} from "../../activity/observable/remote-activity-observable";
 
 
 export interface ActorProxyFactory {
     create<T>(implementation: Newable<T>, taskList: string): T;
 }
 
-export class ActorProxy {
-}
 
-
-const caller = function (): any {
-    return this.createObservable(Array.from(arguments));
+const caller = function (): RemoteActivityObservable {
+  return (<RemoteActivityAdapter>this).createObservable(Array.from(arguments));
 };
 
 

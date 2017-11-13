@@ -11,7 +11,7 @@ function generateHistoryEventList(from: number, to: number): HistoryEvent[] {
     const historyEvents: HistoryEvent[] = [];
     for (let i = from; i <= to; i++) {
         const event: HistoryEvent = {
-            eventTimestamp: `${i}timestamp`,
+            eventTimestamp: new Date(i),
             eventType: 'EventType',
             eventId: i
         };
@@ -26,7 +26,7 @@ function generateDecisionTask(nextPageToken: string, events: HistoryEvent[]): De
         taskToken: 'task-token',
         startedEventId: 10,
         workflowExecution: {workflowId: 'workflowId', runId: 'runId'},
-        workflowType: {name: 'type'},
+        workflowType: {name: 'type', version: '123'},
         events: events,
         nextPageToken,
         previousStartedEventId: 10

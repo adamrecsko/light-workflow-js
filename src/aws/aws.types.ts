@@ -1,11 +1,12 @@
-import {Swf} from 'aws-sdk';
+import {SWF} from 'aws-sdk';
 
-export type ActivityTask =  Swf.ActivityTask;
-export type ActivityType = Swf.ActivityType;
-export type DecisionTask = Swf.DecisionTask;
-export type HistoryEvent = Swf.HistoryEvent;
 
-export type ScheduleActivityTaskDecisionAttributes = Swf.ScheduleActivityTaskDecisionAttributes;
+export type ActivityTask = SWF.Types.ActivityTask;
+export type ActivityType = SWF.Types.ActivityType;
+export type DecisionTask = SWF.Types.DecisionTask;
+export type HistoryEvent = SWF.Types.HistoryEvent;
+
+export type ScheduleActivityTaskDecisionAttributes = SWF.Types.ScheduleActivityTaskDecisionAttributes;
 
 export class TaskList {
     public name: string;

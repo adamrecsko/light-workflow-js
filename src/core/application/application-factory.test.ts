@@ -8,11 +8,12 @@ import {ApplicationConfiguration} from "./application-configuration";
 import {BaseApplicationConfigurationProvider} from "./application-configuration-provider";
 import {ConfigurableApplicationFactory} from "./application-factory";
 import {WORKFLOW_CLIENT} from "../../symbols";
+import {SWF} from 'aws-sdk';
 
 
 describe('ConfigurableApplicationFactory', ()=> {
     it('should create application', ()=> {
-        const configuration = new ApplicationConfiguration(new MockSWF());
+      const configuration = new ApplicationConfiguration(new MockSWF() as SWF);
         const configurationProvider = new BaseApplicationConfigurationProvider(configuration);
         const factory = new ConfigurableApplicationFactory(configurationProvider);
         interface App {

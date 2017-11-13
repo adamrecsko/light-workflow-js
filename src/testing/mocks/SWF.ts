@@ -1,132 +1,131 @@
-import {SWF, Swf} from "aws-sdk";
-import {Endpoint} from "aws-sdk";
-export class MockSWF implements SWF {
+import {SWF, AWSError, Config, Request} from "aws-sdk";
 
-    endpoint: Endpoint;
+export class MockSWF {
 
-    pollForActivityTask(params: any, callback: (err: any, data: Swf.ActivityTask) => void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  config: Config & SWF.Types.ClientConfiguration;
+
+
+  countClosedWorkflowExecutions(params: SWF.CountClosedWorkflowExecutionsInput, callback?: (err: AWSError, data: SWF.WorkflowExecutionCount) => void): Request<SWF.WorkflowExecutionCount, AWSError> {
+    return null;
     }
 
-    pollForDecisionTask(params: any, callback: (err: any, data: Swf.DecisionTask) => void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  countOpenWorkflowExecutions(params: SWF.CountOpenWorkflowExecutionsInput, callback?: (err: AWSError, data: SWF.WorkflowExecutionCount) => void): Request<SWF.WorkflowExecutionCount, AWSError> {
+    return null;
     }
 
-    startWorkflowExecution(params: any, callback: (err: any, data: Swf.StartWorkflowExecutionResult) => void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  countPendingActivityTasks(params: SWF.CountPendingActivityTasksInput, callback?: (err: AWSError, data: SWF.PendingTaskCount) => void): Request<SWF.PendingTaskCount, AWSError> {
+    return null;
     }
 
-    countClosedWorkflowExecutions(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  countPendingDecisionTasks(params: SWF.CountPendingDecisionTasksInput, callback?: (err: AWSError, data: SWF.PendingTaskCount) => void): Request<SWF.PendingTaskCount, AWSError> {
+    return null;
     }
 
-    countOpenWorkflowExecutions(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  deprecateActivityType(params: SWF.DeprecateActivityTypeInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    countPendingActivityTasks(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  deprecateDomain(params: SWF.DeprecateDomainInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    countPendingDecisionTasks(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  deprecateWorkflowType(params: SWF.DeprecateWorkflowTypeInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    deprecateActivityType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  describeActivityType(params: SWF.DescribeActivityTypeInput, callback?: (err: AWSError, data: SWF.ActivityTypeDetail) => void): Request<SWF.ActivityTypeDetail, AWSError> {
+    return null;
     }
 
-    deprecateDomain(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  describeDomain(params: SWF.DescribeDomainInput, callback?: (err: AWSError, data: SWF.DomainDetail) => void): Request<SWF.DomainDetail, AWSError> {
+    return null;
     }
 
-    deprecateWorkflowType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  describeWorkflowExecution(params: SWF.DescribeWorkflowExecutionInput, callback?: (err: AWSError, data: SWF.WorkflowExecutionDetail) => void): Request<SWF.WorkflowExecutionDetail, AWSError> {
+    return null;
     }
 
-    describeActivityType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  describeWorkflowType(params: SWF.DescribeWorkflowTypeInput, callback?: (err: AWSError, data: SWF.WorkflowTypeDetail) => void): Request<SWF.WorkflowTypeDetail, AWSError> {
+    return null;
     }
 
-    describeDomain(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  getWorkflowExecutionHistory(params: SWF.GetWorkflowExecutionHistoryInput, callback?: (err: AWSError, data: SWF.History) => void): Request<SWF.History, AWSError> {
+    return null;
     }
 
-    describeWorkflowExecution(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  listActivityTypes(params: SWF.ListActivityTypesInput, callback?: (err: AWSError, data: SWF.ActivityTypeInfos) => void): Request<SWF.ActivityTypeInfos, AWSError> {
+    return null;
     }
 
-    describeWorkflowType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  listClosedWorkflowExecutions(params: SWF.ListClosedWorkflowExecutionsInput, callback?: (err: AWSError, data: SWF.WorkflowExecutionInfos) => void): Request<SWF.WorkflowExecutionInfos, AWSError> {
+    return null;
     }
 
-    getWorkflowExecutionHistory(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  listDomains(params: SWF.ListDomainsInput, callback?: (err: AWSError, data: SWF.DomainInfos) => void): Request<SWF.DomainInfos, AWSError> {
+    return null;
     }
 
-    listActivityTypes(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  listOpenWorkflowExecutions(params: SWF.ListOpenWorkflowExecutionsInput, callback?: (err: AWSError, data: SWF.WorkflowExecutionInfos) => void): Request<SWF.WorkflowExecutionInfos, AWSError> {
+    return null;
     }
 
-    listClosedWorkflowExecutions(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  listWorkflowTypes(params: SWF.ListWorkflowTypesInput, callback?: (err: AWSError, data: SWF.WorkflowTypeInfos) => void): Request<SWF.WorkflowTypeInfos, AWSError> {
+    return null;
     }
 
-    listDomains(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  pollForActivityTask(params: SWF.PollForActivityTaskInput, callback?: (err: AWSError, data: SWF.ActivityTask) => void): Request<SWF.ActivityTask, AWSError> {
+    return null;
     }
 
-    listOpenWorkflowExecutions(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  pollForDecisionTask(params: SWF.PollForDecisionTaskInput, callback?: (err: AWSError, data: SWF.DecisionTask) => void): Request<SWF.DecisionTask, AWSError> {
+    return null;
     }
 
-    listWorkflowTypes(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  recordActivityTaskHeartbeat(params: SWF.RecordActivityTaskHeartbeatInput, callback?: (err: AWSError, data: SWF.ActivityTaskStatus) => void): Request<SWF.ActivityTaskStatus, AWSError> {
+    return null;
     }
 
-
-    recordActivityTaskHeartbeat(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  registerActivityType(params: SWF.RegisterActivityTypeInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    registerActivityType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  registerDomain(params: SWF.RegisterDomainInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    registerDomain(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  registerWorkflowType(params: SWF.RegisterWorkflowTypeInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    registerWorkflowType(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  requestCancelWorkflowExecution(params: SWF.RequestCancelWorkflowExecutionInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    requestCancelWorkflowExecution(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  respondActivityTaskCanceled(params: SWF.RespondActivityTaskCanceledInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    respondActivityTaskCanceled(params: Swf.RespondActivityTaskCanceledRequest, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  respondActivityTaskCompleted(params: SWF.RespondActivityTaskCompletedInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    respondActivityTaskCompleted(params: Swf.RespondActivityTaskCompletedRequest, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  respondActivityTaskFailed(params: SWF.RespondActivityTaskFailedInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    respondActivityTaskFailed(params: Swf.RespondActivityTaskFailedRequest, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  respondDecisionTaskCompleted(params: SWF.RespondDecisionTaskCompletedInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    respondDecisionTaskCompleted(params: Swf.RespondDecisionTaskCompletedRequest, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  signalWorkflowExecution(params: SWF.SignalWorkflowExecutionInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 
-    signalWorkflowExecution(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  startWorkflowExecution(params: SWF.StartWorkflowExecutionInput, callback?: (err: AWSError, data: SWF.Run) => void): Request<SWF.Run, AWSError> {
+    return null;
     }
 
-
-    terminateWorkflowExecution(params: any, callback: (err: any, data: any)=>void): void {
-        throw new Error('MockSWF: Unimplemented Exception - Mock the method in the test');
+  terminateWorkflowExecution(params: SWF.TerminateWorkflowExecutionInput, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError> {
+    return null;
     }
 }

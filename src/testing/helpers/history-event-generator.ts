@@ -3,11 +3,11 @@ import {HistoryEvent} from "../../aws/aws.types";
 
 import  * as faker from 'faker';
 
-const randomTimestampGen = (): number=> {
-    return faker.date.past().getTime();
+const randomTimestampGen = (): Date => {
+  return faker.date.past();
 };
 export class HistoryGenerator {
-    public timestampGen: ()=>number = randomTimestampGen;
+  public timestampGen: () => Date = randomTimestampGen;
     public currentEventId: number = 1;
 
     public createHistoryEvent(eventType: EventType): HistoryEvent {

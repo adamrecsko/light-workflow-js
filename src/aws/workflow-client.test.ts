@@ -31,10 +31,10 @@ describe('GenericSwfRx', () => {
             const testFunction = (p: P, cb: (error: any, data: D)=>{})=> {
                 cb(null, result);
             };
-            const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction, param);
+            const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction as any, param);
             const testObs = obs.materialize();
             let values: Notification<any>[];
-            testObs.toArray().subscribe((v)=>values = v);
+            testObs.toArray().subscribe((v: any) => values = v);
             expect(values).to.eql([
                 Notification.createNext(result),
                 Notification.createComplete()
@@ -49,10 +49,10 @@ describe('GenericSwfRx', () => {
             const testFunction = (p: P, cb: (error: any, data: D)=>{})=> {
                 cb(error, null);
             };
-            const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction, param);
+            const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction as any, param);
             const testObs = obs.materialize();
             let values: Notification<any>[];
-            testObs.toArray().subscribe((v)=>values = v);
+            testObs.toArray().subscribe((v: any) => values = v);
             expect(values).to.eql([
                 Notification.createError(error)
             ]);

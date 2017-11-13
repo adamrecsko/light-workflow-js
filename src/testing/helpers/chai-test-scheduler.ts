@@ -9,8 +9,7 @@ export class ChaiTestScheduler extends TestScheduler {
             // exception type check
             for (let i = 0; i < a.length; i++) {
                 if (a[i].notification.kind === 'E')
-                    expect(a[i].notification.exception).to.be.
-                    instanceOf(b[i].notification.exception.constructor);
+                  expect(a[i].notification.error).to.be.instanceOf(b[i].notification.error.constructor);
             }
         });
     }

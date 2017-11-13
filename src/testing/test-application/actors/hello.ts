@@ -5,7 +5,7 @@ export const helloSymbol = Symbol('hello');
 
 export interface Hello {
     formatText(text: string): Observable<string>;
-    printIt(text: string): Observable<any>;
+  printIt(text: string): Observable<string>;
 }
 
 @injectable()
@@ -23,7 +23,7 @@ export class HelloImpl implements Hello {
     @activity
     @version('23-b')
     @description('print the text out')
-    printIt(text: string): Observable<any> {
+    printIt(text: string): Observable<string> {
         return Observable.of(text).do((text: string) => {
             this.printer(text);
         });

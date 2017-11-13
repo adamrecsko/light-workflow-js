@@ -4,13 +4,13 @@ import {AbstractDefinitionContainer} from "./definition-container";
 
 
 export const DEFINITION_SYMBOL = Symbol('DEFINITION_SYMBOL');
-export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor)=>void;
-export type ValueSetterDecoratorFactory<T> = (value: T)=>Decorator;
+export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+export type ValueSetterDecoratorFactory<T> = (value: T) => Decorator;
 
 
 export class DefinitionNotAvailableException extends Error {
-    constructor(clazz: Newable<any>) {
-        super(`Definition not found on class: ${clazz}.`);
+  constructor(newable: Newable<any>) {
+    super(`Definition not found on class: ${newable}.`);
     }
 }
 
@@ -21,7 +21,7 @@ export function definitionCreatorFactory<T extends AbstractDecoratorDefinition>(
     }
 }
 
-export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDefinition>(definitionProperty: string, definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
+export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDefinition>(definitionProperty: keyof D, definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
     return function (value: T): Decorator {
         return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
             definitionCreatorFactory(definitionContainerClass)(target, propertyKey, descriptor);
@@ -33,11 +33,11 @@ export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDef
 }
 
 
-export function getDefinitionsFromClass<T extends AbstractDecoratorDefinition>(clazz: Newable<any>): T[] {
-    const defContainer: AbstractDefinitionContainer<T> = (<AbstractDefinitionContainer<T>>clazz.prototype[DEFINITION_SYMBOL]);
+export function getDefinitionsFromClass<T extends AbstractDecoratorDefinition>(newable: Newable<any>): T[] {
+  const defContainer: AbstractDefinitionContainer<T> = (<AbstractDefinitionContainer<T>>newable.prototype[DEFINITION_SYMBOL]);
     if (defContainer) {
         return defContainer.toArray();
     } else {
-        throw new DefinitionNotAvailableException(clazz);
+      throw new DefinitionNotAvailableException(newable);
     }
 }

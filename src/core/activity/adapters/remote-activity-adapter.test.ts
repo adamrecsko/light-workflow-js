@@ -96,7 +96,7 @@ describe('RemoteActivityAdapter', ()=> {
         definition.serializer = mockSerializer;
         const remoteActivityAdapter = new DefaultRemoteActivityAdapter(contextResolution, definition, testTaskList, mockObservableFactory);
         remoteActivityAdapter.createObservable(testCallAttributes);
-        expect(createStub.getCall(0).args).to.be.eql([runContext, expectedScheduleParameters]);
+        expect(createStub.getCall(0).args).to.be.eql([runContext, expectedScheduleParameters, mockSerializer]);
         expect(stringifyStub.getCall(0).args).to.be.eql([testCallAttributes]);
     });
 });

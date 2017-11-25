@@ -1,19 +1,24 @@
 import {injectable, inject} from "inversify";
 import {HelloWorkflow, helloWorkflowSymbol} from "./workflows/hello-world";
-import {WorkflowResult} from "../../core/workflow/workflow-result";
-import {WorkflowProxy} from "../../core/workflow/workflow-proxy";
+import {workflowClient} from "../../core/workflow/decorators/workflow-client-decorators";
+import {WorkflowUtils} from "../../core/workflow/workflow-utils";
 
 
 @injectable()
 export class MyApp {
-    @inject(helloWorkflowSymbol)
-    private helloWorkflow: WorkflowProxy<HelloWorkflow>;
+  @inject(helloWorkflowSymbol)
+  @workflowClient
+  private helloWorkflow: HelloWorkflow;
 
-    public start(): void {
+  private workflow: WorkflowUtils;
 
-    }
+  public async start() {
 
-    public runTheHello(text: string): Promise<WorkflowResult> {
-        return this.helloWorkflow.helloWorld(text);
-    }
+
+  }
+
+  public async runTheHello(text: string): Promise<string> {
+    const workflowResult = await this.workflow.start(this.helloWorkflow.halloWorld, 'hello');
+    return await workflowResult.value;
+  }
 }

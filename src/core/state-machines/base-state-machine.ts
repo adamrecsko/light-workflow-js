@@ -25,7 +25,7 @@ export class BaseStateMachine<T> implements StateMachine<T> {
             this.stateHistory.push(this._currentState);
         } else {
             throw new InvalidStateTransitionException(
-                `Transition table is not allow change: ${this._currentState} -> ${state}`
+              `Transition table does not allow change: ${this._currentState} -> ${state}`
             );
         }
     }

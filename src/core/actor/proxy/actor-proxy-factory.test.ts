@@ -7,7 +7,6 @@ import {
     RemoteActivityAdapter
 } from "../../activity/adapters/remote-activity-adapter";
 import {ActivityDefinition} from "../../activity/activity-definition";
-import {ObservableFactory} from "../../application/observable-factory";
 import {version, scheduleToCloseTimeout, serializer} from "../../activity/decorators/activity-decorators";
 import {MockSerializer} from "../../../testing/mocks/serializer";
 import {expect} from "chai";

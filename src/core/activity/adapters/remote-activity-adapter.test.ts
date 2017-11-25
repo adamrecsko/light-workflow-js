@@ -4,7 +4,6 @@ import {ActivityDefinition} from "../activity-definition";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {MockDecisionRunContext} from "../../../testing/mocks/decision-run-context";
-import {ObservableFactory} from "../../application/observable-factory";
 import {TestScheduler} from "rxjs";
 import {ChaiTestScheduler} from "../../../testing/helpers/chai-test-scheduler";
 import {Serializer} from "../../application/serializer";

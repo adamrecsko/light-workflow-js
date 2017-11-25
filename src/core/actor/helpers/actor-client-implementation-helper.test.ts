@@ -4,14 +4,14 @@ import {expect} from "chai";
 import {injectable} from "inversify";
 import * as sinon from "sinon";
 import {
-    BaseActorClientImplementationHelper,
-    Binding
+  BaseActorClientImplementationHelper
 } from "./actor-client-implementation-helper";
 import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
 import {Newable} from "../../../implementation";
 import {inject} from "inversify";
 import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
 import {taskList, actorClient} from "../decorators/actor-decorators";
+import {Binding} from "../../generics/implementation-helper";
 
 
 const testActorSymbol = Symbol('testActorSymbol');

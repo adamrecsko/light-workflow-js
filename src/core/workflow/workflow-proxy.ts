@@ -1,6 +1,6 @@
-import {WorkflowResult} from "./workflow-result";
+import {WorkflowDefinition} from "./workflow-definition";
 
-export type Proxy = (...args: any[]) => Promise<WorkflowResult>;
-export type WorkflowProxy<K> = {
-  [P in keyof K]: Proxy & K[P]
-  }
+export class WorkflowProxy {
+  [key: string]: WorkflowDefinition;
+}
+

@@ -8,20 +8,13 @@ import {ActorProxyFactory} from "../proxy/actor-proxy-factory";
 import {Newable} from "../../../implementation";
 import {DEFAULT_ACTOR_TASK_LIST} from "../../../constants";
 import {ACTOR_CLIENT_TAG, TASK_LIST_TAG} from "../decorators/actor-decorators";
+import {Binding, ImplementationHelper} from "../../generics/implementation-helper";
 
 
-export type Binding = {
-    impl: Newable<any>,
-    key: symbol,
-    taskLists?: string[]
-};
 
-export interface ActorClientImplementationHelper {
-    addImplementations(implementationList: Binding[]): void;
-}
 
 @injectable()
-export class BaseActorClientImplementationHelper implements ActorClientImplementationHelper {
+export class BaseActorClientImplementationHelper implements ImplementationHelper {
     constructor(@inject(APP_CONTAINER)
                 private appContainer: Container,
                 @inject(REMOTE_ACTOR_PROXY_FACTORY)

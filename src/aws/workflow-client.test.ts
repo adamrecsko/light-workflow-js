@@ -17,7 +17,6 @@ describe('GenericSwfRx', () => {
             const obs = BaseWorkflowClient.fromSwfFunction(testFunction, param);
             obs.subscribe();
             sinon.assert.calledWith(testFunction, param);
-
         });
 
         it('should emit async function result and complete', ()=> {

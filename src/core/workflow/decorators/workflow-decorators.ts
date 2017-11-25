@@ -4,6 +4,7 @@ import {Serializer} from "../../application/serializer";
 import {WorkflowDecoratorDefinitionContainer} from "./workflow-decorator-definition-conatiner";
 import {definitionCreatorFactory} from "../../decorators/utils";
 
+export type ChildPolicy = 'TERMINATE' | 'REQUEST_CANCEL' | 'ABANDON';
 
 export const workflow = definitionCreatorFactory(WorkflowDecoratorDefinitionContainer);
 
@@ -19,7 +20,7 @@ export const defaultTaskPriority = decoratorFactory<string>(WorkflowDefinitionPr
 
 export const serializer = decoratorFactory<Serializer>(WorkflowDefinitionProperties.serializer);
 
-export const childPolicy = decoratorFactory<string>(WorkflowDefinitionProperties.childPolicy);
+export const childPolicy = decoratorFactory<ChildPolicy>(WorkflowDefinitionProperties.childPolicy);
 
 export const executionStartToCloseTimeout = decoratorFactory<string>(WorkflowDefinitionProperties.executionStartToCloseTimeout);
 
@@ -29,7 +30,7 @@ export const tagList = decoratorFactory<string[]>(WorkflowDefinitionProperties.t
 
 export const taskStartToCloseTimeout = decoratorFactory<string>(WorkflowDefinitionProperties.taskStartToCloseTimeout);
 
-export const defaultChildPolicy = decoratorFactory<string>(WorkflowDefinitionProperties.defaultChildPolicy);
+export const defaultChildPolicy = decoratorFactory<ChildPolicy>(WorkflowDefinitionProperties.defaultChildPolicy);
 
 export const defaultExecutionStartToCloseTimeout = decoratorFactory<string>(WorkflowDefinitionProperties.defaultExecutionStartToCloseTimeout);
 

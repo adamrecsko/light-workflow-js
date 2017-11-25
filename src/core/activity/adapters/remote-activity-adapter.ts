@@ -1,10 +1,8 @@
 import {ActivityAdapter} from "./actvity-adapter";
-import {Observable} from "rxjs";
 import {ContextResolutionStrategy} from "../../context/resolution-strategies/resolution-stategy";
 import {DecisionRunContext} from "../../context/decision-run-context";
 import {ScheduleActivityTaskDecisionAttributes} from "../../../aws/aws.types";
 import {ActivityDefinition} from "../activity-definition";
-import {ObservableFactory} from "../../application/observable-factory";
 import {
     DefaultRemoteObservableFactory, RemoteObservableFactory,
     RemoteActivityObservable

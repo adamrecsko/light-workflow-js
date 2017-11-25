@@ -10,7 +10,6 @@ import {
     RequestCancelFailedException, UnknownStateException, TimeoutException, StartToCloseTimeoutException,
     ScheduleToStartTimeoutException, ScheduleToCloseTimeoutException, HeartbeatTimeoutException
 } from "./remote-activity-observable-exceptions";
-import {ObservableFactory} from "../../application/observable-factory";
 import {Serializer} from "../../application/serializer";
 
 

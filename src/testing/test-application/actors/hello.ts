@@ -4,7 +4,7 @@ import {description, version, activity} from "../../../core/activity/decorators/
 export const helloSymbol = Symbol('hello');
 
 export interface Hello {
-    formatText(text: string): Observable<string>;
+  formatText(text: string): Observable<string>;
   printIt(text: string): Observable<string>;
 }
 

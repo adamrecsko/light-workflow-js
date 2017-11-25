@@ -10,7 +10,6 @@ import {
 import {ActivityDefinition} from "../../activity/activity-definition";
 import {getDefinitionsFromClass} from "../../decorators/utils";
 import {ActorProxy} from "./actor-proxy";
-import {Observable} from "rxjs";
 import {RemoteActivityObservable} from "../../activity/observable/remote-activity-observable";
 
 

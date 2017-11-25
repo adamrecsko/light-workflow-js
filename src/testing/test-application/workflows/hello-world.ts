@@ -7,7 +7,9 @@ export const helloWorkflowSymbol = Symbol('helloWorkflow');
 
 
 export interface HelloWorkflow {
-    helloWorld(text: string): Promise<string>
+  helloWorld(text: string): Promise<string>
+
+  halloWorld(text: string): Promise<string>
 }
 
 
@@ -20,8 +22,6 @@ export class HelloWorkflowImpl implements HelloWorkflow {
     @workflow
     async helloWorld(text: string): Promise<string> {
         const formattedText = await this.hello.formatText(text).toPromise();
-
-
         await this.hello.formatText(text).toPromise();
         await this.hello.formatText(text).toPromise();
         return this.hello.printIt(formattedText).toPromise();

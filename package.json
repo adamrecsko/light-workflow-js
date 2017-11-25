@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "watch": "tsc -w",
-    "pretest": "tsc",
+    "pretest": "tsc -v; node -v; tsc",
     "test": "mocha \"./src/**/*.test.js\"",
     "start": "tsc; node ./src/index.js"
   },

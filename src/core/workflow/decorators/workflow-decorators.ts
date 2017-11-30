@@ -10,6 +10,8 @@ export const workflow = definitionCreatorFactory(WorkflowDecoratorDefinitionCont
 
 export const name = decoratorFactory<string>(WorkflowDefinitionProperties.name);
 
+export const domain = decoratorFactory<string>(WorkflowDefinitionProperties.domain);
+
 export const version = decoratorFactory<string>(WorkflowDefinitionProperties.version);
 
 export const description = decoratorFactory<string>(WorkflowDefinitionProperties.description);

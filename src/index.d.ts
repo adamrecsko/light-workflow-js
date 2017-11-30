@@ -1,1 +1,1 @@
-declare module 'inversify';
+import "reflect-metadata";

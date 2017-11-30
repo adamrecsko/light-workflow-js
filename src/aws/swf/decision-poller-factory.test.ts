@@ -6,20 +6,11 @@ import {expect} from 'chai';
 import {TaskPollerObservable} from "./task-poller-observable";
 import {GenericDecisionPollerFactory} from "./decision-poller-factory";
 import {DecisionTaskRequest} from "./decision-task-request";
-
-class MockSwfRx implements WorkflowClient {
-    pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask> {
-        return null;
-    }
-
-    pollForDecisionTask(params: any): Observable<DecisionTask> {
-        return null;
-    }
-}
+import {MockWorkflowClient} from "../../testing/mocks/workflow-client";
 
 describe('GenericDecisionPollerFactory', ()=> {
     it('should return an DecisionPollerObservable', ()=> {
-        const mockSwfRx: WorkflowClient = new MockSwfRx();
+      const mockSwfRx: WorkflowClient = new MockWorkflowClient();
         const decisionPollerFactory = new GenericDecisionPollerFactory(mockSwfRx);
         const decisionPollParameters = new DecisionPollParameters();
         const poller: TaskPollerObservable<DecisionTask> = decisionPollerFactory.createPoller(decisionPollParameters);

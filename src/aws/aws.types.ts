@@ -5,8 +5,11 @@ export type ActivityTask = SWF.Types.ActivityTask;
 export type ActivityType = SWF.Types.ActivityType;
 export type DecisionTask = SWF.Types.DecisionTask;
 export type HistoryEvent = SWF.Types.HistoryEvent;
-
 export type ScheduleActivityTaskDecisionAttributes = SWF.Types.ScheduleActivityTaskDecisionAttributes;
+export type WorkflowStartParameters = SWF.Types.StartWorkflowExecutionInput;
+export type Run = SWF.Types.Run;
+
+
 
 export class TaskList {
     public name: string;

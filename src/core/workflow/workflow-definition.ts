@@ -2,11 +2,14 @@ import {AbstractDecoratorDefinition} from "../decorators/abstract-decorator-defi
 import {TaskList} from "../../aws/aws.types";
 
 export class WorkflowDefinition extends AbstractDecoratorDefinition {
+  domain: string;
     childPolicy: string;
     executionStartToCloseTimeout: string;
     lambdaRole: string;
     tagList: string[];
-    taskList: TaskList;
+  taskList: TaskList = {
+    name: 'default'
+  };
     taskPriority: string;
     taskStartToCloseTimeout: string;
     defaultChildPolicy: string;
@@ -19,6 +22,7 @@ export class WorkflowDefinition extends AbstractDecoratorDefinition {
 
 export enum WorkflowDefinitionProperties{
     name = 1,
+    domain,
     version,
     description,
     taskPriority,

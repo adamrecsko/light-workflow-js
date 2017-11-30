@@ -5,6 +5,7 @@ import {Observable, TestScheduler} from "rxjs";
 import {expect} from "chai";
 import {TestMessage} from "rxjs/testing/TestMessage";
 import * as sinon from "sinon";
+import {MockWorkflowClient} from "../../testing/mocks/workflow-client";
 
 
 function generateHistoryEventList(from: number, to: number): HistoryEvent[] {
@@ -36,22 +37,12 @@ function generateDecisionTask(nextPageToken: string, events: HistoryEvent[]): De
 }
 
 
-class MockSwfRx implements WorkflowClient {
-    pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask> {
-        return null;
-    }
-
-    pollForDecisionTask(params: any): Observable<DecisionTask> {
-        return null;
-    }
-}
-
 
 describe('DecisionPollerObservable', ()=> {
     context('if paging needed', ()=> {
         it('should merge the decision list if it has next page', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const expectedMergedEvent = generateDecisionTask(null, generateHistoryEventList(0, 30));
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
@@ -72,7 +63,7 @@ describe('DecisionPollerObservable', ()=> {
 
         it('should call pollForDecisionTask (n) times if (n) page exists', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
                 .returns(Observable.of(generateDecisionTask('haveNext', [])));
@@ -92,7 +83,7 @@ describe('DecisionPollerObservable', ()=> {
 
         it('should call pollForDecisionTask with the nextPageToken', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
                 .returns(Observable.of(generateDecisionTask('haveNext', [])));
@@ -119,7 +110,7 @@ describe('DecisionPollerObservable', ()=> {
 
         it('should call pollForDecisionTask with the given parameters', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
                 .returns(Observable.of(generateDecisionTask(null, [])));
@@ -135,7 +126,7 @@ describe('DecisionPollerObservable', ()=> {
 
         it('should emit the decision task without merge', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const expectedMergedEvent = generateDecisionTask(null, generateHistoryEventList(0, 7));
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
@@ -151,7 +142,7 @@ describe('DecisionPollerObservable', ()=> {
         });
         it('should call pollForDecisionTask 1 time if 1 page exist', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()
                 .returns(Observable.of(generateDecisionTask(null, [])));
@@ -170,7 +161,7 @@ describe('DecisionPollerObservable', ()=> {
     context('if error happens during the request', ()=> {
         it('should emit the error', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             const error = new Error('test error');
             stub.onFirstCall()
@@ -188,7 +179,7 @@ describe('DecisionPollerObservable', ()=> {
         });
         it('should stop paging', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             const error = new Error('test error');
             stub.onFirstCall()
@@ -211,7 +202,7 @@ describe('DecisionPollerObservable', ()=> {
     context('if the request result is empty', ()=> {
         it('should emit empty object and complete', ()=> {
             const parameters = new DecisionPollParameters();
-            const mockSwfRx: WorkflowClient = new MockSwfRx();
+          const mockSwfRx: WorkflowClient = new MockWorkflowClient();
             const expectedResult = {};
             const stub = sinon.stub(mockSwfRx, "pollForDecisionTask");
             stub.onFirstCall()

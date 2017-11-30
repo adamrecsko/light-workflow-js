@@ -13,13 +13,15 @@ import {HelloWorkflowImpl, helloWorkflowSymbol} from "./workflows/hello-world";
 
 describe('Test Application', () => {
 
-  let config: ApplicationConfiguration = new ApplicationConfiguration(new SWF());
-  let configProvider: ApplicationConfigurationProvider = new BaseApplicationConfigurationProvider(config);
-  let applicationFactory: ApplicationFactory = new ConfigurableApplicationFactory(configProvider);
-
+  let config: ApplicationConfiguration;
+  let configProvider: ApplicationConfigurationProvider;
+  let applicationFactory: ApplicationFactory;
 
   beforeEach(() => {
-    config = new ApplicationConfiguration(new SWF());
+    config = new ApplicationConfiguration(new SWF({
+      apiVersion: '2012-01-25',
+      region: 'us-east-1'
+    }));
     configProvider = new BaseApplicationConfigurationProvider(config);
     applicationFactory = new ConfigurableApplicationFactory(configProvider);
 
@@ -41,7 +43,6 @@ describe('Test Application', () => {
         key: helloWorkflowSymbol
       }
     ]);
-
   });
 
 

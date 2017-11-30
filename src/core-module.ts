@@ -1,5 +1,5 @@
+import "zone.js";
 import {ContainerModule, interfaces} from "inversify";
-import Bind = interfaces.Bind;
 import {AWSClientProvider, DefaultAWSClientProvider} from "./aws/aws-client-provider";
 import {
   AWS_ADAPTER, WORKFLOW_CLIENT, ACTIVITY_POLLER_FACTORY, DECISION_POLLER_FACTORY,
@@ -30,8 +30,10 @@ import {
   BaseWorkflowClientFactory, WORKFLOW_CLIENT_FACTORY,
   WorkflowClientFactory
 } from "./core/workflow/workflow-client-factory";
+import {BaseWorkflows, Workflows, WORKFLOWS} from "./core/workflow/workflows";
+import {BaseUuidGenerator, UUID_GENERATOR, UuidGenerator} from "./core/utils/uuid-generator";
 
-export const CORE: ContainerModule = new ContainerModule((bind: Bind) => {
+export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<AWSClientProvider>(AWS_ADAPTER)
     .to(DefaultAWSClientProvider).inSingletonScope();
   bind<WorkflowClient>(WORKFLOW_CLIENT)
@@ -48,6 +50,10 @@ export const CORE: ContainerModule = new ContainerModule((bind: Bind) => {
     .to(BaseWorkflowClientFactory).inSingletonScope();
   bind<ActorProxyFactory>(REMOTE_ACTOR_PROXY_FACTORY)
     .to(RemoteActorProxyFactory).inSingletonScope();
+  bind<Workflows>(WORKFLOWS)
+    .to(BaseWorkflows).inSingletonScope();
+  bind<UuidGenerator>(UUID_GENERATOR)
+    .to(BaseUuidGenerator).inSingletonScope();
   bind<ContextResolutionStrategy<DecisionRunContext>>(DECISION_CONTEXT_RESOLUTION)
     .toConstantValue(new ZoneContextResolutionStrategy<DecisionRunContext>(DECISION_RUN_CONTEXT_ZONE_KEY));
   bind<RemoteActivityAdapterFactory>(REMOTE_ACTIVITY_ADAPTER_FACTORY)

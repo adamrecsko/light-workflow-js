@@ -4,15 +4,15 @@ import {ApplicationConfigurationProvider} from "../core/application/application-
 import {APPLICATION_CONFIGURATION} from "../symbols";
 
 export interface AWSClientProvider {
-    getNativeSWFClient(): SWF
+  getNativeSWFClient(): SWF
 }
 
 @injectable()
 export class DefaultAWSClientProvider implements AWSClientProvider {
-    constructor(@inject(APPLICATION_CONFIGURATION) private configProvider: ApplicationConfigurationProvider) {
-    }
-
-    getNativeSWFClient(): SWF {
-        return this.configProvider.getConfiguration().swf;
-    }
+  constructor(@inject(APPLICATION_CONFIGURATION) private configProvider: ApplicationConfigurationProvider) {
+  }
+  getNativeSWFClient(): SWF {
+    const {swf} = this.configProvider.getConfiguration();
+    return swf;
+  }
 }

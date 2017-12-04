@@ -32,6 +32,10 @@ import {
 } from "./core/workflow/workflow-client-factory";
 import {BaseWorkflows, Workflows, WORKFLOWS} from "./core/workflow/workflows";
 import {BaseUuidGenerator, UUID_GENERATOR, UuidGenerator} from "./core/utils/uuid-generator";
+import {
+  BaseWorkflowWorkerFactory, WORKFLOW_WORKER_FACTORY,
+  WorkflowWorkerFactory
+} from "./core/workflow/worker/workflow-worker-factory";
 
 export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<AWSClientProvider>(AWS_ADAPTER)
@@ -54,6 +58,9 @@ export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind)
     .to(BaseWorkflows).inSingletonScope();
   bind<UuidGenerator>(UUID_GENERATOR)
     .to(BaseUuidGenerator).inSingletonScope();
+  bind<WorkflowWorkerFactory>(WORKFLOW_WORKER_FACTORY)
+    .to(BaseWorkflowWorkerFactory)
+    .inSingletonScope();
   bind<ContextResolutionStrategy<DecisionRunContext>>(DECISION_CONTEXT_RESOLUTION)
     .toConstantValue(new ZoneContextResolutionStrategy<DecisionRunContext>(DECISION_RUN_CONTEXT_ZONE_KEY));
   bind<RemoteActivityAdapterFactory>(REMOTE_ACTIVITY_ADAPTER_FACTORY)

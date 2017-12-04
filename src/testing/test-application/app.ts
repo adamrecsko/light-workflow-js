@@ -1,23 +1,42 @@
 import {injectable, inject} from "inversify";
-import {HelloWorkflow, helloWorkflowSymbol} from "./workflows/hello-world";
+import {helloWorkflowSymbol, test} from "./workflows/hello-world";
 import {workflowClient} from "../../core/workflow/decorators/workflow-client-decorators";
 import {Workflows, WORKFLOWS} from "../../core/workflow/workflows";
 
+import HelloWorkflow = test.HelloWorkflow;
+import {WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory} from "../../core/workflow/worker/workflow-worker-factory";
+import HelloWorkflowImpl = test.HelloWorkflowImpl;
 
 @injectable()
 export class MyApp {
+
+  public static domain = 'test-domain';
+
   @inject(helloWorkflowSymbol)
   @workflowClient
-  private helloWorkflow: HelloWorkflow;
+  private helloWorkflowClient: HelloWorkflow;
 
   @inject(WORKFLOWS)
   private workflows: Workflows;
 
+  @inject(WORKFLOW_WORKER_FACTORY)
+  private workerFactory: WorkflowWorkerFactory;
+
+
+  public async registerWorkflows() {
+
+    const worker = this.workerFactory.create(MyApp.domain, {
+      key: helloWorkflowSymbol,
+      impl: HelloWorkflowImpl
+    });
+
+    await worker.register().toPromise();
+  }
+
   public async start() {
 
-
     try {
-      //console.log(await this.runTheHello('hello'), 'runID');
+      return await this.runTheHello('hello');
     } catch (e) {
       console.log(e);
     }
@@ -25,7 +44,8 @@ export class MyApp {
   }
 
   public async runTheHello(text: string): Promise<string> {
-    const workflowResult = await this.workflows.start(this.helloWorkflow.halloWorld, text);
+    const start = this.workflows.createStarter('test-domain');
+    const workflowResult = await start(this.helloWorkflowClient.halloWorld, text);
     return workflowResult.runId;
   }
 }

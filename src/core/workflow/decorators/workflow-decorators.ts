@@ -3,14 +3,13 @@ import {WorkflowDefinitionProperties} from "../workflow-definition";
 import {Serializer} from "../../application/serializer";
 import {WorkflowDecoratorDefinitionContainer} from "./workflow-decorator-definition-conatiner";
 import {definitionCreatorFactory} from "../../decorators/utils";
+import {TaskList} from "../../../aws/aws.types";
 
 export type ChildPolicy = 'TERMINATE' | 'REQUEST_CANCEL' | 'ABANDON';
 
-export const workflow = definitionCreatorFactory(WorkflowDecoratorDefinitionContainer);
+export const workflow = decoratorFactory<string>(WorkflowDefinitionProperties.name);
 
 export const name = decoratorFactory<string>(WorkflowDefinitionProperties.name);
-
-export const domain = decoratorFactory<string>(WorkflowDefinitionProperties.domain);
 
 export const version = decoratorFactory<string>(WorkflowDefinitionProperties.version);
 
@@ -38,7 +37,7 @@ export const defaultExecutionStartToCloseTimeout = decoratorFactory<string>(Work
 
 export const defaultLambdaRole = decoratorFactory<string>(WorkflowDefinitionProperties.defaultLambdaRole);
 
-export const defaultTaskList = decoratorFactory<string>(WorkflowDefinitionProperties.defaultTaskList);
+export const defaultTaskList = decoratorFactory<TaskList>(WorkflowDefinitionProperties.defaultTaskList);
 
 export const defaultTaskStartToCloseTimeout = decoratorFactory<string>(WorkflowDefinitionProperties.defaultTaskStartToCloseTimeout);
 

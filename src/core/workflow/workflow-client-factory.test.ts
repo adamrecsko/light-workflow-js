@@ -7,13 +7,13 @@ describe('BaseWorkflowClientFactory', () => {
   it('should create workflow client', () => {
 
     class TestWorkflow {
-      @workflow
+      @workflow()
       @childPolicy('TERMINATE')
       testMethod() {
 
       }
 
-      @workflow
+      @workflow()
       @childPolicy('TERMINATE')
       testMethod2() {
 

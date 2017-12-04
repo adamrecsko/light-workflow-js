@@ -2,18 +2,17 @@ import {SWF} from "aws-sdk";
 import {Observable, Observer} from "rxjs/Rx";
 import {
   ActivityPollParameters, DecisionTask, ActivityTask, DecisionPollParameters,
-  WorkflowStartParameters, Run
+  WorkflowStartParameters, Run, RegisterWorkflowTypeInput
 } from "./aws.types";
 import {injectable, inject} from "inversify";
 import {AWSClientProvider} from "./aws-client-provider";
 import {AWS_ADAPTER} from "../symbols";
 
 export interface WorkflowClient {
-  pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>
-
-  pollForDecisionTask(params: DecisionPollParameters): Observable<DecisionTask>
-
-  startWorkflow(params: WorkflowStartParameters): Observable<Run>
+  pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>;
+  pollForDecisionTask(params: DecisionPollParameters): Observable<DecisionTask>;
+  startWorkflow(params: WorkflowStartParameters): Observable<Run>;
+  registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput>;
 }
 
 @injectable()
@@ -36,12 +35,15 @@ export class BaseWorkflowClient implements WorkflowClient {
     return BaseWorkflowClient.fromSwfFunction<Run>(this.swfClient.startWorkflowExecution.bind(this.swfClient), params);
   }
 
+  registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput> {
+    return BaseWorkflowClient.fromSwfFunction<RegisterWorkflowTypeInput>(this.swfClient.registerWorkflowType.bind(this.swfClient), params);
+  }
+
 
   public static fromSwfFunction<T>(fnc: <T>(params: any, cb: (error: any, data: T) => void) => any, params: any): Observable<T> {
     return Observable.create((obs: Observer<T>) => {
       function handler(error: any, data: T) {
         if (error) {
-          console.log(error);
           obs.error(error);
         } else {
           obs.next(data);

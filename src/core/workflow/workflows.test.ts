@@ -43,17 +43,19 @@ describe('Workflows', () => {
     const uuidGenerateStub = stub().returns('generatedWorkflowId');
     workflowClient.startWorkflow = workflowStartStub;
     uuidGenerator.generate = uuidGenerateStub;
-    await workflows.start(workflowDefinition as any, testParam1, testParam2, testParam3);
+    const start = workflows.createStarter('expectedDomain', 'expectedTaskList');
+    await start(workflowDefinition as any, testParam1, testParam2, testParam3);
     const expectedInput = JSON.stringify([testParam1, testParam2, testParam3]);
     const expectedParameters: WorkflowStartParameters = {
-      domain: workflowDefinition.domain,
+      domain: 'expectedDomain',
       workflowId: 'generatedWorkflowId',
       workflowType: {
         name: workflowDefinition.name,
         version: workflowDefinition.version
       },
-
-      taskList: workflowDefinition.taskList,
+      taskList: {
+        name: 'expectedTaskList'
+      },
       taskPriority: workflowDefinition.taskPriority,
       input: expectedInput,
       executionStartToCloseTimeout: workflowDefinition.executionStartToCloseTimeout,

@@ -1,6 +1,6 @@
 import {WorkflowClient} from "../../aws/workflow-client";
 import {
-  ActivityPollParameters, DecisionPollParameters, DecisionTask, Run,
+  ActivityPollParameters, DecisionPollParameters, DecisionTask, RegisterWorkflowTypeInput, Run,
   WorkflowStartParameters
 } from "../../aws/aws.types";
 import {Observable} from "rxjs/Observable";
@@ -17,6 +17,10 @@ export class MockWorkflowClient implements WorkflowClient {
   }
 
   startWorkflow(params: WorkflowStartParameters): Observable<Run> {
+    throw new Error('not implemented');
+  }
+
+  registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput> {
     throw new Error('not implemented');
   }
 }

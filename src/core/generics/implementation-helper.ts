@@ -1,11 +1,11 @@
 import {Newable} from "../../implementation";
 
-export type Binding = {
-  impl: Newable<any>,
+export type Binding<T = any> = {
+  impl: Newable<T>,
   key: symbol,
   taskLists?: string[]
 };
 
 export interface ImplementationHelper {
-  addImplementations(implementationList: Binding[]): void;
+  addImplementations<T>(implementationList: Binding<T>[]): void;
 }

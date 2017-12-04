@@ -5,7 +5,7 @@ import {AbstractDefinitionContainer} from "./definition-container";
 
 export const DEFINITION_SYMBOL = Symbol('DEFINITION_SYMBOL');
 export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-export type ValueSetterDecoratorFactory<T> = (value: T) => Decorator;
+export type ValueSetterDecoratorFactory<T> = (value?: T) => Decorator;
 
 
 export class DefinitionNotAvailableException extends Error {
@@ -27,7 +27,10 @@ export function definitionPropertySetterFactory<T,D extends AbstractDecoratorDef
             definitionCreatorFactory(definitionContainerClass)(target, propertyKey, descriptor);
             const definitionContainer: AbstractDefinitionContainer<D> = target[DEFINITION_SYMBOL];
             const definition: D = definitionContainer.createOrGetDefinitionToDecoratedProperty(propertyKey);
-            definition[definitionProperty] = value;
+
+            if (value) {
+              definition[definitionProperty] = value;
+            }
         }
     }
 }

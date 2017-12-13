@@ -1,10 +1,10 @@
-import {actorClient} from "../../../core/actor/decorators/actor-decorators";
-import {inject} from "inversify";
-import {helloSymbol, Hello} from "../actors/hello";
+import { actorClient } from '../../../core/actor/decorators/actor-decorators';
+import { inject } from 'inversify';
+import { helloSymbol, Hello } from '../actors/hello';
 import {
   workflow, executionStartToCloseTimeout,
-  description, version, defaultExecutionStartToCloseTimeout
-} from "../../../core/workflow/decorators/workflow-decorators";
+  description, version, defaultExecutionStartToCloseTimeout,
+} from '../../../core/workflow/decorators/workflow-decorators';
 
 export const helloWorkflowSymbol = Symbol('helloWorkflow');
 
@@ -12,9 +12,9 @@ export const helloWorkflowSymbol = Symbol('helloWorkflow');
 export namespace test {
 
   export interface HelloWorkflow {
-    helloWorld(text: string): Promise<string>
+    helloWorld(text: string): Promise<string>;
 
-    halloWorld(text: string): Promise<string>
+    halloWorld(text: string): Promise<string>;
   }
 
 

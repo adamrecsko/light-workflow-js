@@ -1,9 +1,9 @@
-import {Newable} from "../../implementation";
+import { Newable } from '../../implementation';
 
 export type Binding<T = any> = {
   impl: Newable<T>,
   key: symbol,
-  taskLists?: string[]
+  taskLists?: string[],
 };
 
 export interface ImplementationHelper {

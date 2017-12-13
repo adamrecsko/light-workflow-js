@@ -1,4 +1,4 @@
-export enum ActivityDecisionState{
+export enum ActivityDecisionState {
     Created = 1,
     CanceledBeforeSent,
     Sending,
@@ -12,5 +12,5 @@ export enum ActivityDecisionState{
     Timeout,
     Canceled,
     CancelRequested,
-    RequestCancelFailed
+    RequestCancelFailed,
 }

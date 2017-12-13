@@ -1,4 +1,4 @@
-import {tagged} from "inversify";
+import { tagged } from 'inversify';
 
 export const ACTOR_CLIENT_TAG = 'actor-client';
 export const TASK_LIST_TAG = 'task-list-tag';

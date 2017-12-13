@@ -1,13 +1,13 @@
-import {ApplicationConfiguration} from "./application-configuration";
+import { ApplicationConfiguration } from './application-configuration';
 export interface ApplicationConfigurationProvider {
-    getConfiguration(): ApplicationConfiguration
+  getConfiguration(): ApplicationConfiguration;
 }
 
 export class BaseApplicationConfigurationProvider implements ApplicationConfigurationProvider {
-    constructor(private configuration: ApplicationConfiguration) {
-    }
+  constructor(private configuration: ApplicationConfiguration) {
+  }
 
-    getConfiguration(): ApplicationConfiguration {
-        return this.configuration;
-    }
+  getConfiguration(): ApplicationConfiguration {
+    return this.configuration;
+  }
 }

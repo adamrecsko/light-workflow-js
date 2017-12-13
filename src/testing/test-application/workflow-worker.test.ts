@@ -13,7 +13,31 @@ import HelloWorkflowImpl = test.HelloWorkflowImpl;
 import { MockSWF } from '../mocks/SWF';
 import { stub, assert, match } from 'sinon';
 import { expect } from 'chai';
+import { ActivityHistoryGenerator } from '../helpers/workflow-history-generator';
+import {
+  CANCEL_FAILED_TRANSITION, CANCELLED_TRANSITION, COMPLETED_TRANSITION,
+  FAILED_TRANSITION, TIMEOUTED_TRANSITION,
+} from '../test-data/normal-transitions';
+import { DecisionTask, HistoryEvent } from '../../aws/aws.types';
 
+
+function createPollForActivityTaskRespond(eventList: HistoryEvent[]): DecisionTask {
+  const result: DecisionTask = {
+    startedEventId: 1,
+    taskToken: 'string',
+    workflowExecution: {
+      runId: 'string',
+      workflowId: 'string',
+    },
+    workflowType: {
+      name: 'string',
+      version: 'string',
+    },
+    events: eventList,
+  };
+
+  return result;
+}
 
 describe('Test Application', () => {
 
@@ -21,8 +45,8 @@ describe('Test Application', () => {
   let configProvider: ApplicationConfigurationProvider;
   let applicationFactory: ApplicationFactory;
   let mockSWF: MockSWF;
-  let startWfStub: any;
-  let registerWfStub: any;
+  let pollForDecisionTaskStub: any;
+
 
   const testRunId = {
     runId: 'test-run-id',
@@ -33,10 +57,19 @@ describe('Test Application', () => {
     config = new ApplicationConfiguration(mockSWF as SWF);
     configProvider = new BaseApplicationConfigurationProvider(config);
     applicationFactory = new ConfigurableApplicationFactory(configProvider);
-    startWfStub = stub().callsArgWith(1, null, testRunId);
-    registerWfStub = stub().callsArgWith(1, null);
-    mockSWF.startWorkflowExecution = startWfStub;
-    mockSWF.registerWorkflowType = registerWfStub;
+
+
+    const list = ActivityHistoryGenerator.generateList([
+      COMPLETED_TRANSITION,
+    ]);
+
+    const pollResult = createPollForActivityTaskRespond(list);
+
+    pollForDecisionTaskStub = stub().callsArgWith(1, null, pollResult);
+
+    mockSWF.pollForDecisionTask = pollForDecisionTaskStub;
+
+
     applicationFactory.addActorImplementations([
       {
         impl: HelloImpl,
@@ -56,34 +89,17 @@ describe('Test Application', () => {
     ]);
   });
 
-  it('should return runId', async () => {
+  it('should start worker', (done) => {
     const app: MyApp = applicationFactory.createApplication<MyApp>(MyApp);
-    const runId = await app.start();
-    expect(runId).to.eq(testRunId.runId);
-  });
+    const worker = app.createWorker();
 
-  it('should call aws to start a workflow', async () => {
-    const app: MyApp = applicationFactory.createApplication<MyApp>(MyApp);
-    await app.start();
-    assert.called(startWfStub);
-  });
 
-  it('should register workflow', async () => {
-    const app: MyApp = applicationFactory.createApplication<MyApp>(MyApp);
-    await app.registerWorkflows();
+    worker.startWorker();
 
-    assert.calledWith(registerWfStub.getCall(0), match({
-      name: 'helloWorld',
-      version: '1',
-      domain: 'test-domain',
-    }),               match.func);
 
-    assert.calledWith(registerWfStub.getCall(1), match({
-      name: 'halloWorld',
-      version: '7-test',
-      domain: 'test-domain',
-      defaultExecutionStartToCloseTimeout: '13',
-    }),               match.func);
+    setTimeout(done, 5000);
 
-  });
+  }).timeout(6000);
+
+
 });

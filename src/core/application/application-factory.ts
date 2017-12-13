@@ -1,11 +1,10 @@
-import {Container} from "inversify";
-import {APPLICATION_CONFIGURATION, APP_CONTAINER, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER} from "../../symbols";
-import {ApplicationConfigurationProvider} from "./application-configuration-provider";
-import {CORE} from "../../core-module";
-import {Newable} from "../../implementation";
-import {ContainerModule} from "inversify";
-import {Binding, ImplementationHelper} from "../generics/implementation-helper";
-import {WORKFLOW_CLIENT_IMPLEMENTATION_HELPER} from "../workflow/workflow-client-implementation-helper";
+import { Container, ContainerModule } from 'inversify';
+import { APPLICATION_CONFIGURATION, APP_CONTAINER, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER } from '../../symbols';
+import { ApplicationConfigurationProvider } from './application-configuration-provider';
+import { CORE } from '../../core-module';
+import { Newable } from '../../implementation';
+import { Binding, ImplementationHelper } from '../generics/implementation-helper';
+import { WORKFLOW_CLIENT_IMPLEMENTATION_HELPER } from '../workflow/workflow-client-implementation-helper';
 
 export interface ApplicationFactory {
   createApplication<T>(application: Newable<T>): T;
@@ -18,13 +17,9 @@ export interface ApplicationFactory {
 
 interface ApplicationBuilder<T> {
   setConfiguration(configurationProvider: ApplicationConfigurationProvider): this;
-
   setModules(modules: ContainerModule[]): this;
-
   setActors(actorBinding: Binding[]): this;
-
   setApplicationClass(application: Newable<T>): this;
-
   createApplication(): T;
 }
 

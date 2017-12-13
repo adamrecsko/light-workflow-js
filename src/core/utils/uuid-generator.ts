@@ -1,5 +1,5 @@
-import uuid = require("uuid");
-import {injectable} from "inversify";
+import uuid = require('uuid');
+import { injectable } from 'inversify';
 
 export const UUID_GENERATOR = Symbol('UUID_GENERATOR');
 

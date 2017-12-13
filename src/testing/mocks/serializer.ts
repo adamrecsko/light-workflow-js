@@ -1,10 +1,12 @@
-import {Serializer} from "../../core/application/serializer";
-export class MockSerializer implements Serializer {
-    parse(str: string): any {
-        return null;
-    }
+import { Serializer } from '../../core/application/serializer';
 
-    stringify(obj: any): string {
-        return null;
-    }
+export class MockSerializer implements Serializer {
+  parse(str: string): any {
+    return null;
+  }
+
+  stringify(obj: any): string {
+    return null;
+  }
+
 }

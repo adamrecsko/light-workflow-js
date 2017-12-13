@@ -1,17 +1,20 @@
-import {WorkflowClient} from "../../../aws/workflow-client";
-import {MockWorkflowClient} from "../../../testing/mocks/workflow-client";
-import {BaseWorkflowWorker, WorkflowWorker} from "./workflow-worker";
-import {stub, assert} from "sinon";
-import {expect} from 'chai';
-import {RegisterWorkflowTypeInput} from "../../../aws/aws.types";
+import { WorkflowClient } from '../../../aws/workflow-client';
+import { MockWorkflowClient } from '../../../testing/mocks/workflow-client';
+import { BaseWorkflowWorker, WorkflowWorker } from './workflow-worker';
+import { stub, assert } from 'sinon';
+import { expect } from 'chai';
+import { DecisionTask, RegisterWorkflowTypeInput } from '../../../aws/aws.types';
 import {
   defaultChildPolicy, defaultExecutionStartToCloseTimeout, defaultLambdaRole, defaultTaskList, defaultTaskPriority,
   defaultTaskStartToCloseTimeout, description,
   version,
-  workflow
-} from "../decorators/workflow-decorators";
-import {Observable} from "rxjs/Observable";
-import {AWSError} from "aws-sdk";
+  workflow,
+} from '../decorators/workflow-decorators';
+import { Observable } from 'rxjs/Observable';
+import { AWSError } from 'aws-sdk';
+import { Container } from 'inversify';
+import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
+import { ContextCache } from '../../context/context-cache';
 
 
 const TEST_WF = Symbol('TEST_WF');
@@ -24,7 +27,7 @@ class TestWfImpl {
   @defaultChildPolicy('TERMINATE')
   @defaultExecutionStartToCloseTimeout('10')
   @defaultLambdaRole('arn:...')
-  @defaultTaskList({name: 'default-task-list'})
+  @defaultTaskList({ name: 'default-task-list' })
   @defaultTaskPriority('task-priority')
   @defaultTaskStartToCloseTimeout('20')
   @description('this is a workflow')
@@ -41,49 +44,53 @@ describe('BaseWorkflowWorker', () => {
   describe('register', () => {
 
     let workflowClient: WorkflowClient;
+    let container: Container;
+    const poller: TaskPollerObservable<DecisionTask> = null;
+    const contextCache: ContextCache = null;
 
     beforeEach(() => {
       workflowClient = new MockWorkflowClient();
+      container = new Container();
     });
 
     it('should register amazon workflow and complete if success', async () => {
       const workflowWorker: WorkflowWorker<TestWfImpl> =
-        new BaseWorkflowWorker<TestWfImpl>(workflowClient, domain, {
+        new BaseWorkflowWorker<TestWfImpl>(workflowClient, container, contextCache, poller, domain, {
           impl: TestWfImpl,
           key: TEST_WF,
-          taskLists: [taskList]
+          taskLists: [taskList],
         });
 
       const registerStub = stub().returns(Observable.of(''));
       workflowClient.registerWorkflowType = registerStub;
       await workflowWorker.register().toPromise();
       const expectedRegisterParams: RegisterWorkflowTypeInput = {
-        domain: domain,
+        domain,
         name: 'workflowName',
         version: '12',
         defaultChildPolicy: 'TERMINATE',
         defaultExecutionStartToCloseTimeout: '10',
         defaultLambdaRole: 'arn:...',
         defaultTaskList: {
-          name: 'default-task-list'
+          name: 'default-task-list',
         },
         defaultTaskPriority: 'task-priority',
         defaultTaskStartToCloseTimeout: '20',
-        description: 'this is a workflow'
+        description: 'this is a workflow',
       };
       assert.calledWith(registerStub, expectedRegisterParams);
     });
 
     it('should success if workflow already registered', async () => {
       const workflowWorker: WorkflowWorker<TestWfImpl> =
-        new BaseWorkflowWorker<TestWfImpl>(workflowClient, domain, {
+        new BaseWorkflowWorker<TestWfImpl>(workflowClient, container, contextCache, poller, domain, {
           impl: TestWfImpl,
           key: TEST_WF,
-          taskLists: [taskList]
+          taskLists: [taskList],
         });
 
       const error: Partial<AWSError> = {
-        code: 'TypeAlreadyExistsFault'
+        code: 'TypeAlreadyExistsFault',
       };
 
       const registerStub = stub().returns(Observable.throw(error));
@@ -93,14 +100,14 @@ describe('BaseWorkflowWorker', () => {
 
     it('should throw error in case of any error except TypeAlreadyExistsFault', async () => {
       const workflowWorker: WorkflowWorker<TestWfImpl> =
-        new BaseWorkflowWorker<TestWfImpl>(workflowClient, domain, {
+        new BaseWorkflowWorker<TestWfImpl>(workflowClient, container, contextCache, poller, domain, {
           impl: TestWfImpl,
           key: TEST_WF,
-          taskLists: [taskList]
+          taskLists: [taskList],
         });
 
       const error: Partial<AWSError> = {
-        code: 'Other error'
+        code: 'Other error',
       };
 
       const registerStub = stub().returns(Observable.throw(error));

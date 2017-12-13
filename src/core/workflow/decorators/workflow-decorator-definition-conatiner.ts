@@ -1,7 +1,7 @@
-import {AbstractDefinitionContainer} from "../../decorators/definition-container";
-import {WorkflowDefinition} from "../workflow-definition";
+import { AbstractDefinitionContainer } from '../../decorators/definition-container';
+import { WorkflowDefinition } from '../workflow-definition';
 export class WorkflowDecoratorDefinitionContainer extends AbstractDefinitionContainer<WorkflowDefinition> {
-    protected createDefinition(decoratedPropertyName: string): WorkflowDefinition {
-        return new WorkflowDefinition(decoratedPropertyName);
-    }
+  protected createDefinition(decoratedPropertyName: string): WorkflowDefinition {
+    return new WorkflowDefinition(decoratedPropertyName);
+  }
 }

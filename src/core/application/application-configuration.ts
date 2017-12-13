@@ -1,5 +1,5 @@
-import {SWF} from "aws-sdk";
+import { SWF } from 'aws-sdk';
 export class ApplicationConfiguration {
-    constructor(public swf: SWF) {
-    }
+  constructor(public swf: SWF) {
+  }
 }

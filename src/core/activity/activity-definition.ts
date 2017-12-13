@@ -1,16 +1,16 @@
-import {AbstractDecoratorDefinition} from "../decorators/abstract-decorator-definition";
+import { AbstractDecoratorDefinition } from '../decorators/abstract-decorator-definition';
 export class ActivityDefinition extends AbstractDecoratorDefinition {
-    defaultTaskHeartbeatTimeout: string;
-    defaultTaskScheduleToCloseTimeout: string;
-    defaultTaskScheduleToStartTimeout: string;
-    defaultTaskStartToCloseTimeout: string;
-    heartbeatTimeout: string;
-    scheduleToCloseTimeout: string;
-    scheduleToStartTimeout: string;
-    startToCloseTimeout: string;
+  defaultTaskHeartbeatTimeout: string;
+  defaultTaskScheduleToCloseTimeout: string;
+  defaultTaskScheduleToStartTimeout: string;
+  defaultTaskStartToCloseTimeout: string;
+  heartbeatTimeout: string;
+  scheduleToCloseTimeout: string;
+  scheduleToStartTimeout: string;
+  startToCloseTimeout: string;
 }
 
-export enum ActivityDefinitionProperty{
+export enum ActivityDefinitionProperty {
     name = 1,
     version,
     defaultTaskHeartbeatTimeout,
@@ -24,5 +24,5 @@ export enum ActivityDefinitionProperty{
     scheduleToStartTimeout,
     startToCloseTimeout,
     taskPriority,
-    serializer
+    serializer,
 }

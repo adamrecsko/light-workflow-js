@@ -1,25 +1,30 @@
-import {Observable} from "rxjs/Observable";
-import {WorkflowClient} from "../../../aws/workflow-client";
-import {Binding} from "../../generics/implementation-helper";
-import {getDefinitionsFromClass} from "../../decorators/utils";
-import {WorkflowDefinition} from "../workflow-definition";
-import {RegisterWorkflowTypeInput} from "../../../aws/aws.types";
-import {AWSError} from "aws-sdk";
+import { Observable } from 'rxjs/Observable';
+import { WorkflowClient } from '../../../aws/workflow-client';
+import { Binding } from '../../generics/implementation-helper';
+import { getDefinitionsFromClass } from '../../decorators/utils';
+import { WorkflowDefinition } from '../workflow-definition';
+import { DecisionTask, RegisterWorkflowTypeInput } from '../../../aws/aws.types';
+import { AWSError } from 'aws-sdk';
+import { Container } from 'inversify';
+import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
+import { Subscription } from 'rxjs/Subscription';
+import { ContextCache } from '../../context/context-cache';
 
 export const WORKFLOW_WORKER = Symbol('WORKFLOW_WORKER');
 
-
 export interface WorkflowWorker<T> {
-
-
   register(): Observable<void>;
-
-
+  startWorker(): void;
 }
 
 export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
+  private pollSubscription: Subscription;
+
   constructor(private workflowClient: WorkflowClient,
+              private appContainer: Container,
+              private contextCache: ContextCache,
+              private poller: TaskPollerObservable<DecisionTask>,
               private domain: string,
               private binding: Binding) {
   }
@@ -35,10 +40,11 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       defaultTaskList: definition.defaultTaskList,
       defaultTaskPriority: definition.defaultTaskPriority,
       defaultChildPolicy: definition.defaultChildPolicy,
-      defaultLambdaRole: definition.defaultLambdaRole
+      defaultLambdaRole: definition.defaultLambdaRole,
     };
     return result;
   }
+
 
   private registerWorkflow(definition: WorkflowDefinition): Observable<any> {
     const registerWorkflowInput = this.workflowDefinitionToRegisterWorkflowTypeInput(definition);
@@ -47,9 +53,8 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       .catch((error: AWSError) => {
         if (error.code === 'TypeAlreadyExistsFault') {
           return Observable.empty();
-        } else {
-          return Observable.throw(error);
         }
+        return Observable.throw(error);
       });
   }
 
@@ -58,6 +63,18 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     return Observable.from(definitions)
       .flatMap((def: WorkflowDefinition) => this.registerWorkflow(def))
       .toArray();
+  }
+
+  startWorker(): void {
+    this.pollSubscription = this.poller.subscribe(
+      (values) => {
+        this.contextCache
+          .getOrCreateContext(values.workflowExecution.runId)
+          .processEventList(values.events);
+      },
+      (error) => {
+        console.error(error);
+      });
   }
 
 }

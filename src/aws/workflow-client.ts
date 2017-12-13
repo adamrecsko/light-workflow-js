@@ -1,12 +1,12 @@
-import {SWF} from "aws-sdk";
-import {Observable, Observer} from "rxjs/Rx";
+import { SWF } from 'aws-sdk';
+import { Observable, Observer } from 'rxjs/Rx';
 import {
   ActivityPollParameters, DecisionTask, ActivityTask, DecisionPollParameters,
-  WorkflowStartParameters, Run, RegisterWorkflowTypeInput
-} from "./aws.types";
-import {injectable, inject} from "inversify";
-import {AWSClientProvider} from "./aws-client-provider";
-import {AWS_ADAPTER} from "../symbols";
+  WorkflowStartParameters, Run, RegisterWorkflowTypeInput,
+} from './aws.types';
+import { injectable, inject } from 'inversify';
+import { AWSClientProvider } from './aws-client-provider';
+import { AWS_ADAPTER } from '../symbols';
 
 export interface WorkflowClient {
   pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>;

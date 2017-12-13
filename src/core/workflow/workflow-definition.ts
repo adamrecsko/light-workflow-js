@@ -1,22 +1,22 @@
-import {AbstractDecoratorDefinition} from "../decorators/abstract-decorator-definition";
-import {TaskList} from "../../aws/aws.types";
+import { AbstractDecoratorDefinition } from '../decorators/abstract-decorator-definition';
+import { TaskList } from '../../aws/aws.types';
 
 export class WorkflowDefinition extends AbstractDecoratorDefinition {
-    childPolicy: string;
-    executionStartToCloseTimeout: string;
-    lambdaRole: string;
-    tagList: string[];
-    taskPriority: string;
-    taskStartToCloseTimeout: string;
-    defaultChildPolicy: string;
-    defaultExecutionStartToCloseTimeout: string;
-    defaultLambdaRole: string;
-    defaultTaskList: TaskList;
-    defaultTaskPriority: string;
-    defaultTaskStartToCloseTimeout: string;
+  childPolicy: string;
+  executionStartToCloseTimeout: string;
+  lambdaRole: string;
+  tagList: string[];
+  taskPriority: string;
+  taskStartToCloseTimeout: string;
+  defaultChildPolicy: string;
+  defaultExecutionStartToCloseTimeout: string;
+  defaultLambdaRole: string;
+  defaultTaskList: TaskList;
+  defaultTaskPriority: string;
+  defaultTaskStartToCloseTimeout: string;
 }
 
-export enum WorkflowDefinitionProperties{
+export enum WorkflowDefinitionProperties {
     name = 1,
     version,
     description,
@@ -32,5 +32,5 @@ export enum WorkflowDefinitionProperties{
     defaultExecutionStartToCloseTimeout,
     defaultLambdaRole,
     defaultTaskList,
-    defaultTaskStartToCloseTimeout
+    defaultTaskStartToCloseTimeout,
 }

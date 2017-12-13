@@ -1,12 +1,12 @@
-export enum ActivityTimeoutType{
+export enum ActivityTimeoutType {
     START_TO_CLOSE = 1,
     SCHEDULE_TO_START,
     SCHEDULE_TO_CLOSE,
-    HEARTBEAT
+    HEARTBEAT,
 }
 
 export namespace ActivityTimeoutType {
     export function fromString(eventType: string): ActivityTimeoutType {
-        return (<any> ActivityTimeoutType)[eventType];
+      return (<any> ActivityTimeoutType)[eventType];
     }
 }

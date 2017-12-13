@@ -1,17 +1,17 @@
-import {Container, inject, injectable} from "inversify";
-import {WorkflowClientFactory} from "./workflow-client-factory";
-import {Newable} from "../../implementation";
-import {WorkflowProxy} from "./workflow-proxy";
-import {Binding} from "../generics/implementation-helper";
-import {BaseWorkflowClientImplementationHelper} from "./workflow-client-implementation-helper";
-import * as sinon from "sinon";
-import {expect} from "chai";
-import {workflowClient} from "./decorators/workflow-client-decorators";
+import { Container, inject, injectable } from 'inversify';
+import { WorkflowClientFactory } from './workflow-client-factory';
+import { Newable } from '../../implementation';
+import { WorkflowProxy } from './workflow-proxy';
+import { Binding } from '../generics/implementation-helper';
+import { BaseWorkflowClientImplementationHelper } from './workflow-client-implementation-helper';
+import * as sinon from 'sinon';
+import { expect } from 'chai';
+import { workflowClient } from './decorators/workflow-client-decorators';
 
 const testWorkflowSymbol = Symbol('test wf symbol');
 
 interface TestWorkflow {
-  workflow(): string
+  workflow(): string;
 }
 
 @injectable()
@@ -46,17 +46,17 @@ describe('BaseWorkflowClientImplementationHelper', () => {
       }
     }
 
-    const mockWorkflow = {data: 'test'};
+    const mockWorkflow = { data: 'test' };
     const createStub = sinon.stub().returns(mockWorkflow);
     const helper = new BaseWorkflowClientImplementationHelper(container, mockFactory);
     const binding: Binding = {
       impl: TestWorkflowImpl,
-      key: testWorkflowSymbol
+      key: testWorkflowSymbol,
     };
 
     mockFactory.create = createStub;
     helper.addImplementations(
-      [binding]
+      [binding],
     );
     container.bind<TestApplication>(TestApplication).toSelf();
     const testInstance: TestApplication = container.get<TestApplication>(TestApplication);
@@ -75,10 +75,10 @@ describe('BaseWorkflowClientImplementationHelper', () => {
     const helper = new BaseWorkflowClientImplementationHelper(container, mockFactory);
     const binding: Binding = {
       impl: TestWorkflowImpl,
-      key: testWorkflowSymbol
+      key: testWorkflowSymbol,
     };
     helper.addImplementations(
-      [binding]
+      [binding],
     );
     container.bind<TestApplication>(TestApplication).toSelf();
     const testInstance: TestApplication = container.get<TestApplication>(TestApplication);

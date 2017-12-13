@@ -1,7 +1,7 @@
-import {childPolicy, workflow} from "./decorators/workflow-decorators";
-import {BaseWorkflowClientFactory} from "./workflow-client-factory";
-import {expect} from "chai";
-import {WorkflowDefinition} from "./workflow-definition";
+import { childPolicy, workflow } from './decorators/workflow-decorators';
+import { BaseWorkflowClientFactory } from './workflow-client-factory';
+import { expect } from 'chai';
+import { WorkflowDefinition } from './workflow-definition';
 
 describe('BaseWorkflowClientFactory', () => {
   it('should create workflow client', () => {

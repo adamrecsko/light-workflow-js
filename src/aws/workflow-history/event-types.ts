@@ -52,11 +52,11 @@ export enum EventType {
     LambdaFunctionFailed,
     LambdaFunctionTimedOut,
     ScheduleLambdaFunctionFailed,
-    StartLambdaFunctionFailed
+    StartLambdaFunctionFailed,
 }
 
 export namespace EventType {
     export function fromString(eventType: string): EventType {
-        return (<any> EventType)[eventType];
+      return (<any> EventType)[eventType];
     }
 }

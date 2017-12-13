@@ -1,10 +1,10 @@
-import {WorkflowClient} from "../../aws/workflow-client";
+import { WorkflowClient } from '../../aws/workflow-client';
 import {
   ActivityPollParameters, DecisionPollParameters, DecisionTask, RegisterWorkflowTypeInput, Run,
-  WorkflowStartParameters
-} from "../../aws/aws.types";
-import {Observable} from "rxjs/Observable";
-import {ActivityTask} from "aws-sdk/clients/swf";
+  WorkflowStartParameters,
+} from '../../aws/aws.types';
+import { Observable } from 'rxjs/Observable';
+import { ActivityTask } from 'aws-sdk/clients/swf';
 
 export class MockWorkflowClient implements WorkflowClient {
 

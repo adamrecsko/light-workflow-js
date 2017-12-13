@@ -1,3 +1,3 @@
 export interface ContextResolutionStrategy<T> {
-    getContext(): T;
+  getContext(): T;
 }

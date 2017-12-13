@@ -1,4 +1,4 @@
-import {SWF} from 'aws-sdk';
+import { SWF } from 'aws-sdk';
 
 
 export type ActivityTask = SWF.Types.ActivityTask;

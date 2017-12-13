@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {BaseWorkflowClient} from './workflow-client';
-import {expect} from 'chai';
+import 'reflect-metadata';
+import { BaseWorkflowClient } from './workflow-client';
+import { expect } from 'chai';
 import * as sinon from 'sinon';
-import {Notification} from "rxjs/Rx";
-import {ActivityPollParameters} from "./aws.types";
+import { Notification } from 'rxjs/Rx';
+import { ActivityPollParameters } from './aws.types';
 
 
 describe('BaseWorkflowClient', () => {
@@ -12,7 +12,7 @@ describe('BaseWorkflowClient', () => {
       const testFunction = sinon.spy();
       const param = new ActivityPollParameters(
         'domain',
-        {name: 'tasklist'}
+        { name: 'tasklist' },
       );
       const obs = BaseWorkflowClient.fromSwfFunction(testFunction, param);
       obs.subscribe();
@@ -24,9 +24,9 @@ describe('BaseWorkflowClient', () => {
       type D = { data: string };
       const param = new ActivityPollParameters(
         'domain',
-        {name: 'tasklist'}
+        { name: 'tasklist' },
       );
-      const result: D = {data: 'r'};
+      const result: D = { data: 'r' };
       const testFunction = (p: P, cb: (error: any, data: D) => {}) => {
         cb(null, result);
       };
@@ -36,15 +36,15 @@ describe('BaseWorkflowClient', () => {
       testObs.toArray().subscribe((v: any) => values = v);
       expect(values).to.eql([
         Notification.createNext(result),
-        Notification.createComplete()
+        Notification.createComplete(),
       ]);
     });
     it('should emit error if the async function returns back error', () => {
       type P = { param: string };
       type D = { data: string };
       const param = new ActivityPollParameters('domain',
-        {name: 'tasklist'});
-      const error = {error: 'error'};
+                                               { name: 'tasklist' });
+      const error = { error: 'error' };
       const testFunction = (p: P, cb: (error: any, data: D) => {}) => {
         cb(error, null);
       };
@@ -53,7 +53,7 @@ describe('BaseWorkflowClient', () => {
       let values: Notification<any>[] = [];
       testObs.toArray().subscribe((v: any) => values = v);
       expect(values).to.eql([
-        Notification.createError(error)
+        Notification.createError(error),
       ]);
     });
   });

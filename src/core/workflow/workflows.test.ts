@@ -1,12 +1,12 @@
-import {WorkflowClient} from "../../aws/workflow-client";
-import {MockWorkflowClient} from "../../testing/mocks/workflow-client";
-import {BaseWorkflows, Workflows} from "./workflows";
-import {WorkflowDefinition} from "./workflow-definition";
+import { WorkflowClient } from '../../aws/workflow-client';
+import { MockWorkflowClient } from '../../testing/mocks/workflow-client';
+import { BaseWorkflows, Workflows } from './workflows';
+import { WorkflowDefinition } from './workflow-definition';
 
-import {stub, assert} from 'sinon';
-import {Observable} from "rxjs/Observable";
-import {WorkflowStartParameters} from "../../aws/aws.types";
-import {UuidGenerator} from "../utils/uuid-generator";
+import { stub, assert } from 'sinon';
+import { Observable } from 'rxjs/Observable';
+import { WorkflowStartParameters } from '../../aws/aws.types';
+import { UuidGenerator } from '../utils/uuid-generator';
 
 
 describe('Workflows', () => {
@@ -30,7 +30,7 @@ describe('Workflows', () => {
     workflowDefinition.name = 'expectedName';
     workflowDefinition.version = 'expectedVersion';
     workflowDefinition.taskList = {
-      name: 'expectedTaskListName'
+      name: 'expectedTaskListName',
     };
     workflowDefinition.taskPriority = 'expectedPriority';
     workflowDefinition.executionStartToCloseTimeout = 'expectedExecutionStartToCloseTimeout';
@@ -51,10 +51,10 @@ describe('Workflows', () => {
       workflowId: 'generatedWorkflowId',
       workflowType: {
         name: workflowDefinition.name,
-        version: workflowDefinition.version
+        version: workflowDefinition.version,
       },
       taskList: {
-        name: 'expectedTaskList'
+        name: 'expectedTaskList',
       },
       taskPriority: workflowDefinition.taskPriority,
       input: expectedInput,

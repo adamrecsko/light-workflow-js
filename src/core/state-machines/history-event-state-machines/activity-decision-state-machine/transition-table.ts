@@ -1,5 +1,5 @@
-import {ActivityDecisionState} from "./activity-decision-states";
-import {TransitionTable} from "../../state-machine";
+import { ActivityDecisionState } from './activity-decision-states';
+import { TransitionTable } from '../../state-machine';
 export const TRANSITION_TABLE: TransitionTable<ActivityDecisionState> = [
     [ActivityDecisionState.Created, ActivityDecisionState.Sending],
     [ActivityDecisionState.Created, ActivityDecisionState.CanceledBeforeSent],

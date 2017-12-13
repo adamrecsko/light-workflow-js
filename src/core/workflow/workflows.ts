@@ -1,10 +1,10 @@
-import {WorkflowResult} from "./workflow-result";
-import {WorkflowDefinition} from "./workflow-definition";
-import {inject, injectable} from "inversify";
-import {WorkflowClient} from "../../aws/workflow-client";
-import {WORKFLOW_CLIENT} from "../../symbols";
-import {WorkflowStartParameters} from "../../aws/aws.types";
-import {UUID_GENERATOR, UuidGenerator} from "../utils/uuid-generator";
+import { WorkflowResult } from './workflow-result';
+import { WorkflowDefinition } from './workflow-definition';
+import { inject, injectable } from 'inversify';
+import { WorkflowClient } from '../../aws/workflow-client';
+import { WORKFLOW_CLIENT } from '../../symbols';
+import { WorkflowStartParameters } from '../../aws/aws.types';
+import { UUID_GENERATOR, UuidGenerator } from '../utils/uuid-generator';
 
 export interface WorkflowFn {
   <A, B, C, D, E, R> (wf: (param1: A, param2: B, param3: C, param4: D, param5: E) => Promise<R>, param1: A, param2: B, param3: C, param4: D, param5: E): Promise<WorkflowResult<R>>;
@@ -40,18 +40,18 @@ export class BaseWorkflows implements Workflows {
       const input = definition.serializer.stringify(startParams);
 
       const workflowStartParameters: WorkflowStartParameters = {
-        domain: domain,
+        input,
+        domain,
         workflowId: this.generateNewWorkflowId(),
         workflowType: {
           name: definition.name,
-          version: definition.version
+          version: definition.version,
         },
 
         taskList: {
-          name: taskList
+          name: taskList,
         },
         taskPriority: definition.taskPriority,
-        input: input,
         executionStartToCloseTimeout: definition.executionStartToCloseTimeout,
         tagList: definition.tagList,
         taskStartToCloseTimeout: definition.taskStartToCloseTimeout,
@@ -60,7 +60,7 @@ export class BaseWorkflows implements Workflows {
       };
       const result = await this.workflowClient.startWorkflow(workflowStartParameters).toPromise();
       return {
-        runId: result.runId
+        runId: result.runId,
       };
     };
     return starter;

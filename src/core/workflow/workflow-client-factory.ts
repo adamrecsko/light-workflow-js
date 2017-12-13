@@ -1,8 +1,8 @@
-import {Newable} from "../../implementation";
-import {WorkflowDefinition} from "./workflow-definition";
-import {getDefinitionsFromClass} from "../decorators/utils";
-import {WorkflowProxy} from "./workflow-proxy";
-import {injectable} from "inversify";
+import { Newable } from '../../implementation';
+import { WorkflowDefinition } from './workflow-definition';
+import { getDefinitionsFromClass } from '../decorators/utils';
+import { WorkflowProxy } from './workflow-proxy';
+import { injectable } from 'inversify';
 
 
 export const WORKFLOW_CLIENT_FACTORY = Symbol('WORKFLOW_CLIENT_FACTORY');

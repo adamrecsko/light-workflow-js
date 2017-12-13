@@ -1,10 +1,10 @@
-import {Binding, ImplementationHelper} from "../generics/implementation-helper";
-import {Container, inject, injectable} from "inversify";
-import {APP_CONTAINER} from "../../symbols";
-import {Newable} from "../../implementation";
-import {WORKFLOW_CLIENT_TAG} from "./decorators/workflow-client-decorators";
-import {WORKFLOW_CLIENT_FACTORY, WorkflowClientFactory} from "./workflow-client-factory";
-import {WorkflowProxy} from "./workflow-proxy";
+import { Binding, ImplementationHelper } from '../generics/implementation-helper';
+import { Container, inject, injectable } from 'inversify';
+import { APP_CONTAINER } from '../../symbols';
+import { Newable } from '../../implementation';
+import { WORKFLOW_CLIENT_TAG } from './decorators/workflow-client-decorators';
+import { WORKFLOW_CLIENT_FACTORY, WorkflowClientFactory } from './workflow-client-factory';
+import { WorkflowProxy } from './workflow-proxy';
 
 export const WORKFLOW_CLIENT_IMPLEMENTATION_HELPER = Symbol('WORKFLOW_CLIENT_IMPLEMENTATION_HELPER');
 

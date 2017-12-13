@@ -6,11 +6,11 @@
   "author": "Adam Recsko <adam.recsko@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "lint": "tslint --fix -c tslint.json -e 'src/**/*.d.ts' 'src/**/*.ts'",
+    "tsc": "tsc",
+    "lint": "tslint -c tslint.json -e 'src/**/*.d.ts' 'src/**/*.ts'",
     "watch": "tsc -w",
-    "pretest": "tsc -v; node -v; tsc",
-    "test": "mocha --timeout 10000  \"./src/**/*.test.js\"   ",
-    "start": "tsc; node ./src/index.js",
+    "pretest": "yarn tsc && yarn lint",
+    "test": "mocha --timeout 10000  \"./src/**/*.test.js\" ",
     "doc": "typedoc --tsconfig tsconfig.json --mode file  --out documentation/ src"
   },
   "dependencies": {

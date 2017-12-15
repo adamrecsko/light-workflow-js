@@ -3,6 +3,7 @@ import { EventType } from '../../aws/workflow-history/event-types';
 import * as faker from 'faker';
 import * as uuid from 'node-uuid';
 import { HistoryGenerator } from './history-event-generator';
+import { WorkflowExecutionStartedEventAttributes } from 'aws-sdk/clients/swf';
 
 
 const activityName =
@@ -136,6 +137,26 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
       decisionTaskCompletedEventId: params.decisionTaskCompletedEventId || this.decisionTaskCompletedEventId,
 
     };
+    return historyEvent;
+  }
+
+
+  createWorkflowExecutionStarted(params: any): HistoryEvent {
+    const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.WorkflowExecutionStarted);
+
+    /*
+    historyEvent.workflowExecutionStartedEventAttributes = Object.assign<WorkflowExecutionStartedEventAttributes,
+      WorkflowExecutionStartedEventAttributes>(
+      {
+        childPolicy: 'TERMINATE',
+        taskList: {
+          name: 'default'
+        },
+
+      },
+      params);
+      */
+
     return historyEvent;
   }
 

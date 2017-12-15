@@ -351,6 +351,38 @@ describe('ActivityHistoryGenerator', () => {
   });
 
 
+  describe('createWorkflowExecutionStarted', () => {
+    context('with parameters', () => {
+      it('should create HistoryEvent with the given parameters', () => {
+        const generator = new ActivityHistoryGenerator();
+        const expected = {
+
+        };
+        const historyEvent = generator.createWorkflowExecutionStarted(expected);
+        expectHistoryEvent(historyEvent, {
+          eventType: EventType.RequestCancelActivityTaskFailed,
+          params: expected,
+          eventId: generator.currentEventId - 1,
+        });
+      });
+    });
+
+    context('without params', () => {
+      it('should create history event with default parameters', () => {
+        const generator = new ActivityHistoryGenerator();
+        const historyEvent = generator.createRequestCancelActivityTaskFailed({});
+        expectHistoryEvent(historyEvent, {
+          eventType: EventType.RequestCancelActivityTaskFailed,
+          params: {
+            activityId: generator.activityId,
+          },
+          eventId: generator.currentEventId - 1,
+        });
+      });
+    });
+  });
+
+
   describe('createActivityList', () => {
     context('with default parameters', () => {
       it('should generate completed Workflow history', () => {

@@ -5,15 +5,15 @@ import { DecisionRunContext } from '../../context/decision-run-context';
 import {
     RemoteActivityAdapterFactory, DefaultRemoteActivityAdapter,
     RemoteActivityAdapter,
-} from '../../activity/adapters/remote-activity-adapter';
-import { ActivityDefinition } from '../../activity/activity-definition';
-import { version, scheduleToCloseTimeout, serializer } from '../../activity/decorators/activity-decorators';
+} from '../activity/adapters/remote-activity-adapter';
+import { ActivityDefinition } from '../activity/activity-definition';
+import { version, scheduleToCloseTimeout, serializer } from '../activity/decorators/activity-decorators';
 import { MockSerializer } from '../../../testing/mocks/serializer';
 import { expect } from 'chai';
 import { Observable } from 'rxjs';
 import * as sinon from 'sinon';
-import { getDefinitionsFromClass } from '../../decorators/utils';
-import { RemoteObservableFactory, RemoteActivityObservable } from '../../activity/observable/remote-activity-observable';
+import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { RemoteObservableFactory, RemoteActivityObservable } from '../activity/observable/remote-activity-observable';
 
 class MockRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
   create(contextResolutionStrategy: ContextResolutionStrategy<DecisionRunContext>,

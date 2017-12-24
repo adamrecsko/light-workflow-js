@@ -20,7 +20,7 @@ import { DECISION_RUN_CONTEXT_ZONE_KEY } from './constants';
 import {
   RemoteActivityAdapterFactory,
   DefaultRemoteActivityAdapterFactory,
-} from './core/activity/adapters/remote-activity-adapter';
+} from './core/actor/activity/adapters/remote-activity-adapter';
 import { ImplementationHelper } from './core/generics/implementation-helper';
 import {
   WORKFLOW_CLIENT_IMPLEMENTATION_HELPER,

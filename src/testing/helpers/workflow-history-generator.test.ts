@@ -13,6 +13,7 @@ import {
   COMPLETED_TRANSITION, FAILED_TRANSITION, CANCELLED_TRANSITION,
   TIMEOUTED_TRANSITION,
 } from '../test-data/normal-transitions';
+import { WorkflowExecutionStartedEventAttributes } from 'aws-sdk/clients/swf';
 
 
 function getParams(event: HistoryEvent): any {
@@ -355,12 +356,13 @@ describe('ActivityHistoryGenerator', () => {
     context('with parameters', () => {
       it('should create HistoryEvent with the given parameters', () => {
         const generator = new ActivityHistoryGenerator();
-        const expected = {
-
+        const expected: Partial<WorkflowExecutionStartedEventAttributes> = {
+          input: 'test input',
+          taskList: { name: 'test-task-list' },
         };
         const historyEvent = generator.createWorkflowExecutionStarted(expected);
         expectHistoryEvent(historyEvent, {
-          eventType: EventType.RequestCancelActivityTaskFailed,
+          eventType: EventType.WorkflowExecutionStarted,
           params: expected,
           eventId: generator.currentEventId - 1,
         });
@@ -370,18 +372,24 @@ describe('ActivityHistoryGenerator', () => {
     context('without params', () => {
       it('should create history event with default parameters', () => {
         const generator = new ActivityHistoryGenerator();
-        const historyEvent = generator.createRequestCancelActivityTaskFailed({});
+        const historyEvent = generator.createWorkflowExecutionStarted({});
         expectHistoryEvent(historyEvent, {
-          eventType: EventType.RequestCancelActivityTaskFailed,
+          eventType: EventType.WorkflowExecutionStarted,
           params: {
-            activityId: generator.activityId,
+            childPolicy: 'TERMINATE',
+            taskList: {
+              name: 'default',
+            },
+            workflowType: {
+              name: 'test-workflow',
+              version: '1',
+            },
           },
           eventId: generator.currentEventId - 1,
         });
       });
     });
   });
-
 
   describe('createActivityList', () => {
     context('with default parameters', () => {

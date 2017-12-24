@@ -1,4 +1,4 @@
-import { AbstractDefinitionContainer } from '../../decorators/definition-container';
+import { AbstractDefinitionContainer } from '../../../utils/decorators/definition-container';
 import { ActivityDefinition } from '../activity-definition';
 
 

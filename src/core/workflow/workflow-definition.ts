@@ -1,4 +1,4 @@
-import { AbstractDecoratorDefinition } from '../decorators/abstract-decorator-definition';
+import { AbstractDecoratorDefinition } from '../utils/decorators/abstract-decorator-definition';
 import { TaskList } from '../../aws/aws.types';
 
 export class WorkflowDefinition extends AbstractDecoratorDefinition {

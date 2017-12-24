@@ -28,6 +28,7 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
 
   }
   create<T>(domain: string, binding: Binding<T>): WorkflowWorker<T> {
+    // TODO: params missing
     const pollParams = new DecisionPollParameters();
     pollParams.domain = domain;
     const poller = this.decisionPollerFactory.createPoller(pollParams);

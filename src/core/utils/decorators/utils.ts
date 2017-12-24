@@ -1,4 +1,4 @@
-import { Newable } from '../../implementation';
+import { Newable } from '../../../implementation';
 import { AbstractDecoratorDefinition } from './abstract-decorator-definition';
 import { AbstractDefinitionContainer } from './definition-container';
 

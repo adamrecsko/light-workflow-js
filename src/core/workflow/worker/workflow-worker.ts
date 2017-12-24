@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { WorkflowClient } from '../../../aws/workflow-client';
 import { Binding } from '../../generics/implementation-helper';
-import { getDefinitionsFromClass } from '../../decorators/utils';
+import { getDefinitionsFromClass } from '../../utils/decorators/utils';
 import { WorkflowDefinition } from '../workflow-definition';
 import { DecisionTask, RegisterWorkflowTypeInput } from '../../../aws/aws.types';
 import { AWSError } from 'aws-sdk';
@@ -9,8 +9,6 @@ import { Container } from 'inversify';
 import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ContextCache } from '../../context/context-cache';
-
-export const WORKFLOW_WORKER = Symbol('WORKFLOW_WORKER');
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -68,9 +66,14 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   startWorker(): void {
     this.pollSubscription = this.poller.subscribe(
       (values) => {
+
+        console.log(values);
+
         this.contextCache
           .getOrCreateContext(values.workflowExecution.runId)
           .processEventList(values.events);
+
+
       },
       (error) => {
         console.error(error);

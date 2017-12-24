@@ -123,4 +123,14 @@ describe('BaseWorkflowWorker', () => {
     });
 
   });
+
+
+  describe('startWorker', () => {
+
+    it('should ', () => {
+
+
+    });
+
+  });
 });

@@ -1,4 +1,4 @@
-import { Serializer, defaultSerializer } from '../application/serializer';
+import { Serializer, defaultSerializer } from '../../application/serializer';
 export abstract class AbstractDecoratorDefinition {
   private methodName: string;
   name: string;

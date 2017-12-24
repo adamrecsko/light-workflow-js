@@ -1,8 +1,6 @@
 import { workflowDecoratorFactory as decoratorFactory } from './workflow-decorator-factory';
 import { WorkflowDefinitionProperties } from '../workflow-definition';
 import { Serializer } from '../../application/serializer';
-import { WorkflowDecoratorDefinitionContainer } from './workflow-decorator-definition-conatiner';
-import { definitionCreatorFactory } from '../../decorators/utils';
 import { TaskList } from '../../../aws/aws.types';
 
 export type ChildPolicy = 'TERMINATE' | 'REQUEST_CANCEL' | 'ABANDON';

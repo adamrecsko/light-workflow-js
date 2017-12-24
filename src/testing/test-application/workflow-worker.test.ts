@@ -39,7 +39,7 @@ function createPollForActivityTaskRespond(eventList: HistoryEvent[]): DecisionTa
   return result;
 }
 
-describe('Test Application', () => {
+describe('Test Application Worker', () => {
 
   let config: ApplicationConfiguration;
   let configProvider: ApplicationConfigurationProvider;

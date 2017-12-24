@@ -141,21 +141,22 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
   }
 
 
-  createWorkflowExecutionStarted(params: any): HistoryEvent {
+  createWorkflowExecutionStarted(params: Partial<WorkflowExecutionStartedEventAttributes>): HistoryEvent {
     const historyEvent: HistoryEvent = this.createHistoryEvent(EventType.WorkflowExecutionStarted);
-
-    /*
     historyEvent.workflowExecutionStartedEventAttributes = Object.assign<WorkflowExecutionStartedEventAttributes,
-      WorkflowExecutionStartedEventAttributes>(
+      Partial<WorkflowExecutionStartedEventAttributes>>(
       {
         childPolicy: 'TERMINATE',
         taskList: {
-          name: 'default'
+          name: 'default',
         },
-
+        workflowType: {
+          name: 'test-workflow',
+          version: '1',
+        },
       },
       params);
-      */
+
 
     return historyEvent;
   }
@@ -227,6 +228,7 @@ export class ActivityHistoryGenerator extends HistoryGenerator {
     };
     return events.map(createEvent);
   }
+
   static generateList(events: EventType[][], paramsList?: any[][]): HistoryEvent[] {
     const pList = paramsList || [];
     let latestEventId = 1;

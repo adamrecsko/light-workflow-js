@@ -6,11 +6,11 @@ import { DECISION_CONTEXT_RESOLUTION, REMOTE_ACTIVITY_ADAPTER_FACTORY } from '..
 import {
     RemoteActivityAdapterFactory,
     RemoteActivityAdapter,
-} from '../../activity/adapters/remote-activity-adapter';
-import { ActivityDefinition } from '../../activity/activity-definition';
-import { getDefinitionsFromClass } from '../../decorators/utils';
+} from '../activity/adapters/remote-activity-adapter';
+import { ActivityDefinition } from '../activity/activity-definition';
+import { getDefinitionsFromClass } from '../../utils/decorators/utils';
 import { ActorProxy } from './actor-proxy';
-import { RemoteActivityObservable } from '../../activity/observable/remote-activity-observable';
+import { RemoteActivityObservable } from '../activity/observable/remote-activity-observable';
 
 
 export interface ActorProxyFactory {

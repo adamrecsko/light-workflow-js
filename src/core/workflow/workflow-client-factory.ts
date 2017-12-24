@@ -1,6 +1,6 @@
 import { Newable } from '../../implementation';
 import { WorkflowDefinition } from './workflow-definition';
-import { getDefinitionsFromClass } from '../decorators/utils';
+import { getDefinitionsFromClass } from '../utils/decorators/utils';
 import { WorkflowProxy } from './workflow-proxy';
 import { injectable } from 'inversify';
 

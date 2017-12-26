@@ -65,13 +65,11 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   startWorker(): void {
     this.pollSubscription = this.poller.subscribe(
-      (values) => {
-
-        console.log(values);
-
+      (decisionTask:DecisionTask) => {
+        console.log(decisionTask);
         this.contextCache
-          .getOrCreateContext(values.workflowExecution.runId)
-          .processEventList(values.events);
+          .getOrCreateContext(decisionTask.workflowExecution.runId)
+          .processEventList(decisionTask);
 
 
       },

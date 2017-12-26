@@ -1,9 +1,9 @@
 import { Observable, Subscriber } from 'rxjs';
 import { DecisionRunContext } from '../../../context/decision-run-context';
 import { ScheduleActivityTaskDecisionAttributes } from '../../../../aws/aws.types';
-import { ActivityDecisionStateMachine } from '../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { ActivityDecisionStateMachine } from '../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { TeardownLogic } from 'rxjs/Subscription';
-import { ActivityDecisionState } from '../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
+import { ActivityDecisionState } from '../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import { ActivityTimeoutType } from '../../../../aws/workflow-history/activity-timeout-type';
 import {
   ScheduleFailedException, FailedException,

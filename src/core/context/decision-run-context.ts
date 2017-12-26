@@ -1,14 +1,14 @@
-import { HistoryEvent, ScheduleActivityTaskDecisionAttributes } from '../../aws/aws.types';
+import { DecisionTask, HistoryEvent, ScheduleActivityTaskDecisionAttributes } from '../../aws/aws.types';
 import { EventType } from '../../aws/workflow-history/event-types';
 import {
   BaseActivityDecisionStateMachine,
   ActivityDecisionStateMachine,
-} from '../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
-import { HistoryEventProcessor } from '../state-machines/history-event-state-machines/history-event-processor';
+} from './state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { HistoryEventProcessor } from './state-machines/history-event-state-machines/history-event-state-machine';
 
 
 export interface DecisionRunContext {
-  processEventList(eventList: HistoryEvent[]): void;
+  processEventList(decisionTask: DecisionTask): void;
   getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
   getStateMachines(): HistoryEventProcessor<any>[];
   getNextId(): string;
@@ -39,10 +39,12 @@ export class BaseDecisionRunContext implements DecisionRunContext {
     this.currentId = 0;
   }
 
-  processEventList(eventList: HistoryEvent[]): void {
+  processEventList(decisionTask: DecisionTask): void {
+    const eventList = decisionTask.events;
     const notify = (stateMachine: HistoryEventProcessor<any>) => stateMachine.notify();
-    const process = (event: HistoryEvent) => {
-      const eventType: EventType = (<any> EventType)[event.eventType];
+    const parseEvent = (event: HistoryEvent) => {
+      const eventType: EventType = EventType.fromString(event.eventType);
+      let workflowId: string;
       let activityId: string;
       let eventId: number;
       switch (eventType) {
@@ -84,7 +86,13 @@ export class BaseDecisionRunContext implements DecisionRunContext {
         case EventType.DecisionTaskScheduled:
         case EventType.DecisionTaskStarted:
         case EventType.DecisionTaskCompleted:
+
+
+
         case EventType.DecisionTaskTimedOut:
+          break;
+
+        case EventType.WorkflowExecutionStarted:
           break;
 
         default:
@@ -105,7 +113,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
       stateMachine.processHistoryEvent(event);
     };
 
-    eventList.forEach(process);
+    eventList.forEach(parseEvent);
     this.getStateMachines().forEach(notify);
   }
 

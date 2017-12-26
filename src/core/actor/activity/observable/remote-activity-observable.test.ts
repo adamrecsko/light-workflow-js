@@ -1,10 +1,10 @@
 import * as sinon from 'sinon';
 import { MockActivityDecisionStateMachine } from './mocks/remote-activity-observable-mocks';
 import { Observable, TestScheduler } from 'rxjs';
-import { ActivityDecisionState } from '../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
+import { ActivityDecisionState } from '../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import { ActivityTimeoutType } from '../../../../aws/workflow-history/activity-timeout-type';
 import { DecisionRunContext } from '../../../context/decision-run-context';
-import { ActivityDecisionStateMachine } from '../../../state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { ActivityDecisionStateMachine } from '../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { ChaiTestScheduler } from '../../../../testing/helpers/chai-test-scheduler';
 import { RemoteActivityObservable } from './remote-activity-observable';
 import {

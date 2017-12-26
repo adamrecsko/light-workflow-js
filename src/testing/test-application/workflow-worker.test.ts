@@ -13,7 +13,7 @@ import HelloWorkflowImpl = test.HelloWorkflowImpl;
 import { MockSWF } from '../mocks/SWF';
 import { stub, assert, match } from 'sinon';
 import { expect } from 'chai';
-import { ActivityHistoryGenerator } from '../helpers/workflow-history-generator';
+import { ActivityHistoryGenerator } from '../helpers/activity-history-generator';
 import {
   CANCEL_FAILED_TRANSITION, CANCELLED_TRANSITION, COMPLETED_TRANSITION,
   FAILED_TRANSITION, TIMEOUTED_TRANSITION,

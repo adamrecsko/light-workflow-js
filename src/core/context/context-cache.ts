@@ -1,4 +1,4 @@
-import { DecisionRunContext, BaseDecisionRunContext } from '../context/decision-run-context';
+import { DecisionRunContext, BaseDecisionRunContext } from './decision-run-context';
 import { injectable } from 'inversify';
 export interface ContextCache {
   getOrCreateContext(runId: string): DecisionRunContext;

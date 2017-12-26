@@ -70,7 +70,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="basenotifyablestatemachine.html" class="tsd-signature-type">BaseNotifyableStateMachine</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span>
+						<a href="abstracthistoryeventstatemachine.html" class="tsd-signature-type">AbstractHistoryEventStateMachine</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">BaseActivityDecisionStateMachine</span>
@@ -83,8 +83,8 @@
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
 					<li><a href="../interfaces/statemachine.html" class="tsd-signature-type">StateMachine</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span></li>
-					<li><a href="../interfaces/notifiable.html" class="tsd-signature-type">Notifiable</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span></li>
-					<li><a href="../interfaces/activitydecisionstatemachine.html" class="tsd-signature-type">ActivityDecisionStateMachine</a></li>
+					<li><a href="../interfaces/notifiablestatemachine.html" class="tsd-signature-type">NotifiableStateMachine</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/historyeventstatemachine.html" class="tsd-signature-type">HistoryEventStateMachine</a><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -106,7 +106,6 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#identity" class="tsd-kind-icon">identity</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#input" class="tsd-kind-icon">input</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="baseactivitydecisionstatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processedeventids" class="tsd-kind-icon">processed<wbr>Event<wbr>Ids</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#reason" class="tsd-kind-icon">reason</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#result" class="tsd-kind-icon">result</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#startparams" class="tsd-kind-icon">start<wbr>Params</a></li>
@@ -124,7 +123,6 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="baseactivitydecisionstatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#isprocessed" class="tsd-kind-icon">is<wbr>Processed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="baseactivitydecisionstatemachine.html#notify" class="tsd-kind-icon">notify</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processactivitytaskcancelrequested" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Cancel<wbr>Requested</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processactivitytaskcanceled" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Canceled</a></li>
@@ -133,7 +131,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processactivitytaskscheduled" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Scheduled</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processactivitytaskstarted" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Started</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processactivitytasktimedout" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Timed<wbr>Out</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#processhistoryevent" class="tsd-kind-icon">process<wbr>History<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="baseactivitydecisionstatemachine.html#processevent" class="tsd-kind-icon">process<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="baseactivitydecisionstatemachine.html#processhistoryevent" class="tsd-kind-icon">process<wbr>History<wbr>Event</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processrequestcancelactivitytaskfailed" class="tsd-kind-icon">process<wbr>Request<wbr>Cancel<wbr>Activity<wbr>Task<wbr>Failed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="baseactivitydecisionstatemachine.html#processscheduleactivitytaskfailed" class="tsd-kind-icon">process<wbr>Schedule<wbr>Activity<wbr>Task<wbr>Failed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="baseactivitydecisionstatemachine.html#setstatetosending" class="tsd-kind-icon">set<wbr>State<wbr>ToSending</a></li>
@@ -154,9 +153,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="basenotifyablestatemachine.html">BaseNotifyableStateMachine</a>.<a href="basenotifyablestatemachine.html#constructor">constructor</a></p>
+								<p>Overrides <a href="abstracthistoryeventstatemachine.html">AbstractHistoryEventStateMachine</a>.<a href="abstracthistoryeventstatemachine.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L42">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L76">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -180,9 +179,8 @@
 					<h3>cause</h3>
 					<div class="tsd-signature tsd-kind-icon">cause<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#cause">cause</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L35">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L28">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -191,9 +189,8 @@
 					<h3>control</h3>
 					<div class="tsd-signature tsd-kind-icon">control<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#control">control</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L34">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L27">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -202,9 +199,8 @@
 					<h3>details</h3>
 					<div class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#details">details</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L36">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L29">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -213,9 +209,8 @@
 					<h3>identity</h3>
 					<div class="tsd-signature tsd-kind-icon">identity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#identity">identity</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L41">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L34">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -224,9 +219,8 @@
 					<h3>input</h3>
 					<div class="tsd-signature tsd-kind-icon">input<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#input">input</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L33">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L26">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -235,20 +229,10 @@
 					<h3>on<wbr>Change</h3>
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Change<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#onchange">onChange</a></p>
-						<p>Inherited from <a href="basenotifyablestatemachine.html">BaseNotifyableStateMachine</a>.<a href="basenotifyablestatemachine.html#onchange">onChange</a></p>
+						<p>Implementation of <a href="../interfaces/historyeventstatemachine.html">HistoryEventStateMachine</a>.<a href="../interfaces/historyeventstatemachine.html#onchange">onChange</a></p>
+						<p>Inherited from <a href="basenotifiablestatemachine.html">BaseNotifiableStateMachine</a>.<a href="basenotifiablestatemachine.html#onchange">onChange</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L13">core/state-machines/notifyable-state-machine.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="processedeventids" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> processed<wbr>Event<wbr>Ids</h3>
-					<div class="tsd-signature tsd-kind-icon">processed<wbr>Event<wbr>Ids<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L42">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L16">core/context/state-machines/notifiable-state-machine.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -257,9 +241,8 @@
 					<h3>reason</h3>
 					<div class="tsd-signature tsd-kind-icon">reason<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#reason">reason</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L37">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L30">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -268,9 +251,8 @@
 					<h3>result</h3>
 					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#result">result</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L38">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L31">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -279,9 +261,8 @@
 					<h3>start<wbr>Params</h3>
 					<div class="tsd-signature tsd-kind-icon">start<wbr>Params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ScheduleActivityTaskDecisionAttributes</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#startparams">startParams</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L40">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L33">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -290,10 +271,10 @@
 					<h3>state<wbr>History</h3>
 					<div class="tsd-signature tsd-kind-icon">state<wbr>History<span class="tsd-signature-symbol">:</span> <a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#statehistory">stateHistory</a></p>
+						<p>Implementation of <a href="../interfaces/historyeventstatemachine.html">HistoryEventStateMachine</a>.<a href="../interfaces/historyeventstatemachine.html#statehistory">stateHistory</a></p>
 						<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#statehistory">stateHistory</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L4">core/state-machines/base-state-machine.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L4">core/context/state-machines/base-state-machine.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -302,9 +283,8 @@
 					<h3>timeout<wbr>Type</h3>
 					<div class="tsd-signature tsd-kind-icon">timeout<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/activitytimeouttype.html" class="tsd-signature-type">ActivityTimeoutType</a></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#timeouttype">timeoutType</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L39">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L32">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -323,7 +303,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#currentstate">currentState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L14">core/state-machines/base-state-machine.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L14">core/context/state-machines/base-state-machine.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../enums/activitydecisionstate.html" class="tsd-signature-type">ActivityDecisionState</a></h4>
@@ -332,7 +312,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#currentstate">currentState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L18">core/state-machines/base-state-machine.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L18">core/context/state-machines/base-state-machine.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -357,11 +337,10 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#goto">goTo</a></p>
-								<p>Inherited from <a href="basenotifyablestatemachine.html">BaseNotifyableStateMachine</a>.<a href="basenotifyablestatemachine.html#goto">goTo</a></p>
+								<p>Inherited from <a href="basenotifiablestatemachine.html">BaseNotifiableStateMachine</a>.<a href="basenotifiablestatemachine.html#goto">goTo</a></p>
 								<p>Overrides <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#goto">goTo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L21">core/state-machines/notifyable-state-machine.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L24">core/context/state-machines/notifiable-state-machine.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -374,29 +353,6 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="isprocessed" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Processed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Processed<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HistoryEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L110">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:110</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>event: <span class="tsd-signature-type">HistoryEvent</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="notify" class="tsd-anchor"></a>
 					<h3>notify</h3>
@@ -406,10 +362,10 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#notify">notify</a></p>
-								<p>Inherited from <a href="basenotifyablestatemachine.html">BaseNotifyableStateMachine</a>.<a href="basenotifyablestatemachine.html#notify">notify</a></p>
+								<p>Implementation of <a href="../interfaces/historyeventstatemachine.html">HistoryEventStateMachine</a>.<a href="../interfaces/historyeventstatemachine.html#notify">notify</a></p>
+								<p>Inherited from <a href="basenotifiablestatemachine.html">BaseNotifiableStateMachine</a>.<a href="basenotifiablestatemachine.html#notify">notify</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L25">core/state-machines/notifyable-state-machine.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L28">core/context/state-machines/notifiable-state-machine.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -426,7 +382,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L158">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:158</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L135">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:135</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -443,7 +399,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L152">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L129">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -466,7 +422,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L139">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L116">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -489,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L127">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:127</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L104">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:104</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -512,7 +468,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L114">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L91">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -535,7 +491,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L134">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L111">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -558,7 +514,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L145">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:145</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L122">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -571,18 +527,46 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="processevent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> process<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Event<span class="tsd-signature-symbol">(</span>eventType<span class="tsd-signature-symbol">: </span><a href="../enums/eventtype.html" class="tsd-signature-type">EventType</a>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HistoryEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="abstracthistoryeventstatemachine.html">AbstractHistoryEventStateMachine</a>.<a href="abstracthistoryeventstatemachine.html#processevent">processEvent</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L36">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:36</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>eventType: <a href="../enums/eventtype.html" class="tsd-signature-type">EventType</a></h5>
+								</li>
+								<li>
+									<h5>event: <span class="tsd-signature-type">HistoryEvent</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="processhistoryevent" class="tsd-anchor"></a>
 					<h3>process<wbr>History<wbr>Event</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">process<wbr>History<wbr>Event<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HistoryEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#processhistoryevent">processHistoryEvent</a></p>
+								<p>Implementation of <a href="../interfaces/historyeventstatemachine.html">HistoryEventStateMachine</a>.<a href="../interfaces/historyeventstatemachine.html#processhistoryevent">processHistoryEvent</a></p>
+								<p>Inherited from <a href="abstracthistoryeventstatemachine.html">AbstractHistoryEventStateMachine</a>.<a href="abstracthistoryeventstatemachine.html#processhistoryevent">processHistoryEvent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L51">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/history-event-state-machine.ts#L41">core/context/state-machines/history-event-state-machines/history-event-state-machine.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -605,7 +589,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L162">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L139">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:139</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -628,7 +612,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L121">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:121</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L98">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -650,9 +634,8 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#setstatetosending">setStateToSending</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L101">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L83">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -668,9 +651,8 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/activitydecisionstatemachine.html">ActivityDecisionStateMachine</a>.<a href="../interfaces/activitydecisionstatemachine.html#setstatetosent">setStateToSent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L105">core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts#L87">core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -715,9 +697,6 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="baseactivitydecisionstatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="baseactivitydecisionstatemachine.html#processedeventids" class="tsd-kind-icon">processed<wbr>Event<wbr>Ids</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="baseactivitydecisionstatemachine.html#reason" class="tsd-kind-icon">reason</a>
 							</li>
@@ -738,9 +717,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="baseactivitydecisionstatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="baseactivitydecisionstatemachine.html#isprocessed" class="tsd-kind-icon">is<wbr>Processed</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="baseactivitydecisionstatemachine.html#notify" class="tsd-kind-icon">notify</a>
@@ -766,7 +742,10 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="baseactivitydecisionstatemachine.html#processactivitytasktimedout" class="tsd-kind-icon">process<wbr>Activity<wbr>Task<wbr>Timed<wbr>Out</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="baseactivitydecisionstatemachine.html#processevent" class="tsd-kind-icon">process<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="baseactivitydecisionstatemachine.html#processhistoryevent" class="tsd-kind-icon">process<wbr>History<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">

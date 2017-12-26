@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { BaseContextCache } from './context-cache';
 import { expect } from 'chai';
-import { BaseDecisionRunContext } from '../context/decision-run-context';
+import { BaseDecisionRunContext } from './decision-run-context';
 describe('BaseContextCache', () => {
   describe('getOrCreateContext', () => {
     it('should create new context if context is not exists', () => {

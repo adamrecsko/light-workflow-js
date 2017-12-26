@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 
 chai.use(require('chai-shallow-deep-equal'));
-import { ActivityDecisionState } from '../../core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
-import { BaseActivityDecisionStateMachine } from '../../core/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { ActivityDecisionState } from '../../core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
+import { BaseActivityDecisionStateMachine } from '../../core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 
 const expect = chai.expect;
 

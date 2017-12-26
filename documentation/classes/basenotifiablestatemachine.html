@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BaseNotifyableStateMachine | light-workflow-js</title>
+	<title>BaseNotifiableStateMachine | light-workflow-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="basenotifyablestatemachine.html">BaseNotifyableStateMachine</a>
+					<a href="basenotifiablestatemachine.html">BaseNotifiableStateMachine</a>
 				</li>
 			</ul>
-			<h1>Class BaseNotifyableStateMachine&lt;T&gt;</h1>
+			<h1>Class BaseNotifiableStateMachine&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
@@ -81,10 +81,10 @@
 						<a href="basestatemachine.html" class="tsd-signature-type">BaseStateMachine</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">BaseNotifyableStateMachine</span>
+								<span class="target">BaseNotifiableStateMachine</span>
 								<ul class="tsd-hierarchy">
 									<li>
-										<a href="baseactivitydecisionstatemachine.html" class="tsd-signature-type">BaseActivityDecisionStateMachine</a>
+										<a href="abstracthistoryeventstatemachine.html" class="tsd-signature-type">AbstractHistoryEventStateMachine</a>
 									</li>
 								</ul>
 							</li>
@@ -96,7 +96,7 @@
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
 					<li><a href="../interfaces/statemachine.html" class="tsd-signature-type">StateMachine</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li><a href="../interfaces/notifiable.html" class="tsd-signature-type">Notifiable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/notifiablestatemachine.html" class="tsd-signature-type">NotifiableStateMachine</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -106,28 +106,28 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="basenotifyablestatemachine.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="basenotifiablestatemachine.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="basenotifyablestatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="basenotifyablestatemachine.html#statehistory" class="tsd-kind-icon">state<wbr>History</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="basenotifyablestatemachine.html#stateobservable" class="tsd-kind-icon">state<wbr>Observable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="basenotifiablestatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="basenotifiablestatemachine.html#statehistory" class="tsd-kind-icon">state<wbr>History</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="basenotifiablestatemachine.html#stateobservable" class="tsd-kind-icon">state<wbr>Observable</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="basenotifyablestatemachine.html#currentstate" class="tsd-kind-icon">current<wbr>State</a></li>
+								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="basenotifiablestatemachine.html#currentstate" class="tsd-kind-icon">current<wbr>State</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="basenotifyablestatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="basenotifyablestatemachine.html#notify" class="tsd-kind-icon">notify</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="basenotifiablestatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="basenotifiablestatemachine.html#notify" class="tsd-kind-icon">notify</a></li>
 							</ul>
 						</section>
 					</div>
@@ -139,14 +139,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Notifyable<wbr>State<wbr>Machine<span class="tsd-signature-symbol">(</span>transitionTable<span class="tsd-signature-symbol">: </span><a href="../globals.html#transitiontable" class="tsd-signature-type">TransitionTable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, currentState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="basenotifyablestatemachine.html" class="tsd-signature-type">BaseNotifyableStateMachine</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Notifiable<wbr>State<wbr>Machine<span class="tsd-signature-symbol">(</span>transitionTable<span class="tsd-signature-symbol">: </span><a href="../globals.html#transitiontable" class="tsd-signature-type">TransitionTable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, currentState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="basenotifiablestatemachine.html" class="tsd-signature-type">BaseNotifiableStateMachine</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L13">core/state-machines/notifyable-state-machine.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L16">core/context/state-machines/notifiable-state-machine.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -158,7 +158,7 @@
 									<h5>currentState: <span class="tsd-signature-type">T</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="basenotifyablestatemachine.html" class="tsd-signature-type">BaseNotifyableStateMachine</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="basenotifiablestatemachine.html" class="tsd-signature-type">BaseNotifiableStateMachine</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -170,9 +170,9 @@
 					<h3>on<wbr>Change</h3>
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Change<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/notifiable.html">Notifiable</a>.<a href="../interfaces/notifiable.html#onchange">onChange</a></p>
+						<p>Implementation of <a href="../interfaces/notifiablestatemachine.html">NotifiableStateMachine</a>.<a href="../interfaces/notifiablestatemachine.html#onchange">onChange</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L13">core/state-machines/notifyable-state-machine.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L16">core/context/state-machines/notifiable-state-machine.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -181,10 +181,10 @@
 					<h3>state<wbr>History</h3>
 					<div class="tsd-signature tsd-kind-icon">state<wbr>History<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/statemachine.html">StateMachine</a>.<a href="../interfaces/statemachine.html#statehistory">stateHistory</a></p>
+						<p>Implementation of <a href="../interfaces/notifiablestatemachine.html">NotifiableStateMachine</a>.<a href="../interfaces/notifiablestatemachine.html#statehistory">stateHistory</a></p>
 						<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#statehistory">stateHistory</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L4">core/state-machines/base-state-machine.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L4">core/context/state-machines/base-state-machine.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +194,7 @@
 					<div class="tsd-signature tsd-kind-icon">state<wbr>Observable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Subject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L12">core/state-machines/notifyable-state-machine.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L15">core/context/state-machines/notifiable-state-machine.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -213,7 +213,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#currentstate">currentState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L14">core/state-machines/base-state-machine.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L14">core/context/state-machines/base-state-machine.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -222,7 +222,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#currentstate">currentState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/base-state-machine.ts#L18">core/state-machines/base-state-machine.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/base-state-machine.ts#L18">core/context/state-machines/base-state-machine.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -247,10 +247,10 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/statemachine.html">StateMachine</a>.<a href="../interfaces/statemachine.html#goto">goTo</a></p>
+								<p>Implementation of <a href="../interfaces/notifiablestatemachine.html">NotifiableStateMachine</a>.<a href="../interfaces/notifiablestatemachine.html#goto">goTo</a></p>
 								<p>Overrides <a href="basestatemachine.html">BaseStateMachine</a>.<a href="basestatemachine.html#goto">goTo</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L21">core/state-machines/notifyable-state-machine.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L24">core/context/state-machines/notifiable-state-machine.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -272,9 +272,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/notifiable.html">Notifiable</a>.<a href="../interfaces/notifiable.html#notify">notify</a></p>
+								<p>Implementation of <a href="../interfaces/notifiablestatemachine.html">NotifiableStateMachine</a>.<a href="../interfaces/notifiablestatemachine.html#notify">notify</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/94829f6/src/core/state-machines/notifyable-state-machine.ts#L25">core/state-machines/notifyable-state-machine.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/fe3ba7d/src/core/context/state-machines/notifiable-state-machine.ts#L28">core/context/state-machines/notifiable-state-machine.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -296,28 +296,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-has-type-parameter">
-						<a href="basenotifyablestatemachine.html" class="tsd-kind-icon">Base<wbr>Notifyable<wbr>State<wbr>Machine</a>
+						<a href="basenotifiablestatemachine.html" class="tsd-kind-icon">Base<wbr>Notifiable<wbr>State<wbr>Machine</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="basenotifyablestatemachine.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="basenotifiablestatemachine.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="basenotifyablestatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a>
+								<a href="basenotifiablestatemachine.html#onchange" class="tsd-kind-icon">on<wbr>Change</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="basenotifyablestatemachine.html#statehistory" class="tsd-kind-icon">state<wbr>History</a>
+								<a href="basenotifiablestatemachine.html#statehistory" class="tsd-kind-icon">state<wbr>History</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="basenotifyablestatemachine.html#stateobservable" class="tsd-kind-icon">state<wbr>Observable</a>
+								<a href="basenotifiablestatemachine.html#stateobservable" class="tsd-kind-icon">state<wbr>Observable</a>
 							</li>
 							<li class=" tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
-								<a href="basenotifyablestatemachine.html#currentstate" class="tsd-kind-icon">current<wbr>State</a>
+								<a href="basenotifiablestatemachine.html#currentstate" class="tsd-kind-icon">current<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="basenotifyablestatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a>
+								<a href="basenotifiablestatemachine.html#goto" class="tsd-kind-icon">go<wbr>To</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="basenotifyablestatemachine.html#notify" class="tsd-kind-icon">notify</a>
+								<a href="basenotifiablestatemachine.html#notify" class="tsd-kind-icon">notify</a>
 							</li>
 						</ul>
 					</li>

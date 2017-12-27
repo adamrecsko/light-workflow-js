@@ -9,9 +9,12 @@ import { Container } from 'inversify';
 import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ContextCache } from '../../context/context-cache';
+import { WorkflowExecution } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
+import { WorkflowExecutionStates } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution-states';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
+
   startWorker(): void;
 }
 
@@ -65,12 +68,22 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   startWorker(): void {
     this.pollSubscription = this.poller.subscribe(
-      (decisionTask:DecisionTask) => {
+      (decisionTask: DecisionTask) => {
         console.log(decisionTask);
-        this.contextCache
-          .getOrCreateContext(decisionTask.workflowExecution.runId)
-          .processEventList(decisionTask);
+        const context = this.contextCache
+          .getOrCreateContext(decisionTask.workflowExecution.runId);
+        const workflowExecution = context.getWorkflowExecution();
 
+        if (workflowExecution.currentState === WorkflowExecutionStates.Created) {
+          workflowExecution
+            .onChange
+            .filter(state => state === WorkflowExecutionStates.Started);
+        }
+
+        context.processEventList(decisionTask);
+        //executions[0].onChange.subscribe(state => console.log(state));
+
+        //context.getStateMachines()
 
       },
       (error) => {

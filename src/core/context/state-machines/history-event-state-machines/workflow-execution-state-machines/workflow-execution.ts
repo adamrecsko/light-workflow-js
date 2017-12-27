@@ -1,4 +1,4 @@
-import { AbstractHistoryEventStateMachine } from '../history-event-state-machine';
+import { AbstractHistoryEventStateMachine, UnknownEventTypeException } from '../history-event-state-machine';
 import { WorkflowExecutionStates } from './workflow-execution-states';
 import { TransitionTable } from '../../state-machine';
 import { EventType } from '../../../../../aws/workflow-history/event-types';
@@ -62,7 +62,6 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
       case EventType.WorkflowExecutionCompleted:
         this.processCompleted(event);
         break;
-
       case EventType.WorkflowExecutionCancelRequested:
         this.processCancelRequested(event);
         break;
@@ -93,6 +92,8 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
       case EventType.WorkflowExecutionTerminated:
         this.processTerminated(event);
         break;
+      default:
+        throw new UnknownEventTypeException(`Unknown HistoryEvent eventType: ${event.eventType}`);
     }
   }
 

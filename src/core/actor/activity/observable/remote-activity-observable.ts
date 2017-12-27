@@ -23,7 +23,7 @@ export class RemoteActivityObservable extends Observable<String> {
 
   protected _subscribe(subscriber: Subscriber<String>): TeardownLogic {
     const activityDecisionStateMachine: ActivityDecisionStateMachine = this.decisionContext
-      .getOrCreateActivityStateMachine(this.scheduleParameters);
+      .scheduleActivity(this.scheduleParameters);
     const subscription = activityDecisionStateMachine
       .onChange.subscribe((state: ActivityDecisionState) => {
         switch (state) {

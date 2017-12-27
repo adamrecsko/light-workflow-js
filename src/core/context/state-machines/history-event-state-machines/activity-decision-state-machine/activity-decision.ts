@@ -75,7 +75,7 @@ export class BaseActivityDecisionStateMachine extends AbstractHistoryEventStateM
     }
   }
 
-  constructor(startParams: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionState) {
+  constructor(startParams?: ScheduleActivityTaskDecisionAttributes, currentState?: ActivityDecisionState) {
     super(TRANSITION_TABLE, currentState || ActivityDecisionState.Created);
     this.startParams = startParams;
   }

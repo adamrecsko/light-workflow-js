@@ -5,13 +5,19 @@ import {
   ActivityDecisionStateMachine,
 } from './state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { HistoryEventProcessor } from './state-machines/history-event-state-machines/history-event-state-machine';
+import { WorkflowExecution } from './state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
 
 
 export interface DecisionRunContext {
   processEventList(decisionTask: DecisionTask): void;
-  getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
+
+  scheduleActivity(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine;
+
   getStateMachines(): HistoryEventProcessor<any>[];
+
   getNextId(): string;
+
+  getWorkflowExecution(): WorkflowExecution;
 }
 
 
@@ -21,30 +27,27 @@ export class NotSupportedEventTypeException extends Error {
   }
 }
 
-export class DecisionConflictException extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-
 export class BaseDecisionRunContext implements DecisionRunContext {
-  private activityIdToStateMachine: Map<string, HistoryEventProcessor<any>>;
+
+  private keyToStateMachine: Map<string, HistoryEventProcessor<any>>;
   private scheduleEventIdToActivityId: Map<number, string>;
   private currentId: number;
+  private workflowExecution: WorkflowExecution;
 
 
   constructor() {
-    this.activityIdToStateMachine = new Map();
+    this.keyToStateMachine = new Map();
     this.scheduleEventIdToActivityId = new Map();
     this.currentId = 0;
+    this.workflowExecution = new WorkflowExecution();
   }
 
   processEventList(decisionTask: DecisionTask): void {
-    const eventList = decisionTask.events;
+    const { events, workflowExecution: { workflowId } } = decisionTask;
     const notify = (stateMachine: HistoryEventProcessor<any>) => stateMachine.notify();
     const parseEvent = (event: HistoryEvent) => {
+      let stateMachine: HistoryEventProcessor<any>;
       const eventType: EventType = EventType.fromString(event.eventType);
-      let workflowId: string;
       let activityId: string;
       let eventId: number;
       switch (eventType) {
@@ -52,89 +55,106 @@ export class BaseDecisionRunContext implements DecisionRunContext {
           eventId = event.eventId;
           activityId = event.activityTaskScheduledEventAttributes.activityId;
           this.scheduleEventIdToActivityId.set(eventId, activityId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ScheduleActivityTaskFailed:
           activityId = event.scheduleActivityTaskFailedEventAttributes.activityId;
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskFailed:
           eventId = event.activityTaskFailedEventAttributes.scheduledEventId;
           activityId = this.scheduleEventIdToActivityId.get(eventId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskStarted:
           eventId = event.activityTaskStartedEventAttributes.scheduledEventId;
           activityId = this.scheduleEventIdToActivityId.get(eventId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskCompleted:
           eventId = event.activityTaskCompletedEventAttributes.scheduledEventId;
           activityId = this.scheduleEventIdToActivityId.get(eventId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskTimedOut:
           eventId = event.activityTaskTimedOutEventAttributes.scheduledEventId;
           activityId = this.scheduleEventIdToActivityId.get(eventId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskCanceled:
           eventId = event.activityTaskCanceledEventAttributes.scheduledEventId;
           activityId = this.scheduleEventIdToActivityId.get(eventId);
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.ActivityTaskCancelRequested:
           activityId = event.activityTaskCancelRequestedEventAttributes.activityId;
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
         case EventType.RequestCancelActivityTaskFailed:
           activityId = event.requestCancelActivityTaskFailedEventAttributes.activityId;
+          stateMachine = this.getOrCreateActivityStateMachine(activityId);
           break;
 
         case EventType.DecisionTaskScheduled:
         case EventType.DecisionTaskStarted:
         case EventType.DecisionTaskCompleted:
-
-
-
         case EventType.DecisionTaskTimedOut:
           break;
 
         case EventType.WorkflowExecutionStarted:
+        case EventType.WorkflowExecutionCompleted:
+        case EventType.WorkflowExecutionTerminated:
+        case EventType.WorkflowExecutionContinuedAsNew:
+        case EventType.WorkflowExecutionTimedOut:
+        case EventType.WorkflowExecutionFailed:
+        case EventType.WorkflowExecutionCanceled:
+        case EventType.WorkflowExecutionCancelRequested:
+        case EventType.WorkflowExecutionSignaled:
+        case EventType.FailWorkflowExecutionFailed:
+        case EventType.CompleteWorkflowExecutionFailed:
+        case EventType.CancelWorkflowExecutionFailed:
+          stateMachine = this.workflowExecution;
           break;
+
 
         default:
           throw new NotSupportedEventTypeException(`Not supported event type ${event.eventType}`);
       }
 
-      let stateMachine: HistoryEventProcessor<any>;
-      if (this.activityIdToStateMachine.has(activityId)) {
-        stateMachine = this.activityIdToStateMachine.get(activityId);
-      } else {
-        if (eventType === EventType.ActivityTaskScheduled) {
-          stateMachine = new BaseActivityDecisionStateMachine(null);
-          this.activityIdToStateMachine.set(activityId, stateMachine);
-        } else {
-          throw new DecisionConflictException(`Missing decision machine for activity id ${activityId}`);
-        }
-      }
       stateMachine.processHistoryEvent(event);
     };
 
-    eventList.forEach(parseEvent);
+    events.forEach(parseEvent);
     this.getStateMachines().forEach(notify);
   }
 
-  public getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
-    if (this.activityIdToStateMachine.has(attributes.activityId)) {
-      return <ActivityDecisionStateMachine> this.activityIdToStateMachine.get(attributes.activityId);
-    }
-    return this.createActivityStateMachine(attributes);
-  }
-
-  private createActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
-    const stateMachine = new BaseActivityDecisionStateMachine(attributes);
-    this.activityIdToStateMachine.set(attributes.activityId, stateMachine);
+  public scheduleActivity(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {
+    const { activityId } = attributes;
+    const stateMachine = this.getOrCreateActivityStateMachine(activityId);
+    stateMachine.startParams = attributes;
     return stateMachine;
   }
 
+  private getOrCreateActivityStateMachine(activityId: string): ActivityDecisionStateMachine {
+    const key = `activityId:${activityId}`;
+    if (this.keyToStateMachine.has(key)) {
+      return <ActivityDecisionStateMachine> this.keyToStateMachine.get(key);
+    }
+    const stateMachine = new BaseActivityDecisionStateMachine();
+    this.keyToStateMachine.set(key, stateMachine);
+    return stateMachine;
+  }
+
+
   getStateMachines(): HistoryEventProcessor<any>[] {
-    return Array.from(this.activityIdToStateMachine.values());
+    return Array.from(this.keyToStateMachine.values());
   }
 
   getNextId(): string {
     return `${this.currentId++}`;
+  }
+
+  getWorkflowExecution(): WorkflowExecution {
+    return this.workflowExecution;
   }
 }

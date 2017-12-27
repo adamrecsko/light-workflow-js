@@ -2,12 +2,13 @@ import { HistoryEventProcessor } from '../../core/context/state-machines/history
 import { ScheduleActivityTaskDecisionAttributes, HistoryEvent, DecisionTask } from '../../aws/aws.types';
 import { DecisionRunContext } from '../../core/context/decision-run-context';
 import { BaseActivityDecisionStateMachine } from '../../core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { WorkflowExecution } from '../../core/context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
 
 export class MockDecisionRunContext implements DecisionRunContext {
   processEventList(decisionTask: DecisionTask): void {
   }
 
-  getOrCreateActivityStateMachine(attributes: ScheduleActivityTaskDecisionAttributes): BaseActivityDecisionStateMachine {
+  scheduleActivity(attributes: ScheduleActivityTaskDecisionAttributes): BaseActivityDecisionStateMachine {
     return null;
   }
 
@@ -16,6 +17,10 @@ export class MockDecisionRunContext implements DecisionRunContext {
   }
 
   getNextId(): string {
+    return null;
+  }
+
+  getWorkflowExecution(): WorkflowExecution {
     return null;
   }
 }

@@ -3,6 +3,7 @@ import * as chai from 'chai';
 chai.use(require('chai-shallow-deep-equal'));
 import { ActivityDecisionState } from '../../core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import { BaseActivityDecisionStateMachine } from '../../core/context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { HistoryEventStateMachine } from '../../core/context/state-machines/history-event-state-machines/history-event-state-machine';
 
 const expect = chai.expect;
 
@@ -12,9 +13,9 @@ export function expectActivityState(current: ActivityDecisionState, expected: Ac
 }
 
 
-export function expectActivityStateMachine(sm: BaseActivityDecisionStateMachine,
+export function expectActivityStateMachine(sm: HistoryEventStateMachine<any>,
                                            properties: any,
-                                           currentState: ActivityDecisionState) {
+                                           currentState: any) {
   if (properties !== null) {
     (<any>expect(sm).to).shallowDeepEqual(properties);
   }

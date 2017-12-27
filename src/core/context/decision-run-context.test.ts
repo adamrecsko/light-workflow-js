@@ -54,15 +54,15 @@ describe('BaseDecisionContext', () => {
     it('should return ActivityDecisionStateMachine', () => {
       const runContext = new BaseDecisionRunContext();
       const testAttribs = createNewActivityDecision();
-      const stateMachine = runContext.getOrCreateActivityStateMachine(testAttribs);
+      const stateMachine = runContext.scheduleActivity(testAttribs);
       expect(stateMachine).to.instanceOf(BaseActivityDecisionStateMachine);
     });
     context('if activityId registered', () => {
       it('should not create new ActivityDecisionStateMachine', () => {
         const testAttribs = createNewActivityDecision();
         const runContext = new BaseDecisionRunContext();
-        const stateMachine = runContext.getOrCreateActivityStateMachine(testAttribs);
-        const stateMachine2 = runContext.getOrCreateActivityStateMachine(testAttribs);
+        const stateMachine = runContext.scheduleActivity(testAttribs);
+        const stateMachine2 = runContext.scheduleActivity(testAttribs);
         expect(stateMachine).to.eq(stateMachine2);
       });
     });
@@ -71,8 +71,8 @@ describe('BaseDecisionContext', () => {
         const runContext = new BaseDecisionRunContext();
         const dec1 = createNewActivityDecision('activity-1');
         const dec2 = createNewActivityDecision('activity-2');
-        const stateMachine = runContext.getOrCreateActivityStateMachine(dec1);
-        const stateMachine2 = runContext.getOrCreateActivityStateMachine(dec2);
+        const stateMachine = runContext.scheduleActivity(dec1);
+        const stateMachine2 = runContext.scheduleActivity(dec2);
         expect(stateMachine).to.not.eq(stateMachine2);
       });
     });
@@ -83,8 +83,8 @@ describe('BaseDecisionContext', () => {
       const runContext = new BaseDecisionRunContext();
       const dec1 = createNewActivityDecision('activity-1');
       const dec2 = createNewActivityDecision('activity-2');
-      const stateMachine = runContext.getOrCreateActivityStateMachine(dec1);
-      const stateMachine2 = runContext.getOrCreateActivityStateMachine(dec2);
+      const stateMachine = runContext.scheduleActivity(dec1);
+      const stateMachine2 = runContext.scheduleActivity(dec2);
       expect(runContext.getStateMachines()).to.eql([stateMachine, stateMachine2]);
     });
   });
@@ -299,7 +299,7 @@ describe('BaseDecisionContext', () => {
           activityId: 'test actvity id',
           input: 'this is an input',
         };
-        const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+        const stateMachine = runContext.scheduleActivity(attributes);
         expect(stateMachine).to.be.instanceOf(BaseActivityDecisionStateMachine);
       });
       it('should store activity state machine', () => {
@@ -312,7 +312,7 @@ describe('BaseDecisionContext', () => {
           activityId: 'test actvity id',
           input: 'this is an input',
         };
-        const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+        const stateMachine = runContext.scheduleActivity(attributes);
 
         const machines = runContext.getStateMachines();
         expect(machines[0]).to.be.eq(stateMachine);
@@ -333,8 +333,8 @@ describe('BaseDecisionContext', () => {
           activityId: 'test actvity id',
           input: 'this is an input',
         };
-        const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
-        const stateMachine2 = runContext.getOrCreateActivityStateMachine(attributes);
+        const stateMachine = runContext.scheduleActivity(attributes);
+        const stateMachine2 = runContext.scheduleActivity(attributes);
         expect(stateMachine).to.be.eq(stateMachine2);
       });
 
@@ -353,7 +353,7 @@ describe('BaseDecisionContext', () => {
           },
           activityId: SCHEDULED_PARAMS.activityId,
         };
-        const stateMachine = runContext.getOrCreateActivityStateMachine(attributes);
+        const stateMachine = runContext.scheduleActivity(attributes);
         expect(stateMachine.result).to.eq(COMPLETED_PARAMS.result);
       });
 

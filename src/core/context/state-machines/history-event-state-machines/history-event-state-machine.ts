@@ -20,7 +20,7 @@ export class UnknownEventTypeException extends Error {
   }
 }
 
-export interface HistoryEventProcessor<T> extends Notifiable<T> {
+export interface HistoryEventProcessor<T = {}> extends Notifiable<T> {
   processHistoryEvent(event: HistoryEvent): void;
 }
 

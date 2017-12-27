@@ -97,7 +97,7 @@ describe('Test Application Worker', () => {
     worker.startWorker();
 
 
-    setTimeout(done, 5000);
+    setTimeout(done, 500);
 
   }).timeout(6000);
 

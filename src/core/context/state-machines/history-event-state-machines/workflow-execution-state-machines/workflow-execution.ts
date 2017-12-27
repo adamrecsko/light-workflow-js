@@ -69,7 +69,7 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
         this.processCanceled(event);
         break;
       case EventType.CancelWorkflowExecutionFailed:
-        this.processFailFailed(event);
+        this.processCancelFailed(event);
         break;
       case EventType.CompleteWorkflowExecutionFailed:
         this.processCompleteFailed(event);

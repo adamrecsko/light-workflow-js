@@ -1,7 +1,7 @@
 import { Container, inject, injectable } from 'inversify';
 import { WorkflowClientFactory } from './workflow-client-factory';
 import { Newable } from '../../implementation';
-import { WorkflowProxy } from './workflow-proxy';
+import { RemoteWorkflowStub } from './workflow-proxy';
 import { Binding } from '../generics/implementation-helper';
 import { BaseWorkflowClientImplementationHelper } from './workflow-client-implementation-helper';
 import * as sinon from 'sinon';
@@ -23,7 +23,7 @@ class TestWorkflowImpl implements TestWorkflow {
 
 
 class MockWorkflowClientFactory implements WorkflowClientFactory {
-  create<T>(implementation: Newable<T>): WorkflowProxy {
+  create<T>(implementation: Newable<T>): RemoteWorkflowStub<T> {
     return null;
   }
 }

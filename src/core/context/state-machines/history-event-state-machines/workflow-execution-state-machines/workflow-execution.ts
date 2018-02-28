@@ -49,6 +49,7 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
   parentWorkflowExecution: SWF.WorkflowExecution;
   parentInitiatedEventId: SWF.EventId;
   lambdaRole: SWF.Arn;
+  finishResult: string;
 
   constructor(currentState?: WorkflowExecutionStates) {
     super(TRANSITION_TABLE, currentState || WorkflowExecutionStates.Created);
@@ -95,6 +96,11 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
       default:
         throw new UnknownEventTypeException(`Unknown HistoryEvent eventType: ${event.eventType}`);
     }
+  }
+
+  public finishExecution(result: string) {
+    this.currentState = WorkflowExecutionStates.Finished;
+    this.finishResult = result;
   }
 
   // parsers:

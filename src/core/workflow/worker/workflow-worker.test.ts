@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { AWSError } from 'aws-sdk';
 import { Container } from 'inversify';
 import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
-import { ContextCache } from '../../context/context-cache';
+import { BaseContextCache, ContextCache } from '../../context/context-cache';
 
 
 const TEST_WF = Symbol('TEST_WF');
@@ -34,7 +34,6 @@ class TestWfImpl {
   async workflowName() {
     return 4;
   }
-
 }
 
 
@@ -46,11 +45,12 @@ describe('BaseWorkflowWorker', () => {
     let workflowClient: WorkflowClient;
     let container: Container;
     const poller: TaskPollerObservable<DecisionTask> = null;
-    const contextCache: ContextCache = null;
+    let contextCache: ContextCache = null;
 
     beforeEach(() => {
       workflowClient = new MockWorkflowClient();
       container = new Container();
+      contextCache = new BaseContextCache();
     });
 
     it('should register amazon workflow and complete if success', async () => {
@@ -110,8 +110,7 @@ describe('BaseWorkflowWorker', () => {
         code: 'Other error',
       };
 
-      const registerStub = stub().returns(Observable.throw(error));
-      workflowClient.registerWorkflowType = registerStub;
+      workflowClient.registerWorkflowType = stub().returns(Observable.throw(error));
 
       try {
         await workflowWorker.register().toPromise();
@@ -119,7 +118,6 @@ describe('BaseWorkflowWorker', () => {
       } catch (e) {
         expect(e).to.equals(error);
       }
-
     });
 
   });
@@ -129,6 +127,7 @@ describe('BaseWorkflowWorker', () => {
 
     it('should ', () => {
 
+      throw Error('error');
 
     });
 

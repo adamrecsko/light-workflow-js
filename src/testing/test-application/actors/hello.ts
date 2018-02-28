@@ -17,6 +17,7 @@ export class HelloImpl implements Hello {
   }
 
   @activity
+  @version('23-b')
   formatText(text: string): Observable<string> {
     return Observable.of(text + ' hello world');
   }

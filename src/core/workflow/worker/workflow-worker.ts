@@ -11,6 +11,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContextCache } from '../../context/context-cache';
 import { WorkflowExecution } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
 import { WorkflowExecutionStates } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution-states';
+import { of } from 'rxjs/observable/of';
+import { LocalWorkflowStub } from '../workflow-proxy';
+import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../../constants';
+import { tryCatch } from 'rxjs/util/tryCatch';
+import { DecisionRunContext } from '../../context/decision-run-context';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -31,7 +36,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   }
 
   private workflowDefinitionToRegisterWorkflowTypeInput(definition: WorkflowDefinition): RegisterWorkflowTypeInput {
-    const result = {
+    return {
       domain: this.domain,
       name: definition.name,
       version: definition.version,
@@ -43,7 +48,6 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       defaultChildPolicy: definition.defaultChildPolicy,
       defaultLambdaRole: definition.defaultLambdaRole,
     };
-    return result;
   }
 
 
@@ -59,6 +63,24 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       });
   }
 
+  private processDecision(context: DecisionRunContext, decisionTask: DecisionTask) {
+    const runId = decisionTask.workflowExecution.runId;
+    const props = {
+      [DECISION_RUN_CONTEXT_ZONE_KEY]: context,
+    };
+    Zone.current.fork({
+      name: runId,
+      properties: props,
+    }).runGuarded(() => {
+      context.processEventList(decisionTask);
+    });
+  }
+
+  private createWorkflowStub(): LocalWorkflowStub<T> {
+    const instance = this.appContainer.get<T>(this.binding.key);
+    return new LocalWorkflowStub(this.binding.impl, instance);
+  }
+
   register(): Observable<any> {
     const definitions = getDefinitionsFromClass<WorkflowDefinition>(this.binding.impl);
     return Observable.from(definitions)
@@ -67,28 +89,32 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   }
 
   startWorker(): void {
-    this.pollSubscription = this.poller.subscribe(
-      (decisionTask: DecisionTask) => {
-        console.log(decisionTask);
-        const context = this.contextCache
-          .getOrCreateContext(decisionTask.workflowExecution.runId);
-        const workflowExecution = context.getWorkflowExecution();
+    const sharedPoller = this.poller.share();
 
-        if (workflowExecution.currentState === WorkflowExecutionStates.Created) {
-          workflowExecution
-            .onChange
-            .filter(state => state === WorkflowExecutionStates.Started);
-        }
+    this.pollSubscription = sharedPoller
+      .flatMap((decisionTask: DecisionTask) => {
+        const runId = decisionTask.workflowExecution.runId;
+        const context = this.contextCache.getOrCreateContext(runId);
+        return of(context.getWorkflowExecution())
+          .filter(workflowExecution => workflowExecution.currentState === WorkflowExecutionStates.Created)
+          .flatMap((workflowExecution) => {
+            const stub = this.createWorkflowStub();
+            return workflowExecution
+              .onChange
+              .filter(state => state === WorkflowExecutionStates.Started)
+              .flatMap(() => {
+                return stub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input);
+              });
+          });
+      }).subscribe();
 
-        context.processEventList(decisionTask);
-        //executions[0].onChange.subscribe(state => console.log(state));
+    const processSub = sharedPoller.subscribe((decisionTask: DecisionTask) => {
+      const runId = decisionTask.workflowExecution.runId;
+      const context = this.contextCache.getOrCreateContext(runId);
+      this.processDecision(context, decisionTask);
+    });
 
-        //context.getStateMachines()
-
-      },
-      (error) => {
-        console.error(error);
-      });
+    this.pollSubscription.add(processSub);
   }
 
 }

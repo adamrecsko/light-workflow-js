@@ -8,6 +8,7 @@ export enum WorkflowExecutionStates {
   CancelRequested,
   Canceled,
   CancelFailed,
+  Finished,
   Completed,
   CompleteFailed,
   ExecutionFailed,

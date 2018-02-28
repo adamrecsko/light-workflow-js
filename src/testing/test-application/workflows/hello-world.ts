@@ -1,5 +1,5 @@
 import { actorClient } from '../../../core/actor/decorators/actor-decorators';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { helloSymbol, Hello } from '../actors/hello';
 import {
   workflow, executionStartToCloseTimeout,
@@ -18,6 +18,7 @@ export namespace test {
   }
 
 
+  @injectable()
   export class HelloWorkflowImpl implements HelloWorkflow {
     @actorClient
     @inject(helloSymbol)
@@ -25,9 +26,9 @@ export namespace test {
 
     @workflow()
     async helloWorld(text: string): Promise<string> {
+      console.log('hallo:', text);
       const formattedText = await this.hello.formatText(text).toPromise();
-      await this.hello.formatText(text).toPromise();
-      await this.hello.formatText(text).retry(3).toPromise();
+      console.log('TEXT::::TEXT',formattedText);
       return this.hello.printIt(formattedText).toPromise();
     }
 

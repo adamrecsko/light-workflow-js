@@ -3,8 +3,8 @@ import { Container, inject, injectable } from 'inversify';
 import { APP_CONTAINER } from '../../symbols';
 import { Newable } from '../../implementation';
 import { WORKFLOW_CLIENT_TAG } from './decorators/workflow-client-decorators';
-import { WORKFLOW_CLIENT_FACTORY, WorkflowClientFactory } from './workflow-client-factory';
-import { WorkflowProxy } from './workflow-proxy';
+import { WORKFLOW_REMOTE_CLIENT_FACTORY, WorkflowClientFactory } from './workflow-client-factory';
+import { RemoteWorkflowStub } from './workflow-proxy';
 
 export const WORKFLOW_CLIENT_IMPLEMENTATION_HELPER = Symbol('WORKFLOW_CLIENT_IMPLEMENTATION_HELPER');
 
@@ -14,7 +14,7 @@ export class BaseWorkflowClientImplementationHelper implements ImplementationHel
 
   constructor(@inject(APP_CONTAINER)
               private appContainer: Container,
-              @inject(WORKFLOW_CLIENT_FACTORY)
+              @inject(WORKFLOW_REMOTE_CLIENT_FACTORY)
               private workflowClientFactory: WorkflowClientFactory) {
   }
 
@@ -30,7 +30,7 @@ export class BaseWorkflowClientImplementationHelper implements ImplementationHel
       /*
        Load workflow client definitions
        */
-      this.appContainer.bind<WorkflowProxy>(binding.key)
+      this.appContainer.bind<RemoteWorkflowStub<any>>(binding.key)
         .toDynamicValue(() => this.workflowClientFactory.create(binding.impl))
         .whenTargetTagged(WORKFLOW_CLIENT_TAG, true);
     });

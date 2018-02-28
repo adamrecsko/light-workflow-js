@@ -36,6 +36,7 @@ export class RemoteActivityObservable extends Observable<String> {
               subscriber.next(this.serializer.parse(activityDecisionStateMachine.result));
               subscriber.complete();
             } catch (e) {
+              console.error(e);
               subscriber.error(e);
             }
 

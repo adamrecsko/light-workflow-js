@@ -33,3 +33,12 @@ export const CANCEL_FAILED_TRANSITION = [
   EventType.ActivityTaskCancelRequested,
   EventType.RequestCancelActivityTaskFailed,
 ];
+
+
+export const WORKFLOW_STARTED_AND_COMPLETED_TRANSITION = [
+  EventType.WorkflowExecutionStarted,
+  EventType.ActivityTaskScheduled,
+  EventType.ActivityTaskStarted,
+  EventType.ActivityTaskCompleted,
+  EventType.WorkflowExecutionCompleted,
+];

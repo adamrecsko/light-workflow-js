@@ -1,7 +1,5 @@
 import { suite, test } from 'mocha-typescript';
 import { WorkflowExecution } from './workflow-execution';
-import { HistoryGenerator } from '../../../../../testing/helpers/history-event-generator';
-import { EventType } from '../../../../../aws/workflow-history/event-types';
 import * as chai from 'chai';
 import { WorkflowExecutionStates as States } from './workflow-execution-states';
 import { WorkflowHistoryGenerator } from '../../../../../testing/helpers/workflow-history-generator';

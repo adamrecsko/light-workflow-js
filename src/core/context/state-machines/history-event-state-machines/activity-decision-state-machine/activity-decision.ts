@@ -1,10 +1,9 @@
 import { ActivityDecisionState } from './activity-decision-states';
 import { TRANSITION_TABLE } from './transition-table';
-import { BaseNotifiableStateMachine } from '../../notifiable-state-machine';
 import { AbstractHistoryEventStateMachine, HistoryEventProcessor, UnknownEventTypeException } from '../history-event-state-machine';
 import { StateMachine } from '../../state-machine';
 import { ActivityTimeoutType } from '../../../../../aws/workflow-history/activity-timeout-type';
-import { ScheduleActivityTaskDecisionAttributes, HistoryEvent } from '../../../../../aws/aws.types';
+import { ScheduleActivityTaskDecisionAttributes, HistoryEvent, ActivityType } from '../../../../../aws/aws.types';
 import { EventType } from '../../../../../aws/workflow-history/event-types';
 
 export interface ActivityDecisionStateMachine extends HistoryEventProcessor<ActivityDecisionState>, StateMachine<ActivityDecisionState> {
@@ -17,7 +16,12 @@ export interface ActivityDecisionStateMachine extends HistoryEventProcessor<Acti
   timeoutType: ActivityTimeoutType;
   startParams: ScheduleActivityTaskDecisionAttributes;
   identity: string;
+  activityType: ActivityType;
+  activityId: string;
+
+
   setStateToSending(): void;
+
   setStateToSent(): void;
 }
 
@@ -32,6 +36,8 @@ export class BaseActivityDecisionStateMachine extends AbstractHistoryEventStateM
   public timeoutType: ActivityTimeoutType;
   public startParams: ScheduleActivityTaskDecisionAttributes;
   public identity: string;
+  public activityType: ActivityType;
+  public activityId: string;
 
   protected processEvent(eventType: EventType, event: HistoryEvent): void {
     switch (eventType) {
@@ -80,6 +86,17 @@ export class BaseActivityDecisionStateMachine extends AbstractHistoryEventStateM
     this.startParams = startParams;
   }
 
+  public toString(): string {
+    return JSON.stringify({
+      currentState: this.currentState,
+      identity: this.identity,
+      input: this.input,
+      startParams: this.startParams,
+      activityType: this.activityType,
+      activityId: this.activityId,
+    });
+  }
+
   public setStateToSending(): void {
     this.currentState = ActivityDecisionState.Sending;
   }
@@ -93,6 +110,8 @@ export class BaseActivityDecisionStateMachine extends AbstractHistoryEventStateM
     this.currentState = ActivityDecisionState.Scheduled;
     this.control = params.control;
     this.input = params.input;
+    this.activityType = params.activityType;
+    this.activityId = params.activityId;
   }
 
   private processScheduleActivityTaskFailed(event: HistoryEvent): void {

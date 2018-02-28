@@ -2,10 +2,10 @@ import { ScheduleActivityTaskDecisionAttributes, HistoryEvent } from '../../../.
 import { ActivityDecisionState } from '../../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import { Observable } from 'rxjs';
 import {
-    ActivityDecisionStateMachine,
+  ActivityDecisionStateMachine,
 } from '../../../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { ActivityTimeoutType } from '../../../../../aws/workflow-history/activity-timeout-type';
-
+import { ActivityType } from 'aws-sdk/clients/swf';
 
 
 export class MockActivityDecisionStateMachine implements ActivityDecisionStateMachine {
@@ -21,6 +21,8 @@ export class MockActivityDecisionStateMachine implements ActivityDecisionStateMa
   onChange: Observable<ActivityDecisionState>;
   currentState: ActivityDecisionState;
   stateHistory: any[] = [];
+  activityType: ActivityType;
+  activityId: string;
 
   setStateToSending(): void {
   }

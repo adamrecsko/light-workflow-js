@@ -18,7 +18,7 @@ export class WorkflowHistoryGenerator extends HistoryGenerator {
     super();
   }
 
-  createStartedEvent(params: Partial<WorkflowExecutionStartedEventAttributes>): HistoryEvent {
+  createStartedEvent(params: Partial<WorkflowExecutionStartedEventAttributes> = {}): HistoryEvent {
     const event = this.createHistoryEvent(EventType.WorkflowExecutionStarted);
     event.workflowExecutionStartedEventAttributes = {
       workflowType: this.workflowType,
@@ -29,7 +29,7 @@ export class WorkflowHistoryGenerator extends HistoryGenerator {
     return event;
   }
 
-  createCompletedEvent(params: Partial<WorkflowExecutionCompletedEventAttributes>): HistoryEvent {
+  createCompletedEvent(params: Partial<WorkflowExecutionCompletedEventAttributes> = {}): HistoryEvent {
     const event = this.createHistoryEvent(EventType.WorkflowExecutionCompleted);
     event.workflowExecutionCompletedEventAttributes = {
       decisionTaskCompletedEventId: this.currentEventId - 2,

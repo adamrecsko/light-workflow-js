@@ -122,10 +122,12 @@ export class BaseDecisionRunContext implements DecisionRunContext {
       }
 
       stateMachine.processHistoryEvent(event);
+      //stateMachine.notify();
     };
 
     events.forEach(parseEvent);
     this.getStateMachines().forEach(notify);
+    this.workflowExecution.notify();
   }
 
   public scheduleActivity(attributes: ScheduleActivityTaskDecisionAttributes): ActivityDecisionStateMachine {

@@ -27,7 +27,7 @@ import {
   BaseWorkflowClientImplementationHelper,
 } from './core/workflow/workflow-client-implementation-helper';
 import {
-  BaseWorkflowClientFactory, WORKFLOW_CLIENT_FACTORY,
+  BaseRemoteWorkflowClientFactory, WORKFLOW_REMOTE_CLIENT_FACTORY,
   WorkflowClientFactory,
 } from './core/workflow/workflow-client-factory';
 import { BaseWorkflows, Workflows, WORKFLOWS } from './core/workflow/workflows';
@@ -51,8 +51,8 @@ export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind)
     .to(BaseActorClientImplementationHelper).inSingletonScope();
   bind<ImplementationHelper>(WORKFLOW_CLIENT_IMPLEMENTATION_HELPER)
     .to(BaseWorkflowClientImplementationHelper).inSingletonScope();
-  bind<WorkflowClientFactory>(WORKFLOW_CLIENT_FACTORY)
-    .to(BaseWorkflowClientFactory).inSingletonScope();
+  bind<WorkflowClientFactory>(WORKFLOW_REMOTE_CLIENT_FACTORY)
+    .to(BaseRemoteWorkflowClientFactory).inSingletonScope();
   bind<ActorProxyFactory>(REMOTE_ACTOR_PROXY_FACTORY)
     .to(RemoteActorProxyFactory).inSingletonScope();
   bind<Workflows>(WORKFLOWS)

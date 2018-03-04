@@ -4,9 +4,12 @@ import {
   WorkflowStartParameters,
 } from '../../aws/aws.types';
 import { Observable } from 'rxjs/Observable';
-import { ActivityTask } from 'aws-sdk/clients/swf';
+import { ActivityTask, RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
 
 export class MockWorkflowClient implements WorkflowClient {
+  respondDecisionTaskCompleted(params: RespondDecisionTaskCompletedInput): Observable<{}> {
+    throw new Error('not implemented');
+  }
 
   pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask> {
     throw new Error('not implemented');
@@ -23,4 +26,6 @@ export class MockWorkflowClient implements WorkflowClient {
   registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput> {
     throw new Error('not implemented');
   }
+
+
 }

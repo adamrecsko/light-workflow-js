@@ -8,62 +8,33 @@ import {
 import { ApplicationConfiguration } from '../../core/application/application-configuration';
 import { MyApp } from './app';
 import { HelloImpl, helloSymbol } from './actors/hello';
-import { helloWorkflowSymbol, test } from './workflows/hello-world';
-import HelloWorkflowImpl = test.HelloWorkflowImpl;
+import { HelloWorkflowImpl, helloWorkflowSymbol } from './workflows/hello-world';
 import { MockSWF } from '../mocks/SWF';
-import { stub, assert, match } from 'sinon';
-import { expect } from 'chai';
+import { stub } from 'sinon';
 import { ActivityHistoryGenerator } from '../helpers/activity-history-generator';
-import {
-  CANCEL_FAILED_TRANSITION, CANCELLED_TRANSITION, COMPLETED_TRANSITION,
-  FAILED_TRANSITION, TIMEOUTED_TRANSITION,
-} from '../test-data/normal-transitions';
-import { DecisionTask, HistoryEvent } from '../../aws/aws.types';
 import { WorkflowHistoryGenerator } from '../helpers/workflow-history-generator';
+import { BaseWorkflowDecisionPollGenerator, WorkflowDecisionPollGenerator } from '../helpers/workflow-decision-poll-generator';
+import { suite, test, slow, timeout } from "mocha-typescript";
 
 
-function createPollForActivityTaskRespond(eventList: HistoryEvent[]): DecisionTask {
-  const result: DecisionTask = {
-    startedEventId: 1,
-    taskToken: 'string',
-    workflowExecution: {
-      runId: 'string',
-      workflowId: 'string',
-    },
-    workflowType: {
-      name: 'helloWorld',
-      version: '1',
-    },
-    events: eventList,
-  };
-
-  return result;
-}
-
-describe('Test Application Worker', () => {
-
-  let config: ApplicationConfiguration;
-  let configProvider: ApplicationConfigurationProvider;
-  let applicationFactory: ApplicationFactory;
-  let mockSWF: MockSWF;
-  let pollForDecisionTaskStub: any;
+@suite
+class WorkflowWorkerIntegrationTest {
+  config: ApplicationConfiguration;
+  configProvider: ApplicationConfigurationProvider;
+  applicationFactory: ApplicationFactory;
+  mockSWF: MockSWF;
 
 
-  const testRunId = {
-    runId: 'test-run-id',
-  };
-  beforeEach(() => {
-
-    mockSWF = new MockSWF();
-    config = new ApplicationConfiguration(mockSWF as SWF);
-    configProvider = new BaseApplicationConfigurationProvider(config);
-    applicationFactory = new ConfigurableApplicationFactory(configProvider);
+  before() {
+    this.mockSWF = new MockSWF();
+    this.config = new ApplicationConfiguration(this.mockSWF as SWF);
+    this.configProvider = new BaseApplicationConfigurationProvider(this.config);
+    this.applicationFactory = new ConfigurableApplicationFactory(this.configProvider);
     const workflowEventGenerator = new WorkflowHistoryGenerator();
     const historyGenerator = new ActivityHistoryGenerator();
+    const workflowPollGenerator: WorkflowDecisionPollGenerator = new BaseWorkflowDecisionPollGenerator();
     historyGenerator.seek(2);
-
-
-    historyGenerator.activityType = { "name": "formatText", "version": "23-b" };
+    historyGenerator.activityType = { name: 'formatText', version: '23-b' };
     const helloActivityTransition = [
       historyGenerator.createActivityScheduledEvent({
         input: JSON.stringify(['this is a test input']),
@@ -73,14 +44,14 @@ describe('Test Application Worker', () => {
       historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('halihoo'), scheduledEventId: 2, startedEventId: 3 }),
 
       historyGenerator.createActivityScheduledEvent({
-        input: JSON.stringify('halihoo'),
+        input: JSON.stringify('Test input 2'),
         activityId: '1',
       }),
       historyGenerator.createActivityTaskStarted({ scheduledEventId: 5 }),
       historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('halihooo 2'), scheduledEventId: 5, startedEventId: 6 }),
     ];
 
-    const pollResult = createPollForActivityTaskRespond([
+    const events = [
       workflowEventGenerator.createStartedEvent({
         input: JSON.stringify(['this is a test input']),
         workflowType: {
@@ -89,34 +60,45 @@ describe('Test Application Worker', () => {
         },
       }),
       ...helloActivityTransition,
+    ];
 
-    ]);
+    const pollResult = workflowPollGenerator.generateTask({
+      events,
+      nextPageToken: null,
+      startedEventId: 1,
+      workflowType: {
+        name: 'helloWorld',
+        version: '1',
+      },
+    });
 
-    pollForDecisionTaskStub = stub().callsArgWith(1, null, pollResult);
+    this.mockSWF.pollForDecisionTask = stub().callsArgWith(1, null, pollResult);
 
-    mockSWF.pollForDecisionTask = pollForDecisionTaskStub;
-
-
-    applicationFactory.addActorImplementations([
+    this.applicationFactory.addActorImplementations([
       {
         impl: HelloImpl,
         key: helloSymbol,
       },
     ]);
 
-    applicationFactory.addWorkflowImplementations([
+    this.applicationFactory.addWorkflowImplementations([
       {
         impl: HelloWorkflowImpl,
         key: helloWorkflowSymbol,
       },
     ]);
-  });
+  }
 
-  it('should start worker', (done) => {
-    const app: MyApp = applicationFactory.createApplication<MyApp>(MyApp);
-    const worker = app.createWorker();
-    worker.startWorker();
-    setTimeout(done, 3000);
-  }).timeout(6000);
+  @test(slow(2000), timeout(4000))
+  shouldStartWorker(done: any) {
+    const app: MyApp = this.applicationFactory.createApplication<MyApp>(MyApp);
+    try {
+      const worker = app.createWorker();
+      worker.startWorker();
+    } catch (error) {
+      console.error(error);
+    }
+    setTimeout(done, 500);
+  }
+}
 
-});

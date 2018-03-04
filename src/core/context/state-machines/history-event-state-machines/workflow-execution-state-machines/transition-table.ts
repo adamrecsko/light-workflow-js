@@ -13,7 +13,7 @@ export const TRANSITION_TABLE: TransitionTable<WES> = [
   [WES.CancelRequested, WES.Canceled],
   [WES.CancelRequested, WES.CancelFailed],
 
-  [WES.Started, WES.Finished],
+  [WES.Started, WES.CompletedStateRequested],
   [WES.Started, WES.Completed],
   [WES.Started, WES.CompleteFailed],
   [WES.Started, WES.TimedOut],
@@ -21,11 +21,14 @@ export const TRANSITION_TABLE: TransitionTable<WES> = [
   [WES.Started, WES.ContinuedAsNew],
   [WES.Started, WES.ContinueAsNewFailed],
 
-  [WES.Finished, WES.Completed],
-  [WES.Finished, WES.CompleteFailed],
-  [WES.Finished, WES.TimedOut],
-  [WES.Finished, WES.Terminated],
+  [WES.CompletedStateRequested, WES.Completed],
+  [WES.CompletedStateRequested, WES.CompleteFailed],
+  [WES.CompletedStateRequested, WES.TimedOut],
+  [WES.CompletedStateRequested, WES.Terminated],
 
+  [WES.Started, WES.ExecutionFailedStateRequested],
   [WES.Started, WES.ExecutionFailed],
+  [WES.ExecutionFailedStateRequested, WES.ExecutionFailed],
+
   [WES.Started, WES.FailFailed],
 ];

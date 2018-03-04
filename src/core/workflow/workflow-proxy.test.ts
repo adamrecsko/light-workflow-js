@@ -61,9 +61,9 @@ class LocalWorkflowStubTest {
     const testInput = JSON.stringify(['test', 27]);
     const result = await this.workflowStub.callWorkflowWithInput({ name: 'test-wf', version: '1-b' }, testInput);
 
-    expect(result).to.eql({
+    expect(result).to.eql(JSON.stringify({
       a: 'test',
       b: 27,
-    });
+    }));
   }
 }

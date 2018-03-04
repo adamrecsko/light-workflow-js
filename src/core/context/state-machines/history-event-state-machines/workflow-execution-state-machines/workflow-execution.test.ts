@@ -149,4 +149,26 @@ class WorkflowExecutionTest {
     this.stateMachine.processHistoryEvent(event);
     this.expectStateMachine(States.Terminated, params);
   }
+
+  @test
+  shouldTransitionToCompleteStateRequested() {
+    const params = {
+      requestedResult: 'test',
+    };
+    this.applyStatesToStateMachine([States.Started]);
+    this.stateMachine.setCompleteStateRequestedWith('test');
+    this.expectStateMachine(States.CompletedStateRequested, params);
+  }
+
+  @test
+  shouldTransitionToExecutionFailedStateRequested() {
+    const params = {
+      requestedCause: 'test cause',
+      requestedDetails: 'test details',
+    };
+    this.applyStatesToStateMachine([States.Started]);
+    this.stateMachine.setExecutionFailedStateRequestedWith('test cause', 'test details');
+    this.expectStateMachine(States.ExecutionFailedStateRequested, params);
+  }
+
 }

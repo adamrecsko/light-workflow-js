@@ -35,9 +35,10 @@ export class LocalWorkflowStub<T> {
     if (this.isWorkflowExists({ name, version })) {
       const definition = this.getDefinition({ name, version });
       const methodProxy = this.getMethodProxyForDefinition(definition);
+
       const result = await methodProxy(input);
       console.log('callWorkflowWithInput Finished:', result);
-      return result;
+      return definition.serializer.stringify(result);
     }
     throw new WorkflowDoesNotExistsException(LocalWorkflowStub.createKey({ name, version }));
   }
@@ -60,7 +61,7 @@ export class LocalWorkflowStub<T> {
     const method: Function = instance[methodName] as Function;
     const serializer = definition.serializer;
     return (input: string) => {
-      const params = serializer.parse(input);
+      const params = input ? serializer.parse(input) : [];
       return method.apply(instance, params);
     };
   }

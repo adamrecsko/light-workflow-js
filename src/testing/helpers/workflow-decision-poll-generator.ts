@@ -1,17 +1,26 @@
 import { DecisionTask, HistoryEvent } from '../../aws/aws.types';
-
+import * as faker from 'faker';
 
 export interface WorkflowDecisionPollGenerator {
-  generateTask(eventList: HistoryEvent[]): DecisionTask;
+  generateTask(decisionTask: Partial<DecisionTask>): DecisionTask;
 }
 
 export class BaseWorkflowDecisionPollGenerator implements WorkflowDecisionPollGenerator {
-  generateTask(eventList: HistoryEvent[]): DecisionTask {
-
-
-
-
-
-    return null;
+  generateTask(decisionTask: Partial<DecisionTask> = {}): DecisionTask {
+    return {
+      workflowType: {
+        name: faker.hacker.ingverb(),
+        version: faker.system.semver(),
+      },
+      events: [],
+      nextPageToken: faker.random.uuid(),
+      taskToken: faker.random.uuid(),
+      startedEventId: faker.random.number(),
+      workflowExecution: {
+        runId: faker.random.uuid(),
+        workflowId: `${faker.random.number()}`,
+      },
+      ...decisionTask,
+    };
   }
 }

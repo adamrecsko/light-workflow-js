@@ -7,12 +7,18 @@ import {
 import { injectable, inject } from 'inversify';
 import { AWSClientProvider } from './aws-client-provider';
 import { AWS_ADAPTER } from '../symbols';
+import { RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
 
 export interface WorkflowClient {
   pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>;
+
   pollForDecisionTask(params: DecisionPollParameters): Observable<DecisionTask>;
+
   startWorkflow(params: WorkflowStartParameters): Observable<Run>;
+
   registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput>;
+
+  respondDecisionTaskCompleted(params: RespondDecisionTaskCompletedInput): Observable<{}>;
 }
 
 @injectable()
@@ -37,6 +43,10 @@ export class BaseWorkflowClient implements WorkflowClient {
 
   registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput> {
     return BaseWorkflowClient.fromSwfFunction<RegisterWorkflowTypeInput>(this.swfClient.registerWorkflowType.bind(this.swfClient), params);
+  }
+
+  respondDecisionTaskCompleted(params: RespondDecisionTaskCompletedInput): Observable<{}> {
+    return BaseWorkflowClient.fromSwfFunction(this.swfClient.respondDecisionTaskCompleted.bind(this.swfClient), params);
   }
 
 

@@ -16,6 +16,7 @@ import { LocalWorkflowStub } from '../workflow-proxy';
 import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../../constants';
 import { tryCatch } from 'rxjs/util/tryCatch';
 import { DecisionRunContext } from '../../context/decision-run-context';
+import { Decision, DecisionList, RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -26,6 +27,7 @@ export interface WorkflowWorker<T> {
 export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   private pollSubscription: Subscription;
+  private wfStub: LocalWorkflowStub<T>;
 
   constructor(private workflowClient: WorkflowClient,
               private appContainer: Container,
@@ -47,6 +49,13 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       defaultTaskPriority: definition.defaultTaskPriority,
       defaultChildPolicy: definition.defaultChildPolicy,
       defaultLambdaRole: definition.defaultLambdaRole,
+    };
+  }
+
+  private createRespondDecisionTaskCompletedInput(taskToken: string, decisions: DecisionList): RespondDecisionTaskCompletedInput {
+    return {
+      taskToken,
+      decisions,
     };
   }
 
@@ -76,7 +85,36 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     });
   }
 
-  private createWorkflowStub(): LocalWorkflowStub<T> {
+  private async respondCompletedWorkflowDecision(taskToken: string, result: string, context: DecisionRunContext) {
+    console.log(taskToken, result);
+    const decision: Decision = {
+      decisionType: 'CompleteWorkflowExecution',
+      completeWorkflowExecutionDecisionAttributes: {
+        result,
+      },
+    };
+    const input = this.createRespondDecisionTaskCompletedInput(taskToken, [decision]);
+    const workflowExecution = context.getWorkflowExecution();
+    workflowExecution.setCompleteStateRequestedWith(result);
+    return this.workflowClient.respondDecisionTaskCompleted(input).toPromise();
+  }
+
+  private async respondFailedWorkflowDecision(taskToken: string, details: string = 'error', reason: string, context: DecisionRunContext) {
+    const decision: Decision = {
+      decisionType: 'FailWorkflowExecution',
+      failWorkflowExecutionDecisionAttributes: {
+        details,
+        reason,
+      },
+    };
+    const input = this.createRespondDecisionTaskCompletedInput(taskToken, [decision]);
+    const workflowExecution = context.getWorkflowExecution();
+    workflowExecution.setExecutionFailedStateRequestedWith(details, reason);
+    return this.workflowClient.respondDecisionTaskCompleted(input).toPromise();
+  }
+
+
+  createWorkflowStub(): LocalWorkflowStub<T> {
     const instance = this.appContainer.get<T>(this.binding.key);
     return new LocalWorkflowStub(this.binding.impl, instance);
   }
@@ -89,8 +127,8 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   }
 
   startWorker(): void {
+    this.wfStub = this.createWorkflowStub();
     const sharedPoller = this.poller.share();
-
     this.pollSubscription = sharedPoller
       .flatMap((decisionTask: DecisionTask) => {
         const runId = decisionTask.workflowExecution.runId;
@@ -98,12 +136,13 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
         return of(context.getWorkflowExecution())
           .filter(workflowExecution => workflowExecution.currentState === WorkflowExecutionStates.Created)
           .flatMap((workflowExecution) => {
-            const stub = this.createWorkflowStub();
             return workflowExecution
               .onChange
               .filter(state => state === WorkflowExecutionStates.Started)
               .flatMap(() => {
-                return stub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input);
+                return this.wfStub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input)
+                  .then(workflowResult => this.respondCompletedWorkflowDecision(decisionTask.taskToken, workflowResult, context),
+                    err => this.respondFailedWorkflowDecision(decisionTask.taskToken, err.details, err.message, context));
               });
           });
       }).subscribe();
@@ -113,7 +152,6 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       const context = this.contextCache.getOrCreateContext(runId);
       this.processDecision(context, decisionTask);
     });
-
     this.pollSubscription.add(processSub);
   }
 

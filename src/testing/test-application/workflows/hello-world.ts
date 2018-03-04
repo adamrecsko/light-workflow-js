@@ -9,38 +9,36 @@ import {
 export const helloWorkflowSymbol = Symbol('helloWorkflow');
 
 
-export namespace test {
+export interface HelloWorkflow {
+  helloWorld(text: string): Promise<string>;
 
-  export interface HelloWorkflow {
-    helloWorld(text: string): Promise<string>;
+  halloWorld(text: string): Promise<string>;
+}
 
-    halloWorld(text: string): Promise<string>;
+
+@injectable()
+export class HelloWorkflowImpl implements HelloWorkflow {
+  @actorClient
+  @inject(helloSymbol)
+  private hello: Hello;
+
+  @workflow()
+  async helloWorld(text: string): Promise<string> {
+    console.log('hallo:', text);
+    const formattedText = await this.hello.formatText(text).toPromise();
+    console.log('TEXT::::TEXT', formattedText);
+    return this.hello.printIt(formattedText).toPromise();
   }
 
-
-  @injectable()
-  export class HelloWorkflowImpl implements HelloWorkflow {
-    @actorClient
-    @inject(helloSymbol)
-    private hello: Hello;
-
-    @workflow()
-    async helloWorld(text: string): Promise<string> {
-      console.log('hallo:', text);
-      const formattedText = await this.hello.formatText(text).toPromise();
-      console.log('TEXT::::TEXT',formattedText);
-      return this.hello.printIt(formattedText).toPromise();
-    }
-
-    @workflow()
-    @executionStartToCloseTimeout('10')
-    @version('7-test')
-    @defaultExecutionStartToCloseTimeout('13')
-    async halloWorld(text: string): Promise<string> {
-      const formattedText = await this.hello.formatText(`${text} hallo`).toPromise();
-      return this.hello.printIt(formattedText).toPromise();
-    }
+  @workflow()
+  @executionStartToCloseTimeout('10')
+  @version('7-test')
+  @defaultExecutionStartToCloseTimeout('13')
+  async halloWorld(text: string): Promise<string> {
+    const formattedText = await this.hello.formatText(`${text} hallo`).toPromise();
+    return this.hello.printIt(formattedText).toPromise();
   }
 }
+
 
 

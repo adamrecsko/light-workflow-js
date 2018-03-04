@@ -34,10 +34,15 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
   input: SWF.Data;
   externalWorkflowExecution: SWF.WorkflowExecution;
   externalInitiatedEventId: SWF.EventId;
+
+  requestedCause: SWF.WorkflowExecutionCancelRequestedCause;
+  requestedDetails: SWF.Data;
+
   cause: SWF.WorkflowExecutionCancelRequestedCause;
   details: SWF.Data;
   decisionTaskCompletedEventId: SWF.EventId;
   result: SWF.Data;
+  requestedResult: SWF.Data;
   executionStartToCloseTimeout: SWF.DurationInSecondsOptional;
   taskStartToCloseTimeout: SWF.DurationInSecondsOptional;
   childPolicy: SWF.ChildPolicy;
@@ -98,9 +103,15 @@ export class WorkflowExecution extends AbstractHistoryEventStateMachine<Workflow
     }
   }
 
-  public finishExecution(result: string) {
-    this.currentState = WorkflowExecutionStates.Finished;
-    this.finishResult = result;
+  public setCompleteStateRequestedWith(result: string) {
+    this.currentState = WorkflowExecutionStates.CompletedStateRequested;
+    this.requestedResult = result;
+  }
+
+  public setExecutionFailedStateRequestedWith(cause: string, details: string) {
+    this.currentState = WorkflowExecutionStates.ExecutionFailedStateRequested;
+    this.requestedCause = cause;
+    this.requestedDetails = details;
   }
 
   // parsers:

@@ -1,11 +1,9 @@
 import { injectable, inject } from 'inversify';
-import { helloWorkflowSymbol, test } from './workflows/hello-world';
+import { HelloWorkflow, HelloWorkflowImpl, helloWorkflowSymbol } from './workflows/hello-world';
 import { workflowClient } from '../../core/workflow/decorators/workflow-client-decorators';
 import { Workflows, WORKFLOWS } from '../../core/workflow/workflows';
-
-import HelloWorkflow = test.HelloWorkflow;
 import { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } from '../../core/workflow/worker/workflow-worker-factory';
-import HelloWorkflowImpl = test.HelloWorkflowImpl;
+
 import { WorkflowWorker } from '../../core/workflow/worker/workflow-worker';
 
 @injectable()

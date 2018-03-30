@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { suite, test, slow, timeout } from 'mocha-typescript';
 import { SWF } from 'aws-sdk';
 import { ApplicationFactory, ConfigurableApplicationFactory } from '../../core/application/application-factory';
 import {
@@ -7,14 +8,15 @@ import {
 } from '../../core/application/application-configuration-provider';
 import { ApplicationConfiguration } from '../../core/application/application-configuration';
 import { MyApp } from './app';
-import { HelloImpl, helloSymbol } from './actors/hello';
-import { HelloWorkflowImpl, helloWorkflowSymbol } from './workflows/hello-world';
-import { MockSWF } from '../mocks/SWF';
-import { stub } from 'sinon';
 import { ActivityHistoryGenerator } from '../helpers/activity-history-generator';
-import { WorkflowHistoryGenerator } from '../helpers/workflow-history-generator';
-import { BaseWorkflowDecisionPollGenerator, WorkflowDecisionPollGenerator } from '../helpers/workflow-decision-poll-generator';
-import { suite, test, slow, timeout } from "mocha-typescript";
+
+
+import { TEST_ACTOR, TestActorImpl } from './actors/test-actor';
+import { TEST_WORKFLOW, TestWorkflowImpl } from './workflows/test-workflow';
+import { FakeSWF } from '../mocks/fake-swf';
+import { MockSWF } from '../mocks/SWF';
+import { expect } from 'chai';
+import * as uuid from 'node-uuid';
 
 
 @suite
@@ -22,83 +24,192 @@ class WorkflowWorkerIntegrationTest {
   config: ApplicationConfiguration;
   configProvider: ApplicationConfigurationProvider;
   applicationFactory: ApplicationFactory;
-  mockSWF: MockSWF;
+  mockSWF: FakeSWF;
+  taskToken: string;
 
-
-  before() {
-    this.mockSWF = new MockSWF();
-    this.config = new ApplicationConfiguration(this.mockSWF as SWF);
-    this.configProvider = new BaseApplicationConfigurationProvider(this.config);
-    this.applicationFactory = new ConfigurableApplicationFactory(this.configProvider);
-    const workflowEventGenerator = new WorkflowHistoryGenerator();
+  loadFinishedActivities() {
     const historyGenerator = new ActivityHistoryGenerator();
-    const workflowPollGenerator: WorkflowDecisionPollGenerator = new BaseWorkflowDecisionPollGenerator();
     historyGenerator.seek(2);
-    historyGenerator.activityType = { name: 'formatText', version: '23-b' };
-    const helloActivityTransition = [
+
+
+    const transitions = [
       historyGenerator.createActivityScheduledEvent({
-        input: JSON.stringify(['this is a test input']),
         activityId: '0',
       }),
       historyGenerator.createActivityTaskStarted({ scheduledEventId: 2 }),
-      historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('halihoo'), scheduledEventId: 2, startedEventId: 3 }),
+      historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('test'), scheduledEventId: 2, startedEventId: 3 }),
 
       historyGenerator.createActivityScheduledEvent({
-        input: JSON.stringify('Test input 2'),
         activityId: '1',
       }),
       historyGenerator.createActivityTaskStarted({ scheduledEventId: 5 }),
-      historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('halihooo 2'), scheduledEventId: 5, startedEventId: 6 }),
+      historyGenerator.createActivityTaskCompleted({ result: JSON.stringify('test 2'), scheduledEventId: 5, startedEventId: 6 }),
     ];
 
-    const events = [
-      workflowEventGenerator.createStartedEvent({
-        input: JSON.stringify(['this is a test input']),
+    this.mockSWF.setEventList(transitions);
+
+  }
+
+  loadFailedActivities() {
+    const historyGenerator = new ActivityHistoryGenerator();
+    historyGenerator.seek(2);
+    const transitions = [
+      historyGenerator.createActivityScheduledEvent({
+        activityId: '0',
+      }),
+      historyGenerator.createActivityTaskStarted({ scheduledEventId: 2 }),
+      historyGenerator.createActivityTaskFailed({ reason: 'error 1', details: 'details', scheduledEventId: 2, startedEventId: 3 }),
+    ];
+    this.mockSWF.setEventList(transitions);
+  }
+
+  before() {
+
+    this.taskToken = uuid.v4();
+    this.mockSWF = new FakeSWF(
+      [],
+      100,
+      {
         workflowType: {
-          name: 'helloWorld',
+          name: 'workflowTest1',
           version: '1',
         },
-      }),
-      ...helloActivityTransition,
-    ];
-
-    const pollResult = workflowPollGenerator.generateTask({
-      events,
-      nextPageToken: null,
-      startedEventId: 1,
-      workflowType: {
-        name: 'helloWorld',
-        version: '1',
+        taskToken: this.taskToken,
       },
-    });
+      ['test input'],
+    );
 
-    this.mockSWF.pollForDecisionTask = stub().callsArgWith(1, null, pollResult);
+    this.config = new ApplicationConfiguration(this.mockSWF as any);
+    this.configProvider = new BaseApplicationConfigurationProvider(this.config);
+    this.applicationFactory = new ConfigurableApplicationFactory(this.configProvider);
 
     this.applicationFactory.addActorImplementations([
       {
-        impl: HelloImpl,
-        key: helloSymbol,
+        impl: TestActorImpl,
+        key: TEST_ACTOR,
       },
     ]);
 
     this.applicationFactory.addWorkflowImplementations([
       {
-        impl: HelloWorkflowImpl,
-        key: helloWorkflowSymbol,
+        impl: TestWorkflowImpl,
+        key: TEST_WORKFLOW,
       },
     ]);
   }
 
-  @test(slow(2000), timeout(4000))
-  shouldStartWorker(done: any) {
+  @test(slow(2000), timeout(10000))
+  async shouldRespondWorkflowFinished() {
+    this.loadFinishedActivities();
     const app: MyApp = this.applicationFactory.createApplication<MyApp>(MyApp);
-    try {
-      const worker = app.createWorker();
-      worker.startWorker();
-    } catch (error) {
-      console.error(error);
-    }
-    setTimeout(done, 500);
+    const worker = app.createWorker();
+    worker.startWorker();
+    await this.mockSWF.completedEventChangeSubject
+      .asObservable().do(evt => console.log(JSON.stringify(evt))).take(3).toArray().toPromise();
+
+    const expectedEvents: any = [{
+      decisions: [
+        {
+          decisionType: 'ScheduleActivityTask',
+          scheduleActivityTaskDecisionAttributes: {
+            activityId: '0',
+            activityType: {
+              name: 'formatText',
+              version: '23-b',
+            },
+            heartbeatTimeout: undefined,
+            input: '["test input"]',
+            scheduleToCloseTimeout: undefined,
+            scheduleToStartTimeout: undefined,
+            startToCloseTimeout: undefined,
+            taskList: {
+              name: 'default',
+            },
+          },
+        },
+      ],
+      taskToken: this.taskToken,
+    }, {
+      decisions: [
+        {
+          decisionType: 'ScheduleActivityTask',
+          scheduleActivityTaskDecisionAttributes: {
+            activityId: '1',
+            activityType: {
+              name: 'printIt',
+              version: '23-b',
+            },
+            heartbeatTimeout: undefined,
+            input: '["test"]',
+            scheduleToCloseTimeout: undefined,
+            scheduleToStartTimeout: undefined,
+            startToCloseTimeout: undefined,
+            taskList: {
+              name: 'default',
+            },
+          },
+        },
+      ],
+      taskToken: this.taskToken,
+    }, {
+      decisions: [
+        {
+          completeWorkflowExecutionDecisionAttributes: {
+            result: '"test input:test:test 2"',
+          },
+          decisionType: 'CompleteWorkflowExecution',
+        },
+      ],
+      taskToken: this.taskToken,
+    }];
+    expect(this.mockSWF.completedEvents).to.eql(expectedEvents);
   }
+
+  @test(slow(2000), timeout(5000))
+  async shouldRespondWorkflowFailed() {
+    this.loadFailedActivities();
+    const app: MyApp = this.applicationFactory.createApplication<MyApp>(MyApp);
+    const worker = app.createWorker();
+    worker.startWorker();
+    await this.mockSWF.completedEventChangeSubject
+      .asObservable().do(evt => console.log(JSON.stringify(evt))).take(2).toArray().toPromise();
+
+    expect(this.mockSWF.completedEvents).to.eql([
+      {
+        decisions: [
+          {
+            decisionType: 'ScheduleActivityTask',
+            scheduleActivityTaskDecisionAttributes: {
+              activityId: '0',
+              activityType: {
+                name: 'formatText',
+                version: '23-b',
+              },
+              heartbeatTimeout: undefined,
+              input: '["test input"]',
+              scheduleToCloseTimeout: undefined,
+              scheduleToStartTimeout: undefined,
+              startToCloseTimeout: undefined,
+              taskList: {
+                name: 'default',
+              },
+            },
+          },
+        ],
+        taskToken: this.taskToken,
+      },
+      {
+        decisions: [{
+          decisionType: 'FailWorkflowExecution',
+          failWorkflowExecutionDecisionAttributes: {
+            details: 'details',
+            reason: 'Activity failed: error 1 - details',
+          },
+        }],
+        taskToken: this.taskToken,
+      },
+    ]);
+  }
+
 }
 

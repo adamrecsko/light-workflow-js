@@ -21,7 +21,7 @@ import { ChaiTestScheduler } from '../../../testing/helpers/chai-test-scheduler'
 import { BaseWorkflowDecisionPollGenerator } from '../../../testing/helpers/workflow-decision-poll-generator';
 import { HistoryEventProcessor } from '../../context/state-machines/history-event-state-machines/history-event-state-machine';
 import { WorkflowExecution } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
-import { ActivityDecisionStateMachine } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
+import { ActivityDecisionStateMachine, BaseActivityDecisionStateMachine } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import * as sinon from 'sinon';
 import { WorkflowHistoryGenerator } from '../../../testing/helpers/workflow-history-generator';
 import { WorkflowExecutionStates } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution-states';
@@ -30,11 +30,14 @@ import { ZoneContextResolutionStrategy } from '../../context/resolution-strategi
 import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../../constants';
 import { Subject } from 'rxjs/Subject';
 import { of } from 'rxjs/observable/of';
-
+import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
+import { Newable } from '../../../implementation';
+import { WorkflowType } from 'aws-sdk/clients/swf';
 
 const TEST_WF = Symbol('TEST_WF');
 const domain = 'expectedDomain';
 const taskList = 'expectedTaskList';
+
 
 @injectable()
 class TestWfImpl {
@@ -58,8 +61,11 @@ const binding: Binding<TestWfImpl> = {
   taskLists: [taskList],
 };
 
-
 class MockDecisionRunContext implements DecisionRunContext {
+  getZone(): Zone {
+    return undefined;
+  }
+
   processEventList(decisionTask: DecisionTask): void {
   }
 
@@ -68,7 +74,7 @@ class MockDecisionRunContext implements DecisionRunContext {
   }
 
   getStateMachines(): HistoryEventProcessor<any>[] {
-    return undefined;
+    return [];
   }
 
   getNextId(): string {
@@ -90,6 +96,12 @@ class MockWorkflowExecution {
 
 }
 
+class MockZone {
+  runGuarded(fn: Function): any {
+    return fn();
+  }
+}
+
 @suite
 class BaseWorkflowWorkerTest {
   workflowClient: WorkflowClient;
@@ -109,6 +121,10 @@ class BaseWorkflowWorkerTest {
     this.container = new Container();
     this.contextCache = sinon.createStubInstance(MockContextCache);
     this.decisionContext = sinon.createStubInstance(MockDecisionRunContext);
+    (this.decisionContext.getStateMachines as any).returns([]);
+    (this.decisionContext.getZone as any).returns(new MockZone());
+
+
     (this.contextCache.getOrCreateContext as any).returns(this.decisionContext);
     this.testScheduler = new ChaiTestScheduler();
     this.pollGenerator = new BaseWorkflowDecisionPollGenerator();
@@ -272,52 +288,25 @@ class BaseWorkflowWorkerTest {
   }
 
   @test
-  shouldCallProcessEventListInsideZoneContextWithRunContext() {
-    let ctx: DecisionRunContext = null;
-    const task = this.pollGenerator.generateTask();
-    const values = {
-      a: task,
-    };
+  async shouldRespondWorkflowCompletedDecision() {
 
-    this.decisionContext.processEventList = () => {
-      ctx = this.contextResolutionStrategy.getContext();
-    };
-
-    this.loadBinding(this.binding);
-    this.poller = this.testScheduler.createColdObservable('a|', values);
-    const workflowWorker = this.createWorker();
-    workflowWorker.startWorker();
-    this.testScheduler.flush();
-
-    expect(ctx).to.eq(this.decisionContext);
-  }
-
-  @test
-  async shouldRespondWorkflowCompleted() {
-    @injectable()
-    class TestWf {
-      constructor() {
-      }
-
-      @workflow()
-      @version('1-test')
-      async test_wf() {
-        return 'test-result';
-      }
-    }
-
-    this.binding.impl = TestWf;
     const workflowType = {
       name: 'test_wf',
       version: '1-test',
     };
-    const waiter = new Subject();
+
+    this.binding.impl = this.createWorkflowClass(workflowType, 'test result');
+    let success: any = null;
+    const waiter = new Promise((s) => {
+      success = s;
+    });
 
     this.workflowExecution.workflowType = workflowType;
     this.workflowExecution.setCompleteStateRequestedWith = sinon.spy() as any;
 
     sinon.stub(this.workflowClient, 'respondDecisionTaskCompleted').callsFake(() => {
-      waiter.complete();
+      console.log('respondDecisionTaskCompleted, called');
+      success();
       return of({});
     });
 
@@ -342,12 +331,15 @@ class BaseWorkflowWorkerTest {
     workflowWorker.startWorker();
     this.testScheduler.flush();
 
-    await waiter.asObservable().toPromise();
-    sinon.assert.calledWith(this.workflowClient.respondDecisionTaskCompleted as any, {
+    await waiter;
+
+
+    const completedStub = this.workflowClient.respondDecisionTaskCompleted as sinon.SinonStub;
+    sinon.assert.calledWith(completedStub, {
       decisions: [
         {
           completeWorkflowExecutionDecisionAttributes: {
-            result: JSON.stringify('test-result'),
+            result: JSON.stringify('test result'),
           },
           decisionType: 'CompleteWorkflowExecution',
         },
@@ -356,6 +348,70 @@ class BaseWorkflowWorkerTest {
     });
   }
 
+  @test
+  async shouldRespondDecisionCompleted() {
+    const workflowType = {
+      name: 'test_wf',
+      version: '1-test',
+    };
+    let success: any = null;
+
+    this.binding.impl = this.createWorkflowClass(workflowType, new Promise(s => null));
+    const waiter = new Promise(s => success = s);
+
+    this.workflowExecution.workflowType = workflowType;
+    this.workflowExecution.setCompleteStateRequestedWith = sinon.spy() as any;
+    const stateMachine = new BaseActivityDecisionStateMachine(
+      {
+        startParams: 'test',
+      } as any,
+      ActivityDecisionState.Created,
+    );
+
+    this.decisionContext.processEventList = () => {
+
+    };
+    this.decisionContext.getStateMachines = sinon.stub().returns([stateMachine]);
+    sinon.stub(this.workflowClient, 'respondDecisionTaskCompleted').callsFake(() => {
+      success();
+      return of({});
+    });
+
+    const task = this.pollGenerator.generateTask(
+      {
+        workflowType,
+        events: [this.workflowHistoryGen.createStartedEvent({
+          workflowType,
+        })],
+      },
+    );
+    const values = {
+      a: task,
+    };
+    this.loadBinding(this.binding);
+    this.poller = this.testScheduler.createColdObservable('a|', values);
+    this.workflowExecution.currentState = WorkflowExecutionStates.Created;
+    this.workflowExecution.onChange = this.testScheduler
+      .createColdObservable('--a|', { a: WorkflowExecutionStates.Started });
+    const workflowWorker = this.createWorker();
+    workflowWorker.startWorker();
+    this.testScheduler.flush();
+
+    await waiter;
+
+    sinon.assert.calledWith(this.workflowClient.respondDecisionTaskCompleted as any, {
+      decisions: [
+        {
+          scheduleActivityTaskDecisionAttributes: {
+            startParams: 'test',
+          },
+          decisionType: 'ScheduleActivityTask',
+        },
+      ],
+      taskToken: task.taskToken,
+    });
+
+  }
 
   @test
   async shouldRespondWorkflowFailed() {
@@ -412,8 +468,8 @@ class BaseWorkflowWorkerTest {
       decisions: [
         {
           failWorkflowExecutionDecisionAttributes: {
-            details:'error',
-            reason:'Test Error',
+            details: 'error',
+            reason: 'Test Error',
           },
           decisionType: 'FailWorkflowExecution',
         },
@@ -430,5 +486,21 @@ class BaseWorkflowWorkerTest {
 
   private loadBinding({ key, impl }: Binding<any>): void {
     this.container.bind(key).to(impl);
+  }
+
+  private createWorkflowClass(workflowType: WorkflowType, result: any): Newable<object> {
+    @injectable()
+    class TestWf {
+      constructor() {
+      }
+
+      @workflow()
+      @version(workflowType.version)
+      async [workflowType.name]() {
+        return result;
+      }
+    }
+
+    return TestWf;
   }
 }

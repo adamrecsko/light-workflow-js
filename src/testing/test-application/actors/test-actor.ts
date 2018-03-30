@@ -1,21 +1,34 @@
-import { activity, version } from '../../../core/actor/activity/decorators/activity-decorators';
+import { Observable } from 'rxjs';
 import { injectable } from 'inversify';
-import { Observable } from 'rxjs/Rx';
-import { of } from 'rxjs/observable/of';
-
+import { description, version, activity } from '../../../core/actor/activity/decorators/activity-decorators';
 
 export const TEST_ACTOR = Symbol('TEST_ACTOR');
 
 export interface TestActor {
-  testMethod(text: string, num: number): Observable<string>;
-}
+  formatText(text: string): Observable<string>;
 
+  printIt(text: string): Observable<string>;
+}
 
 @injectable()
 export class TestActorImpl implements TestActor {
+
+  private printer(text: string) {
+    console.log(text);
+  }
+
   @activity
-  @version('1')
-  testMethod(text: string, num: number): Observable<string> {
-    return of(`test-result:${text},${num}`);
+  @version('23-b')
+  formatText(text: string): Observable<string> {
+    return Observable.of(text + ' hello world');
+  }
+
+  @activity
+  @version('23-b')
+  @description('print the text out')
+  printIt(text: string): Observable<string> {
+    return Observable.of(text).do((text: string) => {
+      this.printer(text);
+    });
   }
 }

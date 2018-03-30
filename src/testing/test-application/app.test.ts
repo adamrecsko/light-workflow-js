@@ -7,14 +7,14 @@ import {
 } from '../../core/application/application-configuration-provider';
 import { ApplicationConfiguration } from '../../core/application/application-configuration';
 import { MyApp } from './app';
-import { HelloImpl, helloSymbol } from './actors/hello';
-import { HelloWorkflowImpl, helloWorkflowSymbol } from './workflows/hello-world';
+import { TEST_ACTOR, TestActorImpl } from './actors/test-actor';
+import { TEST_WORKFLOW, TestWorkflowImpl } from './workflows/test-workflow';
 import { MockSWF } from '../mocks/SWF';
 import { stub, assert, match } from 'sinon';
 import { expect } from 'chai';
 
 
-describe.skip('Test Application', () => {
+describe('Test Application', () => {
 
   let config: ApplicationConfiguration;
   let configProvider: ApplicationConfigurationProvider;
@@ -38,19 +38,15 @@ describe.skip('Test Application', () => {
     mockSWF.registerWorkflowType = registerWfStub;
     applicationFactory.addActorImplementations([
       {
-        impl: HelloImpl,
-        key: helloSymbol,
-      },
-      {
-        impl: HelloWorkflowImpl,
-        key: helloWorkflowSymbol,
+        impl: TestActorImpl,
+        key: TEST_ACTOR,
       },
     ]);
 
     applicationFactory.addWorkflowImplementations([
       {
-        impl: HelloWorkflowImpl,
-        key: helloWorkflowSymbol,
+        impl: TestWorkflowImpl,
+        key: TEST_WORKFLOW,
       },
     ]);
   });
@@ -72,17 +68,17 @@ describe.skip('Test Application', () => {
     await app.registerWorkflows();
 
     assert.calledWith(registerWfStub.getCall(0), match({
-      name: 'helloWorld',
+      name: 'workflowTest1',
       version: '1',
       domain: 'test-domain',
-    }),               match.func);
+    }), match.func);
 
     assert.calledWith(registerWfStub.getCall(1), match({
-      name: 'halloWorld',
-      version: '7-test',
+      name: 'workflowTest2',
+      version: '2',
       domain: 'test-domain',
       defaultExecutionStartToCloseTimeout: '13',
-    }),               match.func);
+    }), match.func);
 
   });
 });

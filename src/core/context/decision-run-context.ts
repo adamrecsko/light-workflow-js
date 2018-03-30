@@ -6,6 +6,7 @@ import {
 } from './state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { HistoryEventProcessor } from './state-machines/history-event-state-machines/history-event-state-machine';
 import { WorkflowExecution } from './state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
+import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../constants';
 
 
 export interface DecisionRunContext {
@@ -18,6 +19,8 @@ export interface DecisionRunContext {
   getNextId(): string;
 
   getWorkflowExecution(): WorkflowExecution;
+
+  getZone(): Zone;
 }
 
 
@@ -29,21 +32,29 @@ export class NotSupportedEventTypeException extends Error {
 
 export class BaseDecisionRunContext implements DecisionRunContext {
 
+
   private keyToStateMachine: Map<string, HistoryEventProcessor<any>>;
   private scheduleEventIdToActivityId: Map<number, string>;
   private currentId: number;
   private workflowExecution: WorkflowExecution;
+  private zone: Zone;
 
 
   constructor() {
     this.keyToStateMachine = new Map();
     this.scheduleEventIdToActivityId = new Map();
     this.currentId = 0;
+    this.zone = Zone.current.fork({
+      name: 'RunContext Zone',
+      properties: {
+        [DECISION_RUN_CONTEXT_ZONE_KEY]: this,
+      },
+    });
     this.workflowExecution = new WorkflowExecution();
   }
 
   processEventList(decisionTask: DecisionTask): void {
-    const { events, workflowExecution: { workflowId } } = decisionTask;
+    const { events } = decisionTask;
     const notify = (stateMachine: HistoryEventProcessor<any>) => stateMachine.notify();
     const parseEvent = (event: HistoryEvent) => {
       let stateMachine: HistoryEventProcessor<any>;
@@ -122,9 +133,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
       }
 
       stateMachine.processHistoryEvent(event);
-      //stateMachine.notify();
     };
-
     events.forEach(parseEvent);
     this.getStateMachines().forEach(notify);
     this.workflowExecution.notify();
@@ -158,5 +167,9 @@ export class BaseDecisionRunContext implements DecisionRunContext {
 
   getWorkflowExecution(): WorkflowExecution {
     return this.workflowExecution;
+  }
+
+  getZone(): Zone {
+    return this.zone;
   }
 }

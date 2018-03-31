@@ -17,6 +17,7 @@ import { ActivityDecisionStateMachine, BaseActivityDecisionStateMachine } from '
 import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import 'zone.js/dist/zone-patch-rxjs';
 import { LocalStub } from '../../utils/local-stub';
+import { Logger } from '../../logging/logger';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -34,7 +35,8 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
               private contextCache: ContextCache,
               private poller: TaskPollerObservable<DecisionTask>,
               private domain: string,
-              private binding: Binding) {
+              private binding: Binding,
+              private logger: Logger) {
   }
 
   private workflowDefinitionToRegisterWorkflowTypeInput(definition: WorkflowDefinition): RegisterWorkflowTypeInput {
@@ -99,7 +101,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     const workflowExecution = context.getWorkflowExecution();
     workflowExecution.setCompleteStateRequestedWith(result);
     return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
-      console.error(err);
+      this.logger.error(err);
       return of();
     });
   }
@@ -117,7 +119,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     const workflowExecution = context.getWorkflowExecution();
     workflowExecution.setExecutionFailedStateRequestedWith(details, reason);
     return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
-      console.error(err);
+      this.logger.error(err);
       return of();
     });
   }
@@ -148,7 +150,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   createWorkflowStub(): LocalStub {
     const instance = this.appContainer.get<T>(this.binding.key);
-    return new LocalStub(this.binding.impl, instance);
+    return new LocalStub(this.binding.impl, instance, this.logger);
   }
 
   register(): Observable<any> {
@@ -171,7 +173,11 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
             return workflowExecution
               .onChange
               .filter(state => state === WorkflowExecutionStates.Started)
-              .flatMap(() => context.getZone().runGuarded(() => this.wfStub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input)))
+              .flatMap(() => context.getZone().runGuarded(() => this.wfStub.callMethodWithInput(workflowExecution.workflowType, workflowExecution.input)))
+              .do(
+                result => this.logger.debug('Workflow %s:%s finished: %s', decisionTask.workflowType.name, decisionTask.workflowType.version, result),
+                err => this.logger.debug('Workflow %s:%s failed: %s %s', decisionTask.workflowType.name, decisionTask.workflowType.version, err.message, err.details),
+              )
               .flatMap((workflowResult: string) => this.respondCompletedWorkflowDecision(workflowResult, context))
               .catch(workflowError => this.respondFailedWorkflowDecision(workflowError.details, workflowError.message, context));
           });

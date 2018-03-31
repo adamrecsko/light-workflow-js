@@ -33,6 +33,7 @@ import { of } from 'rxjs/observable/of';
 import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import { Newable } from '../../../implementation';
 import { WorkflowType } from 'aws-sdk/clients/swf';
+import { TestLogger } from '../../../testing/mocks/test-logger';
 
 const TEST_WF = Symbol('TEST_WF');
 const domain = 'expectedDomain';
@@ -485,7 +486,7 @@ class BaseWorkflowWorkerTest {
   private createWorker(): WorkflowWorker<any> {
     return new BaseWorkflowWorker<TestWfImpl>(
       this.workflowClient, this.container,
-      this.contextCache, this.poller as any, domain, this.binding);
+      this.contextCache, this.poller as any, domain, this.binding, new TestLogger());
   }
 
   private loadBinding({ key, impl }: Binding<any>): void {

@@ -23,6 +23,7 @@ export class TestWorkflowImpl implements TestWorkflow {
   private actor: TestActor;
 
   @workflow()
+  @version('2')
   async workflowTest1(text: string): Promise<string> {
     const formattedText = await this.actor.formatText(text).toPromise();
     const printedText = await this.actor.printIt(formattedText).toPromise();
@@ -30,7 +31,7 @@ export class TestWorkflowImpl implements TestWorkflow {
   }
 
   @workflow()
-  @version('2')
+  @version('3')
   @defaultExecutionStartToCloseTimeout('13')
   async workflowTest2(text: string, num: number): Promise<string> {
     const formattedText = await this.actor.formatText(`input: ${text} num: ${num}`).toPromise();

@@ -14,6 +14,7 @@ import {
 import { of } from 'rxjs/observable/of';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
+import { TestLogger } from '../../../testing/mocks/test-logger';
 
 @suite
 class ActorWorkerTest {
@@ -40,12 +41,12 @@ class ActorWorkerTest {
   registerShouldRegisterAllActivityOnTheActor() {
     const worker = this.createWorker();
     worker.register().subscribe();
-    const expectedCalls:any = [
+    const expectedCalls: any = [
       [
         {
           defaultTaskHeartbeatTimeout: '10',
           defaultTaskList: { name: 'default' },
-          defaultTaskPriority: 'default',
+          defaultTaskPriority: '0',
           defaultTaskScheduleToCloseTimeout: '30',
           defaultTaskScheduleToStartTimeout: '5',
           defaultTaskStartToCloseTimeout: '20',
@@ -76,7 +77,7 @@ class ActorWorkerTest {
           defaultTaskList: {
             name: 'default',
           },
-          defaultTaskPriority: 'default',
+          defaultTaskPriority: '0',
           defaultTaskScheduleToCloseTimeout: '30',
           defaultTaskScheduleToStartTimeout: '5',
           defaultTaskStartToCloseTimeout: '20',
@@ -92,7 +93,7 @@ class ActorWorkerTest {
           defaultTaskList: {
             name: 'default',
           },
-          defaultTaskPriority: 'default',
+          defaultTaskPriority: '0',
           defaultTaskScheduleToCloseTimeout: '30',
           defaultTaskScheduleToStartTimeout: '5',
           defaultTaskStartToCloseTimeout: '20',
@@ -171,7 +172,7 @@ class ActorWorkerTest {
 
 
   private createWorker() {
-    return new BaseActorWorker(this.workflowClient, this.domain, this.container, this.activityPoller as any, this.binding);
+    return new BaseActorWorker(this.workflowClient, this.domain, this.container, this.activityPoller as any, this.binding, new TestLogger());
   }
 
   private static createBinding(taskLists: string[]): Binding<any> {

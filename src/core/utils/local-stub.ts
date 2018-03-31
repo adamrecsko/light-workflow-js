@@ -2,6 +2,7 @@ import { Newable } from '../../implementation';
 import { AbstractDecoratorDefinition } from './decorators/abstract-decorator-definition';
 import { getDefinitionsFromClass } from './decorators/utils';
 import { Observable } from 'rxjs/Observable';
+import { Logger } from '../logging/logger';
 
 export type NameAndVersion = {
   name: string,
@@ -17,7 +18,7 @@ export class LocalStub {
 
   private workflowToDefinition: Map<string, AbstractDecoratorDefinition> = new Map();
 
-  constructor(private clazz: Newable<object>, private instance: any) {
+  constructor(private clazz: Newable<object>, private instance: any, private logger: Logger) {
     const definitions = getDefinitionsFromClass<AbstractDecoratorDefinition>(clazz);
     definitions.forEach((definition: AbstractDecoratorDefinition) => this.storeDefinition(definition));
   }
@@ -26,7 +27,7 @@ export class LocalStub {
     return this.workflowToDefinition.has(LocalStub.createKey({ name, version }));
   }
 
-  public callWorkflowWithInput({ name, version }: NameAndVersion, input: string): Promise<any> | Observable<any> {
+  public callMethodWithInput({ name, version }: NameAndVersion, input: string): Promise<any> | Observable<any> {
     if (this.isWorkflowExists({ name, version })) {
       const definition = this.getDefinition({ name, version });
       const methodProxy = this.getMethodProxyForDefinition(definition);
@@ -34,14 +35,14 @@ export class LocalStub {
 
       if (result instanceof Promise) {
         return result.then((res) => {
-          console.log('call Finished:', res);
+          this.logger.info('Call Finished on promise with: %s', res);
           return definition.serializer.stringify(res);
         });
       }
 
       if (result instanceof Observable) {
         return result.map((res) => {
-          console.log('call Finished:', res);
+          this.logger.info('Call Finished on observable with: %s', res);
           return definition.serializer.stringify(res);
         });
       }

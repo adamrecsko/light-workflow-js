@@ -5,6 +5,7 @@ import { Container, inject, injectable } from 'inversify';
 import { Binding } from '../../generics/implementation-helper';
 import { ActorWorker, BaseActorWorker } from './actor-worker';
 import { ActivityPollerFactory } from '../../../aws/swf/activity-poller-factory';
+import { LOGGER, Logger } from '../../logging/logger';
 
 
 export const ACTOR_WORKER_FACTORY = Symbol('ACTOR_WORKER_FACTORY');
@@ -22,7 +23,9 @@ export class BaseActorWorkerFactory implements ActorWorkerFactory {
               @inject(APP_CONTAINER)
               private appContainer: Container,
               @inject(ACTIVITY_POLLER_FACTORY)
-              private pollerFactory: ActivityPollerFactory) {
+              private pollerFactory: ActivityPollerFactory,
+              @inject(LOGGER)
+              private logger: Logger) {
 
   }
 
@@ -31,6 +34,6 @@ export class BaseActorWorkerFactory implements ActorWorkerFactory {
     const pollParams = new ActivityPollParameters(domain, { name: 'default' });
 
     const poller = this.pollerFactory.createPoller(pollParams);
-    return new BaseActorWorker(this.workflowClient, domain, this.appContainer, poller, binding);
+    return new BaseActorWorker(this.workflowClient, domain, this.appContainer, poller, binding, this.logger);
   }
 }

@@ -6,6 +6,7 @@ import { APP_CONTAINER, CONTEXT_CACHE, DECISION_POLLER_FACTORY, WORKFLOW_CLIENT 
 import { DecisionPollerFactory } from '../../../aws/swf/decision-poller-factory';
 import { DecisionPollParameters } from '../../../aws/aws.types';
 import { ContextCache } from '../../context/context-cache';
+import { LOGGER, Logger } from '../../logging/logger';
 
 export const WORKFLOW_WORKER_FACTORY = Symbol('WORKFLOW_WORKER_FACTORY');
 
@@ -24,7 +25,9 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
               @inject(DECISION_POLLER_FACTORY)
               private decisionPollerFactory: DecisionPollerFactory,
               @inject(CONTEXT_CACHE)
-              private contextCache: ContextCache) {
+              private contextCache: ContextCache,
+              @inject(LOGGER)
+              private logger: Logger) {
 
   }
 
@@ -36,8 +39,7 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
       name: 'default',
     };
 
-
     const poller = this.decisionPollerFactory.createPoller(pollParams);
-    return new BaseWorkflowWorker(this.workflowClient, this.appContainer, this.contextCache, poller, domain, binding);
+    return new BaseWorkflowWorker(this.workflowClient, this.appContainer, this.contextCache, poller, domain, binding, this.logger);
   }
 }

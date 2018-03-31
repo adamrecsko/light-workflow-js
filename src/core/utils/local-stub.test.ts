@@ -7,6 +7,7 @@ import { expect } from 'chai';
 import { LocalStub } from './local-stub';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import { TestLogger } from '../../testing/mocks/test-logger';
 
 
 class TestWfImpl {
@@ -51,7 +52,7 @@ class LocalWorkflowStubTest {
 
   before() {
     const instance = new TestWfImpl();
-    this.workflowStub = new LocalStub(TestWfImpl, instance);
+    this.workflowStub = new LocalStub(TestWfImpl, instance, new TestLogger());
   }
 
   @test
@@ -68,7 +69,7 @@ class LocalWorkflowStubTest {
   @test
   async shouldCallWorkflowWorkflowInstanceMethod() {
     const testInput = JSON.stringify(['test', 27]);
-    const result = await this.workflowStub.callWorkflowWithInput({ name: 'test-wf', version: '1-b' }, testInput);
+    const result = await this.workflowStub.callMethodWithInput({ name: 'test-wf', version: '1-b' }, testInput);
 
     expect(result).to.eql(JSON.stringify({
       a: 'test',
@@ -80,7 +81,7 @@ class LocalWorkflowStubTest {
   @test
   async shouldRunWithObservable() {
     const testInput = JSON.stringify(['test', 27]);
-    const result = await this.workflowStub.callWorkflowWithInput({ name: 'test-wf', version: '1-b' }, testInput);
+    const result = await this.workflowStub.callMethodWithInput({ name: 'test-wf', version: '1-b' }, testInput);
 
     expect(result).to.eql(JSON.stringify({
       a: 'test',

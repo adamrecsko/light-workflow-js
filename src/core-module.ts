@@ -38,6 +38,8 @@ import {
 } from './core/workflow/worker/workflow-worker-factory';
 import { BaseContextCache, ContextCache } from './core/context/context-cache';
 import { ACTOR_WORKER_FACTORY, ActorWorkerFactory, BaseActorWorkerFactory } from './core/actor/worker/actor-worker-factory';
+import { LOGGER, Logger } from './core/logging/logger';
+import { DefaultLogger } from './core/logging/default-logger';
 
 export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<AWSClientProvider>(AWS_ADAPTER)
@@ -71,5 +73,6 @@ export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind)
     .to(DefaultRemoteActivityAdapterFactory).inSingletonScope();
   bind<ActorWorkerFactory>(ACTOR_WORKER_FACTORY)
     .to(BaseActorWorkerFactory).inSingletonScope();
+  bind<Logger>(LOGGER).to(DefaultLogger).inRequestScope();
 
 });

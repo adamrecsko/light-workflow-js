@@ -18,13 +18,13 @@ export class TestActorImpl implements TestActor {
   }
 
   @activity()
-  @version('23-b')
+  @version('24-b')
   formatText(text: string): Observable<string> {
-    return Observable.of(text + ' hello Panni!!');
+    return Observable.of(text + ' test');
   }
 
   @activity()
-  @version('23-b')
+  @version('24-b')
   @description('print the text out')
   printIt(text: string): Observable<string> {
     return Observable.of(text).do((text: string) => {

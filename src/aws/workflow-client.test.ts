@@ -4,9 +4,21 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { Notification } from 'rxjs/Rx';
 import { ActivityPollParameters } from './aws.types';
+import { AWSClientProvider } from './aws-client-provider';
+import SWF = require('aws-sdk/clients/swf');
+import { TestLogger } from '../testing/mocks/test-logger';
 
+class MockAdapter implements AWSClientProvider {
+  getNativeSWFClient(): SWF {
+    return undefined;
+  }
+
+}
 
 describe('BaseWorkflowClient', () => {
+
+  const basewf = new BaseWorkflowClient(new MockAdapter(), new TestLogger());
+
   describe('fromSwfFunction', () => {
     it('should call the given function with the given parameter on subscribe', () => {
       const testFunction = sinon.spy();
@@ -14,7 +26,7 @@ describe('BaseWorkflowClient', () => {
         'domain',
         { name: 'tasklist' },
       );
-      const obs = BaseWorkflowClient.fromSwfFunction(testFunction, param);
+      const obs = basewf.fromSwfFunction(testFunction, param);
       obs.subscribe();
       sinon.assert.calledWith(testFunction, param);
     });
@@ -30,7 +42,7 @@ describe('BaseWorkflowClient', () => {
       const testFunction = (p: P, cb: (error: any, data: D) => {}) => {
         cb(null, result);
       };
-      const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction as any, param);
+      const obs = basewf.fromSwfFunction<D>(testFunction as any, param);
       const testObs = obs.materialize();
       let values: Notification<any>[] = [];
       testObs.toArray().subscribe((v: any) => values = v);
@@ -43,12 +55,12 @@ describe('BaseWorkflowClient', () => {
       type P = { param: string };
       type D = { data: string };
       const param = new ActivityPollParameters('domain',
-                                               { name: 'tasklist' });
+        { name: 'tasklist' });
       const error = { error: 'error' };
       const testFunction = (p: P, cb: (error: any, data: D) => {}) => {
         cb(error, null);
       };
-      const obs = BaseWorkflowClient.fromSwfFunction<D>(testFunction as any, param);
+      const obs = basewf.fromSwfFunction<D>(testFunction as any, param);
       const testObs = obs.materialize();
       let values: Notification<any>[] = [];
       testObs.toArray().subscribe((v: any) => values = v);

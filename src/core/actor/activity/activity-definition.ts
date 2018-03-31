@@ -7,7 +7,7 @@ export class ActivityDefinition extends AbstractDecoratorDefinition {
   defaultTaskScheduleToCloseTimeout: string = '30';
   defaultTaskScheduleToStartTimeout: string = '5';
   defaultTaskStartToCloseTimeout: string = '20';
-  defaultTaskPriority: string = 'default';
+  defaultTaskPriority: string = '0';
   heartbeatTimeout: string;
   scheduleToCloseTimeout: string;
   scheduleToStartTimeout: string;

@@ -11,7 +11,7 @@ import { TEST_ACTOR, TestActorImpl } from './actors/test-actor';
 
 @injectable()
 export class MyApp {
-  public static domain = 'test-domain';
+  public static domain = 'test1234';
   @inject(TEST_WORKFLOW)
   @workflowClient
   private workflow: TestWorkflow;
@@ -40,7 +40,7 @@ export class MyApp {
   }
 
   public async runTestWorkflow1(text: string): Promise<string> {
-    const start = this.workflows.createStarter('test-domain', 'default');
+    const start = this.workflows.createStarter(MyApp.domain, 'default');
     const workflowResult = await start(this.workflow.workflowTest1, text);
     return workflowResult.runId;
   }

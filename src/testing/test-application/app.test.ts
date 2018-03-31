@@ -69,13 +69,13 @@ describe('Test Application', () => {
 
     assert.calledWith(registerWfStub.getCall(0), match({
       name: 'workflowTest1',
-      version: '1',
+      version: '2',
       domain: 'test-domain',
     }), match.func);
 
     assert.calledWith(registerWfStub.getCall(1), match({
       name: 'workflowTest2',
-      version: '2',
+      version: '3',
       domain: 'test-domain',
       defaultExecutionStartToCloseTimeout: '13',
     }), match.func);

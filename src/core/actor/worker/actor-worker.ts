@@ -11,6 +11,7 @@ import { RegisterActivityTypeInput } from 'aws-sdk/clients/swf';
 import { Container } from 'inversify';
 import { LocalStub } from '../../utils/local-stub';
 import { of } from 'rxjs/observable/of';
+import { Logger } from '../../logging/logger';
 
 
 export interface ActorWorker {
@@ -28,7 +29,8 @@ export class BaseActorWorker implements ActorWorker {
               private domain: string,
               private appContainer: Container,
               private activityPoller: TaskPollerObservable<ActivityTask>,
-              private binding: Binding) {
+              private binding: Binding,
+              private logger: Logger) {
   }
 
   private activityDefinitionToRegisterActivityTpeInput(definition: ActivityDefinition): RegisterActivityTypeInput {
@@ -67,14 +69,14 @@ export class BaseActorWorker implements ActorWorker {
 
   createStub(): LocalStub {
     const instance = this.appContainer.get(this.binding.key);
-    return new LocalStub(this.binding.impl, instance);
+    return new LocalStub(this.binding.impl, instance, this.logger);
   }
 
   respondActivityFinished(taskToken: string, result: string): Observable<any> {
     return this.workflowClient.respondActivityTaskCompleted({
       taskToken,
       result,
-    }).catch((err) => {
+    }).map(() => result).catch((err) => {
       console.error(err);
       return Observable.empty();
     });
@@ -94,11 +96,15 @@ export class BaseActorWorker implements ActorWorker {
   public startWorker(): void {
     const stub = this.createStub();
     this.activityPoller.flatMap((activityTask: ActivityTask) => of(activityTask)
-      .flatMap((activityTask: ActivityTask) => stub.callWorkflowWithInput(activityTask.activityType, activityTask.input))
+      .flatMap((activityTask: ActivityTask) => stub.callMethodWithInput(activityTask.activityType, activityTask.input))
+      .do(
+        result => this.logger.debug('Activity %s finished: %s', activityTask.activityType, result),
+        err => this.logger.debug('Activity %s failed: %s %s', activityTask.activityType, err.message, err.details),
+      )
       .flatMap(activityResult => this.respondActivityFinished(activityTask.taskToken, activityResult))
       .catch(err => this.respondActivityTaskFailed(activityTask.taskToken, err.details, err.message)))
-      .subscribe((result: any) => {
-        console.log(result);
+      .subscribe(() => {
+        this.logger.debug('Activity respond success');
       });
   }
 }

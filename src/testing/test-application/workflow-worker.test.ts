@@ -72,7 +72,7 @@ class WorkflowWorkerIntegrationTest {
       {
         workflowType: {
           name: 'workflowTest1',
-          version: '1',
+          version: '2',
         },
         taskToken: this.taskToken,
       },
@@ -115,7 +115,7 @@ class WorkflowWorkerIntegrationTest {
             activityId: '0',
             activityType: {
               name: 'formatText',
-              version: '23-b',
+              version: '24-b',
             },
             heartbeatTimeout: undefined,
             input: '["test input"]',
@@ -137,7 +137,7 @@ class WorkflowWorkerIntegrationTest {
             activityId: '1',
             activityType: {
               name: 'printIt',
-              version: '23-b',
+              version: '24-b',
             },
             heartbeatTimeout: undefined,
             input: '["test"]',
@@ -183,7 +183,7 @@ class WorkflowWorkerIntegrationTest {
               activityId: '0',
               activityType: {
                 name: 'formatText',
-                version: '23-b',
+                version: '24-b',
               },
               heartbeatTimeout: undefined,
               input: '["test input"]',

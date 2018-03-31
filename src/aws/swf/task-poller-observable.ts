@@ -14,8 +14,9 @@ export class TaskPollerObservable<T> extends Observable<T> {
 
   protected _subscribe(subscriber: Subscriber<T>): TeardownLogic {
     return Observable.timer(0, this.timerInterval, this.scheduler)
-            .exhaustMap(() => this.request)
-            .subscribe(subscriber);
+      .exhaustMap(() => this.request)
+      .filter((res: any) => res.taskToken)
+      .subscribe(subscriber);
   }
 
   public get innerObservable() {

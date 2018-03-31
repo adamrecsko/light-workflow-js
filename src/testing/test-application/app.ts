@@ -19,7 +19,6 @@ export class MyApp {
   private workflows: Workflows;
   @inject(WORKFLOW_WORKER_FACTORY)
   private workerFactory: WorkflowWorkerFactory;
-
   @inject(ACTOR_WORKER_FACTORY)
   private actorWorkerFactory: ActorWorkerFactory;
 

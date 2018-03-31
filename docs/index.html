@@ -83,7 +83,175 @@
 </code></pre><h3 id="running-linter">Running linter</h3>
 				<p>Explain what these tests test and why</p>
 				<pre><code><span class="hljs-meta">   $</span><span class="bash"> yarn lint</span>
-</code></pre><h2 id="built-with">Built With</h2>
+</code></pre><h2 id="example">Example</h2>
+				<p>HelloWorld Application</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'zone.js'</span>;
+
+<span class="hljs-keyword">import</span> { Observable } <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs/Observable'</span>;
+<span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'inversify'</span>;
+<span class="hljs-keyword">import</span> { activity, description, version } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/activity/decorators/activity-decorators'</span>;
+<span class="hljs-keyword">import</span> { of } <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs/observable/of'</span>;
+<span class="hljs-keyword">import</span> { actorClient } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/decorators/actor-decorators'</span>;
+<span class="hljs-keyword">import</span> { workflow } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/decorators/workflow-decorators'</span>;
+<span class="hljs-keyword">import</span> { workflowClient } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/decorators/workflow-client-decorators'</span>;
+<span class="hljs-keyword">import</span> { Workflows, WORKFLOWS } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/workflows'</span>;
+<span class="hljs-keyword">import</span> { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/worker/workflow-worker-factory'</span>;
+<span class="hljs-keyword">import</span> { ACTOR_WORKER_FACTORY, ActorWorkerFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/worker/actor-worker-factory'</span>;
+<span class="hljs-keyword">import</span> { WorkflowWorker } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/worker/workflow-worker'</span>;
+<span class="hljs-keyword">import</span> { ActorWorker } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/worker/actor-worker'</span>;
+<span class="hljs-keyword">import</span> { BaseApplicationConfigurationProvider } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-configuration-provider'</span>;
+<span class="hljs-keyword">import</span> { ConfigurableApplicationFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-factory'</span>;
+<span class="hljs-keyword">import</span> { SWF } <span class="hljs-keyword">from</span> <span class="hljs-string">'aws-sdk'</span>;
+<span class="hljs-keyword">import</span> { ApplicationConfiguration } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-configuration'</span>;
+
+<span class="hljs-keyword">const</span> HELLO_WORLD_ACTOR = Symbol(<span class="hljs-string">'HELLO_WORLD_ACTOR'</span>);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> HelloWorld {
+  formatText(text: <span class="hljs-built_in">string</span>): Observable&lt;<span class="hljs-built_in">string</span>&gt;;
+  printIt(text: <span class="hljs-built_in">string</span>): Observable&lt;<span class="hljs-built_in">string</span>&gt;;
+}
+
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> HelloWorldImpl <span class="hljs-keyword">implements</span> HelloWorld {
+  <span class="hljs-keyword">private</span> printer(text: <span class="hljs-built_in">string</span>) {
+    <span class="hljs-built_in">console</span>.log(text);
+  }
+
+  <span class="hljs-meta">@activity</span>()
+  <span class="hljs-meta">@version</span>(<span class="hljs-string">'1'</span>)
+  formatText(text: <span class="hljs-built_in">string</span>): Observable&lt;<span class="hljs-built_in">string</span>&gt; {
+    <span class="hljs-keyword">return</span> of(<span class="hljs-string">'Hello'</span> + text);
+  }
+
+  <span class="hljs-meta">@activity</span>()
+  <span class="hljs-meta">@version</span>(<span class="hljs-string">'1'</span>)
+  <span class="hljs-meta">@description</span>(<span class="hljs-string">'print the text out'</span>)
+  printIt(text: <span class="hljs-built_in">string</span>): Observable&lt;<span class="hljs-built_in">string</span>&gt; {
+    <span class="hljs-keyword">return</span> of(text).do(<span class="hljs-function">(<span class="hljs-params">text: <span class="hljs-built_in">string</span></span>) =&gt;</span> {
+      <span class="hljs-keyword">this</span>.printer(text);
+    });
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> HELLO_WORLD_WORKFLOW = Symbol(<span class="hljs-string">'HELLO_WORLD_WORKFLOW'</span>);
+
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> HelloWorldWorkflow {
+  helloWorld(text: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;;
+}
+
+
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> HelloWorldWorkflowImpl <span class="hljs-keyword">implements</span> HelloWorldWorkflow {
+  <span class="hljs-meta">@actorClient</span>
+  <span class="hljs-meta">@inject</span>(HELLO_WORLD_ACTOR)
+  <span class="hljs-keyword">private</span> actor: HelloWorld;
+
+  <span class="hljs-meta">@workflow</span>()
+  <span class="hljs-keyword">async</span> helloWorld(text: <span class="hljs-built_in">string</span>) {
+    <span class="hljs-keyword">const</span> formattedText = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.actor.formatText(text).toPromise();
+    <span class="hljs-keyword">const</span> printedText = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.actor.printIt(formattedText).toPromise();
+    <span class="hljs-keyword">return</span> printedText;
+  }
+}
+
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyApp {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> domain = <span class="hljs-string">'test-domain'</span>;
+  <span class="hljs-meta">@inject</span>(HELLO_WORLD_WORKFLOW)
+  <span class="hljs-meta">@workflowClient</span>
+  <span class="hljs-keyword">private</span> workflow: HelloWorldWorkflow;
+  <span class="hljs-meta">@inject</span>(WORKFLOWS)
+  <span class="hljs-keyword">private</span> workflows: Workflows;
+  <span class="hljs-meta">@inject</span>(WORKFLOW_WORKER_FACTORY)
+  <span class="hljs-keyword">private</span> workerFactory: WorkflowWorkerFactory;
+  <span class="hljs-meta">@inject</span>(ACTOR_WORKER_FACTORY)
+  <span class="hljs-keyword">private</span> actorWorkerFactory: ActorWorkerFactory;
+
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> register() {
+    <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, {
+      key: HELLO_WORLD_WORKFLOW,
+      impl: HelloWorldWorkflowImpl,
+    });
+    <span class="hljs-keyword">await</span> worker.register().toPromise();
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> start() {
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.startHelloWorld(<span class="hljs-string">'World'</span>);
+    } <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-built_in">console</span>.log(e);
+    }
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> startHelloWorld(text: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt; {
+    <span class="hljs-keyword">const</span> start = <span class="hljs-keyword">this</span>.workflows.createStarter(MyApp.domain, <span class="hljs-string">'default'</span>);
+    <span class="hljs-keyword">const</span> workflowResult = <span class="hljs-keyword">await</span> start(<span class="hljs-keyword">this</span>.workflow.helloWorld, text);
+    <span class="hljs-keyword">return</span> workflowResult.runId;
+  }
+
+  <span class="hljs-keyword">public</span> createWorklfowWorker(): WorkflowWorker&lt;HelloWorld&gt; {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, {
+      key: HELLO_WORLD_WORKFLOW,
+      impl: HelloWorldWorkflowImpl,
+    });
+  }
+
+  <span class="hljs-keyword">public</span> createActorWorker(): ActorWorker {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.actorWorkerFactory.create(MyApp.domain, {
+      key: HELLO_WORLD_ACTOR,
+      impl: HelloWorldImpl,
+    });
+  }
+}
+
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">boot</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> swf = <span class="hljs-keyword">new</span> SWF({ region: <span class="hljs-string">'us-east-1'</span> });
+  <span class="hljs-keyword">const</span> config = <span class="hljs-keyword">new</span> ApplicationConfiguration(swf);
+  <span class="hljs-keyword">const</span> configProvider = <span class="hljs-keyword">new</span> BaseApplicationConfigurationProvider(config);
+  <span class="hljs-keyword">const</span> applicationFactory = <span class="hljs-keyword">new</span> ConfigurableApplicationFactory(configProvider);
+  applicationFactory.addActorImplementations([
+    {
+      impl: HelloWorldImpl,
+      key: HELLO_WORLD_ACTOR,
+    },
+  ]);
+
+  applicationFactory.addWorkflowImplementations([
+    {
+      impl: HelloWorldWorkflowImpl,
+      key: HELLO_WORLD_WORKFLOW,
+      taskLists: [<span class="hljs-string">'default'</span>],
+    },
+  ]);
+
+
+  <span class="hljs-keyword">const</span> app = applicationFactory.createApplication&lt;MyApp&gt;(MyApp);
+  <span class="hljs-keyword">const</span> workflowWorker = app.createWorklfowWorker();
+  <span class="hljs-keyword">const</span> actorWorker = app.createActorWorker();
+
+
+  <span class="hljs-keyword">await</span> workflowWorker.register().toPromise();
+  <span class="hljs-keyword">await</span> actorWorker.register().toPromise();
+
+  workflowWorker.startWorker();
+  actorWorker.startWorker();
+
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span>  app.start();
+
+  <span class="hljs-built_in">console</span>.log(res);
+}
+
+<span class="hljs-comment">// boot</span>
+<span class="hljs-comment">// register workflow and activities</span>
+
+boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.error(err));
+
+
+</code></pre>
+				<h2 id="built-with">Built With</h2>
 				<ul>
 					<li><a href="http://reactivex.io/rxjs/">RxJS</a></li>
 					<li><a href="http://www.typescriptlang.org/">TypeScript</a></li>

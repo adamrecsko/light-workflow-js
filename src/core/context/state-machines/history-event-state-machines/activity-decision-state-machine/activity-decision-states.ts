@@ -1,0 +1,16 @@
+export enum ActivityDecisionState {
+  Created = 'Created',
+  CanceledBeforeSent = 'CanceledBeforeSent',
+  Sending = 'Sending',
+  Sent = 'Sent',
+  CancelledAfterSent = 'CancelledAfterSent',
+  Scheduled = 'Scheduled',
+  ScheduleFailed = 'ScheduleFailed',
+  Started = 'Started',
+  Completed = 'Completed',
+  Failed = 'Failed',
+  Timeout = 'Timeout',
+  Canceled = 'Canceled',
+  CancelRequested = 'CancelRequested',
+  RequestCancelFailed = 'RequestCancelFailed',
+}

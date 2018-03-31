@@ -1,0 +1,1037 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>light-workflow-js</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">light-workflow-js</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> light-workflow-js</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="light-workflow-js">light-workflow-js</h1>
+				<p>A library to create, run and orchestrate AWS SWF workflow.
+				Written in TypeScript and heavily relies on RxJS. </p>
+				<h2 id="getting-started">Getting Started</h2>
+				<pre><code><span class="hljs-meta">  $</span><span class="bash"> git <span class="hljs-built_in">clone</span> https://github.com/adamrecsko/light-workflow-js.git</span>
+<span class="hljs-meta">  $</span><span class="bash"> <span class="hljs-built_in">cd</span> light-workflow-js</span>
+<span class="hljs-meta">  $</span><span class="bash"> yarn install</span>
+</code></pre><h3 id="prerequisites">Prerequisites</h3>
+				<p>You need node.js and yarn to be installed before start.</p>
+				<pre><code>    $ apt-get <span class="hljs-keyword">install</span> nodejs
+    $ npm <span class="hljs-keyword">install</span> yarn -g
+</code></pre><p>For running a workflow on AWS you need aws credentials properly setup on your development environment
+				and a registered AWS SWF domain.</p>
+				<h2 id="running-the-tests">Running the tests</h2>
+				<pre><code>    $ yarn <span class="hljs-built_in">test</span>
+</code></pre><h3 id="running-linter">Running linter</h3>
+				<p>Explain what these tests test and why</p>
+				<pre><code><span class="hljs-meta">   $</span><span class="bash"> yarn lint</span>
+</code></pre><h2 id="built-with">Built With</h2>
+				<ul>
+					<li><a href="http://reactivex.io/rxjs/">RxJS</a></li>
+					<li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
+					<li><a href="https://yarnpkg.com/lang/en/">yarn</a></li>
+					<li><a href="https://github.com/angular/zone.js">Zone.js</a></li>
+				</ul>
+				<h2 id="authors">Authors</h2>
+				<ul>
+					<li><strong>Adam Recsko</strong> - <em>Initial work</em> </li>
+				</ul>
+				<h2 id="license">License</h2>
+				<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
+				<h2 id="acknowledgments">Acknowledgments</h2>
+				<ul>
+					<li>This library is under development and not production ready yet.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module tsd-parent-kind-class">
+						<a href="modules/decisiontaskrequest.observable.html">Decision<wbr>Task<wbr>Request.<wbr>Observable</a>
+					</li>
+					<li class=" tsd-kind-module tsd-parent-kind-class">
+						<a href="modules/remoteactivityobservable.observable.html">Remote<wbr>Activity<wbr>Observable.<wbr>Observable</a>
+					</li>
+					<li class=" tsd-kind-module tsd-parent-kind-class">
+						<a href="modules/taskpollerobservable.observable.html">Task<wbr>Poller<wbr>Observable.<wbr>Observable</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/activitydecisionstate.html" class="tsd-kind-icon">Activity<wbr>Decision<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/activitydefinitionproperty.html" class="tsd-kind-icon">Activity<wbr>Definition<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/activitytimeouttype.html" class="tsd-kind-icon">Activity<wbr>Timeout<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/eventtype.html" class="tsd-kind-icon">Event<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-is-not-exported">
+						<a href="enums/teststates.html" class="tsd-kind-icon">Test<wbr>States</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/workflowdefinitionproperties.html" class="tsd-kind-icon">Workflow<wbr>Definition<wbr>Properties</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/workflowexecutionstates.html" class="tsd-kind-icon">Workflow<wbr>Execution<wbr>States</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/abstractdecoratordefinition.html" class="tsd-kind-icon">Abstract<wbr>Decorator<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/abstractdefinitioncontainer.html" class="tsd-kind-icon">Abstract<wbr>Definition<wbr>Container</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/abstracthistoryeventprocessortest.html" class="tsd-kind-icon">Abstract<wbr>History<wbr>Event<wbr>Processor<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/abstracthistoryeventstatemachine.html" class="tsd-kind-icon">Abstract<wbr>History<wbr>Event<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/activitydecoratordefinitioncontainer.html" class="tsd-kind-icon">Activity<wbr>Decorator<wbr>Definition<wbr>Container</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/activitydefinition.html" class="tsd-kind-icon">Activity<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/activityhistorygenerator.html" class="tsd-kind-icon">Activity<wbr>History<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/activitypollparameters.html" class="tsd-kind-icon">Activity<wbr>Poll<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/activityregistrationparameters.html" class="tsd-kind-icon">Activity<wbr>Registration<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/actorproxy.html" class="tsd-kind-icon">Actor<wbr>Proxy</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/actorworkertest.html" class="tsd-kind-icon">Actor<wbr>Worker<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/applicationconfiguration.html" class="tsd-kind-icon">Application<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseactivitydecisionstatemachine.html" class="tsd-kind-icon">Base<wbr>Activity<wbr>Decision<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseactorclientimplementationhelper.html" class="tsd-kind-icon">Base<wbr>Actor<wbr>Client<wbr>Implementation<wbr>Helper</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseactorworker.html" class="tsd-kind-icon">Base<wbr>Actor<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseactorworkerfactory.html" class="tsd-kind-icon">Base<wbr>Actor<wbr>Worker<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseapplicationconfigurationprovider.html" class="tsd-kind-icon">Base<wbr>Application<wbr>Configuration<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/basecontextcache.html" class="tsd-kind-icon">Base<wbr>Context<wbr>Cache</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/basedecisionruncontext.html" class="tsd-kind-icon">Base<wbr>Decision<wbr>Run<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/basenotifiablestatemachine.html" class="tsd-kind-icon">Base<wbr>Notifiable<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseremoteworkflowclientfactory.html" class="tsd-kind-icon">Base<wbr>Remote<wbr>Workflow<wbr>Client<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/basestatemachine.html" class="tsd-kind-icon">Base<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseuuidgenerator.html" class="tsd-kind-icon">Base<wbr>Uuid<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseworkflowclient.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseworkflowclientimplementationhelper.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Client<wbr>Implementation<wbr>Helper</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseworkflowdecisionpollgenerator.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Decision<wbr>Poll<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/baseworkflowworker.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseworkflowworkerfactory.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Worker<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/baseworkflowworkertest.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Worker<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseworkflows.html" class="tsd-kind-icon">Base<wbr>Workflows</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/chaitestscheduler.html" class="tsd-kind-icon">Chai<wbr>Test<wbr>Scheduler</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/configurableapplicationfactory.html" class="tsd-kind-icon">Configurable<wbr>Application<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/contextnotfoundexception.html" class="tsd-kind-icon">Context<wbr>Not<wbr>Found<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/decisionpollparameters.html" class="tsd-kind-icon">Decision<wbr>Poll<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/decisiontaskrequest.html" class="tsd-kind-icon">Decision<wbr>Task<wbr>Request</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/defaultawsclientprovider.html" class="tsd-kind-icon">DefaultAWSClient<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/defaultlogger.html" class="tsd-kind-icon">Default<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/defaultremoteactivityadapter.html" class="tsd-kind-icon">Default<wbr>Remote<wbr>Activity<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/defaultremoteactivityadapterfactory.html" class="tsd-kind-icon">Default<wbr>Remote<wbr>Activity<wbr>Adapter<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/defaultremoteobservablefactory.html" class="tsd-kind-icon">Default<wbr>Remote<wbr>Observable<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/definitionnotavailableexception.html" class="tsd-kind-icon">Definition<wbr>Not<wbr>Available<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/desiredmethoddoesnotavailable.html" class="tsd-kind-icon">Desired<wbr>Method<wbr>Does<wbr>Not<wbr>Available</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/failedexception.html" class="tsd-kind-icon">Failed<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fakeswf.html" class="tsd-kind-icon">FakeSWF</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/genericactivitypollerfactory.html" class="tsd-kind-icon">Generic<wbr>Activity<wbr>Poller<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/genericdecisionpollerfactory.html" class="tsd-kind-icon">Generic<wbr>Decision<wbr>Poller<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/heartbeattimeoutexception.html" class="tsd-kind-icon">Heartbeat<wbr>Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/historygenerator.html" class="tsd-kind-icon">History<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/invalidstatetransitionexception.html" class="tsd-kind-icon">Invalid<wbr>State<wbr>Transition<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/localstub.html" class="tsd-kind-icon">Local<wbr>Stub</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/localworkflowstubtest.html" class="tsd-kind-icon">Local<wbr>Workflow<wbr>Stub<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mockactivitydecisionstatemachine.html" class="tsd-kind-icon">Mock<wbr>Activity<wbr>Decision<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockadapter.html" class="tsd-kind-icon">Mock<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockcontextcache.html" class="tsd-kind-icon">Mock<wbr>Context<wbr>Cache</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockcontextresolutionstrategy.html" class="tsd-kind-icon">Mock<wbr>Context<wbr>Resolution<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mockdecisionruncontext.html" class="tsd-kind-icon">Mock<wbr>Decision<wbr>Run<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockobservablefactory.html" class="tsd-kind-icon">Mock<wbr>Observable<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockremoteactivityadapter.html" class="tsd-kind-icon">Mock<wbr>Remote<wbr>Activity<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockremoteactivityadapterfactory.html" class="tsd-kind-icon">Mock<wbr>Remote<wbr>Activity<wbr>Adapter<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockremoteactorproxyfactory.html" class="tsd-kind-icon">Mock<wbr>Remote<wbr>Actor<wbr>Proxy<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mockswf.html" class="tsd-kind-icon">MockSWF</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mockserializer.html" class="tsd-kind-icon">Mock<wbr>Serializer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/mockworkflowclient.html" class="tsd-kind-icon">Mock<wbr>Workflow<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockworkflowclientfactory.html" class="tsd-kind-icon">Mock<wbr>Workflow<wbr>Client<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockworkflowexecution.html" class="tsd-kind-icon">Mock<wbr>Workflow<wbr>Execution</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/mockzone.html" class="tsd-kind-icon">Mock<wbr>Zone</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/myapp.html" class="tsd-kind-icon">My<wbr>App</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/notsupportedeventtypeexception.html" class="tsd-kind-icon">Not<wbr>Supported<wbr>Event<wbr>Type<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/observablestatemachine.html" class="tsd-kind-icon">Observable<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/remoteactivityobservable.html" class="tsd-kind-icon">Remote<wbr>Activity<wbr>Observable</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/remoteactorproxyfactory.html" class="tsd-kind-icon">Remote<wbr>Actor<wbr>Proxy<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/remoteworkflowstub.html" class="tsd-kind-icon">Remote<wbr>Workflow<wbr>Stub</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/requestcancelfailedexception.html" class="tsd-kind-icon">Request<wbr>Cancel<wbr>Failed<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/schedulefailedexception.html" class="tsd-kind-icon">Schedule<wbr>Failed<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/scheduletoclosetimeoutexception.html" class="tsd-kind-icon">Schedule<wbr>ToClose<wbr>Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/scheduletostarttimeoutexception.html" class="tsd-kind-icon">Schedule<wbr>ToStart<wbr>Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/starttoclosetimeoutexception.html" class="tsd-kind-icon">Start<wbr>ToClose<wbr>Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/tasklist.html" class="tsd-kind-icon">Task<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/taskpollerobservable.html" class="tsd-kind-icon">Task<wbr>Poller<wbr>Observable</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testactorimpl.html" class="tsd-kind-icon">Test<wbr>Actor<wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testdecoratordefinition.html" class="tsd-kind-icon">Test<wbr>Decorator<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testdefinition.html" class="tsd-kind-icon">Test<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testdefinitioncontainer.html" class="tsd-kind-icon">Test<wbr>Definition<wbr>Container</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testhistoryeventprocessor.html" class="tsd-kind-icon">Test<wbr>History<wbr>Event<wbr>Processor</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testimpl.html" class="tsd-kind-icon">Test<wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/testlogger.html" class="tsd-kind-icon">Test<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testwfimpl.html" class="tsd-kind-icon">Test<wbr>WfImpl</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/testworkflowimpl.html" class="tsd-kind-icon">Test<wbr>Workflow<wbr>Impl</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/timeoutexception.html" class="tsd-kind-icon">Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/unknowneventtypeexception.html" class="tsd-kind-icon">Unknown<wbr>Event<wbr>Type<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/unknownstateexception.html" class="tsd-kind-icon">Unknown<wbr>State<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/unprocessableeventexception.html" class="tsd-kind-icon">Unprocessable<wbr>Event<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/workflowdecoratordefinitioncontainer.html" class="tsd-kind-icon">Workflow<wbr>Decorator<wbr>Definition<wbr>Container</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/workflowdefinition.html" class="tsd-kind-icon">Workflow<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/workflowexecution.html" class="tsd-kind-icon">Workflow<wbr>Execution</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/workflowexecutiontest.html" class="tsd-kind-icon">Workflow<wbr>Execution<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/workflowhistorygenerator.html" class="tsd-kind-icon">Workflow<wbr>History<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/workflowhistorygeneratortest.html" class="tsd-kind-icon">Workflow<wbr>History<wbr>Generator<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="classes/workflowworkerintegrationtest.html" class="tsd-kind-icon">Workflow<wbr>Worker<wbr>Integration<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/zonecontextresolutionstrategy.html" class="tsd-kind-icon">Zone<wbr>Context<wbr>Resolution<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/awsclientprovider.html" class="tsd-kind-icon">AWSClient<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/activityadapter.html" class="tsd-kind-icon">Activity<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/activitydecisionstatemachine.html" class="tsd-kind-icon">Activity<wbr>Decision<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/activitypollerfactory.html" class="tsd-kind-icon">Activity<wbr>Poller<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/actorproxyfactory.html" class="tsd-kind-icon">Actor<wbr>Proxy<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/actorworker.html" class="tsd-kind-icon">Actor<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/actorworkerfactory.html" class="tsd-kind-icon">Actor<wbr>Worker<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter tsd-is-not-exported">
+						<a href="interfaces/applicationbuilder.html" class="tsd-kind-icon">Application<wbr>Builder</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/applicationconfigurationprovider.html" class="tsd-kind-icon">Application<wbr>Configuration<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/applicationfactory.html" class="tsd-kind-icon">Application<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/contextcache.html" class="tsd-kind-icon">Context<wbr>Cache</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/contextresolutionstrategy.html" class="tsd-kind-icon">Context<wbr>Resolution<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/decisionpollerfactory.html" class="tsd-kind-icon">Decision<wbr>Poller<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/decisionruncontext.html" class="tsd-kind-icon">Decision<wbr>Run<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/definitioncontainer.html" class="tsd-kind-icon">Definition<wbr>Container</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/historyeventprocessor.html" class="tsd-kind-icon">History<wbr>Event<wbr>Processor</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/historyeventstatemachine.html" class="tsd-kind-icon">History<wbr>Event<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/implementationhelper.html" class="tsd-kind-icon">Implementation<wbr>Helper</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logger.html" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/notifiable.html" class="tsd-kind-icon">Notifiable</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/notifiablestatemachine.html" class="tsd-kind-icon">Notifiable<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/remoteactivityadapter.html" class="tsd-kind-icon">Remote<wbr>Activity<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/remoteactivityadapterfactory.html" class="tsd-kind-icon">Remote<wbr>Activity<wbr>Adapter<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/remoteobservablefactory.html" class="tsd-kind-icon">Remote<wbr>Observable<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializer.html" class="tsd-kind-icon">Serializer</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/statemachine.html" class="tsd-kind-icon">State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-is-not-exported">
+						<a href="interfaces/test.html" class="tsd-kind-icon">Test</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-is-not-exported">
+						<a href="interfaces/testactor.html" class="tsd-kind-icon">Test<wbr>Actor</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-is-not-exported">
+						<a href="interfaces/testworkflow.html" class="tsd-kind-icon">Test<wbr>Workflow</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/uuidgenerator.html" class="tsd-kind-icon">Uuid<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/workflowclient.html" class="tsd-kind-icon">Workflow<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/workflowclientfactory.html" class="tsd-kind-icon">Workflow<wbr>Client<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/workflowdecisionpollgenerator.html" class="tsd-kind-icon">Workflow<wbr>Decision<wbr>Poll<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/workflowfn.html" class="tsd-kind-icon">Workflow<wbr>Fn</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/workflowresult.html" class="tsd-kind-icon">Workflow<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/workflowworker.html" class="tsd-kind-icon">Workflow<wbr>Worker</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/workflowworkerfactory.html" class="tsd-kind-icon">Workflow<wbr>Worker<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/workflows.html" class="tsd-kind-icon">Workflows</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#activitytask" class="tsd-kind-icon">Activity<wbr>Task</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#activitytype" class="tsd-kind-icon">Activity<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#binding" class="tsd-kind-icon">Binding</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#childpolicy" class="tsd-kind-icon">Child<wbr>Policy</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#compositeworkfloweventparams" class="tsd-kind-icon">Composite<wbr>Workflow<wbr>Event<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#decisiontask" class="tsd-kind-icon">Decision<wbr>Task</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#decorator" class="tsd-kind-icon">Decorator</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#eventexpectation" class="tsd-kind-icon">Event<wbr>Expectation</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#historyevent" class="tsd-kind-icon">History<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#nameandversion" class="tsd-kind-icon">Name<wbr>And<wbr>Version</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#newable" class="tsd-kind-icon">Newable</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#registerworkflowtypeinput" class="tsd-kind-icon">Register<wbr>Workflow<wbr>Type<wbr>Input</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#run" class="tsd-kind-icon">Run</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#scheduleactivitytaskdecisionattributes" class="tsd-kind-icon">Schedule<wbr>Activity<wbr>Task<wbr>Decision<wbr>Attributes</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#transitiontable" class="tsd-kind-icon">Transition<wbr>Table</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#valuesetterdecoratorfactory" class="tsd-kind-icon">Value<wbr>Setter<wbr>Decorator<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#workflowstartparameters" class="tsd-kind-icon">Workflow<wbr>Start<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#activity_client_implementation_helper" class="tsd-kind-icon">ACTIVITY_<wbr>CLIENT_<wbr>IMPLEMENTATION_<wbr>HELPER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#activity_poller_factory" class="tsd-kind-icon">ACTIVITY_<wbr>POLLER_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#activity_run_context" class="tsd-kind-icon">ACTIVITY_<wbr>RUN_<wbr>CONTEXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#activity_run_context_zone_key" class="tsd-kind-icon">ACTIVITY_<wbr>RUN_<wbr>CONTEXT_<wbr>ZONE_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#actor_client_tag" class="tsd-kind-icon">ACTOR_<wbr>CLIENT_<wbr>TAG</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#actor_worker_factory" class="tsd-kind-icon">ACTOR_<wbr>WORKER_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#application_configuration" class="tsd-kind-icon">APPLICATION_<wbr>CONFIGURATION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#app_container" class="tsd-kind-icon">APP_<wbr>CONTAINER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#aws_adapter" class="tsd-kind-icon">AWS_<wbr>ADAPTER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#aws_swf_native_client" class="tsd-kind-icon">AWS_<wbr>SWF_<wbr>NATIVE_<wbr>CLIENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#cancelled_transition" class="tsd-kind-icon">CANCELLED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#cancel_failed_transition" class="tsd-kind-icon">CANCEL_<wbr>FAILED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#completed_transition" class="tsd-kind-icon">COMPLETED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#context_cache" class="tsd-kind-icon">CONTEXT_<wbr>CACHE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#core" class="tsd-kind-icon">CORE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#decision_context_resolution" class="tsd-kind-icon">DECISION_<wbr>CONTEXT_<wbr>RESOLUTION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#decision_poller_factory" class="tsd-kind-icon">DECISION_<wbr>POLLER_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#decision_run_context" class="tsd-kind-icon">DECISION_<wbr>RUN_<wbr>CONTEXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#decision_run_context_zone_key" class="tsd-kind-icon">DECISION_<wbr>RUN_<wbr>CONTEXT_<wbr>ZONE_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#default_actor_task_list" class="tsd-kind-icon">DEFAULT_<wbr>ACTOR_<wbr>TASK_<wbr>LIST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#definition_symbol" class="tsd-kind-icon">DEFINITION_<wbr>SYMBOL</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#failed_transition" class="tsd-kind-icon">FAILED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#logger" class="tsd-kind-icon">LOGGER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#remote_activity_adapter_factory" class="tsd-kind-icon">REMOTE_<wbr>ACTIVITY_<wbr>ADAPTER_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#remote_actor_proxy_factory" class="tsd-kind-icon">REMOTE_<wbr>ACTOR_<wbr>PROXY_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#task_list_tag" class="tsd-kind-icon">TASK_<wbr>LIST_<wbr>TAG</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#test_actor" class="tsd-kind-icon">TEST_<wbr>ACTOR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#test_property" class="tsd-kind-icon">TEST_<wbr>PROPERTY</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#test_property_2" class="tsd-kind-icon">TEST_<wbr>PROPERTY_<wbr>2</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#test_transition_table" class="tsd-kind-icon">TEST_<wbr>TRANSITION_<wbr>TABLE</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#test_wf" class="tsd-kind-icon">TEST_<wbr>WF</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#test_workflow" class="tsd-kind-icon">TEST_<wbr>WORKFLOW</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#timeouted_transition" class="tsd-kind-icon">TIMEOUTED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#transition_table" class="tsd-kind-icon">TRANSITION_<wbr>TABLE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#uuid_generator" class="tsd-kind-icon">UUID_<wbr>GENERATOR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflows" class="tsd-kind-icon">WORKFLOWS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_client" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_client_implementation_helper" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT_<wbr>IMPLEMENTATION_<wbr>HELPER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_client_tag" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT_<wbr>TAG</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_local_client_factory" class="tsd-kind-icon">WORKFLOW_<wbr>LOCAL_<wbr>CLIENT_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_remote_client_factory" class="tsd-kind-icon">WORKFLOW_<wbr>REMOTE_<wbr>CLIENT_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_started_and_completed_transition" class="tsd-kind-icon">WORKFLOW_<wbr>STARTED_<wbr>AND_<wbr>COMPLETED_<wbr>TRANSITION</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow_worker_factory" class="tsd-kind-icon">WORKFLOW_<wbr>WORKER_<wbr>FACTORY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#activity" class="tsd-kind-icon">activity</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#activityid" class="tsd-kind-icon">activity<wbr>Id</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#actorclient" class="tsd-kind-icon">actor<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#applicationfactory" class="tsd-kind-icon">application<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#arrayconcat" class="tsd-kind-icon">array<wbr>Concat</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#childpolicy" class="tsd-kind-icon">child<wbr>Policy</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#config" class="tsd-kind-icon">config</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#configprovider" class="tsd-kind-icon">config<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaultchildpolicy" class="tsd-kind-icon">default<wbr>Child<wbr>Policy</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaultexecutionstarttoclosetimeout" class="tsd-kind-icon">default<wbr>Execution<wbr>Start<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaultlambdarole" class="tsd-kind-icon">default<wbr>Lambda<wbr>Role</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaultserializer" class="tsd-kind-icon">default<wbr>Serializer</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttaskheartbeattimeout" class="tsd-kind-icon">default<wbr>Task<wbr>Heartbeat<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttasklist" class="tsd-kind-icon">default<wbr>Task<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttaskpriority" class="tsd-kind-icon">default<wbr>Task<wbr>Priority</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttaskscheduletoclosetimeout" class="tsd-kind-icon">default<wbr>Task<wbr>Schedule<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttaskscheduletostarttimeout" class="tsd-kind-icon">default<wbr>Task<wbr>Schedule<wbr>ToStart<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulttaskstarttoclosetimeout" class="tsd-kind-icon">default<wbr>Task<wbr>Start<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#description" class="tsd-kind-icon">description</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#domain" class="tsd-kind-icon">domain</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#executionstarttoclosetimeout" class="tsd-kind-icon">execution<wbr>Start<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#expect" class="tsd-kind-icon">expect</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#heartbeattimeout" class="tsd-kind-icon">heartbeat<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#lambdarole" class="tsd-kind-icon">lambda<wbr>Role</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#name" class="tsd-kind-icon">name</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#scheduletoclosetimeout" class="tsd-kind-icon">schedule<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#scheduletostarttimeout" class="tsd-kind-icon">schedule<wbr>ToStart<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#serializer" class="tsd-kind-icon">serializer</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#starttoclosetimeout" class="tsd-kind-icon">start<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#swf" class="tsd-kind-icon">swf</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#taglist" class="tsd-kind-icon">tag<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#tasklist" class="tsd-kind-icon">task<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#taskpriority" class="tsd-kind-icon">task<wbr>Priority</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#taskstarttoclosetimeout" class="tsd-kind-icon">task<wbr>Start<wbr>ToClose<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testactivityname" class="tsd-kind-icon">test<wbr>Activity<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testactivityversion" class="tsd-kind-icon">test<wbr>Activity<wbr>Version</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testactorsymbol" class="tsd-kind-icon">test<wbr>Actor<wbr>Symbol</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testdecidersymbol" class="tsd-kind-icon">test<wbr>Decider<wbr>Symbol</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testtasklist" class="tsd-kind-icon">test<wbr>Task<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testtasklists" class="tsd-kind-icon">test<wbr>Task<wbr>Lists</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#testworkflowsymbol" class="tsd-kind-icon">test<wbr>Workflow<wbr>Symbol</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#version" class="tsd-kind-icon">version</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflow" class="tsd-kind-icon">workflow</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflowclient" class="tsd-kind-icon">workflow<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#activitydefinitiondecoratorfactory" class="tsd-kind-icon">activity<wbr>Definition<wbr>Decorator<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#activityname" class="tsd-kind-icon">activity<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#boot" class="tsd-kind-icon">boot</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#caller" class="tsd-kind-icon">caller</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#createdecisiontask" class="tsd-kind-icon">create<wbr>Decision<wbr>Task</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#createnewactivitydecision" class="tsd-kind-icon">create<wbr>New<wbr>Activity<wbr>Decision</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#definitioncreatorfactory" class="tsd-kind-icon">definition<wbr>Creator<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#definitionpropertysetterfactory" class="tsd-kind-icon">definition<wbr>Property<wbr>Setter<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#expectactivitystate" class="tsd-kind-icon">expect<wbr>Activity<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#expectactivitystatemachine" class="tsd-kind-icon">expect<wbr>Activity<wbr>State<wbr>Machine</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#expecthistoryevent" class="tsd-kind-icon">expect<wbr>History<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#generatedecisiontask" class="tsd-kind-icon">generate<wbr>Decision<wbr>Task</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#generatehistoryeventlist" class="tsd-kind-icon">generate<wbr>History<wbr>Event<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#getdefinitionsfromclass" class="tsd-kind-icon">get<wbr>Definitions<wbr>From<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getparams" class="tsd-kind-icon">get<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#merge" class="tsd-kind-icon">merge</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#randomactivitytype" class="tsd-kind-icon">random<wbr>Activity<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#randomtasklist" class="tsd-kind-icon">random<wbr>Task<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#randomtimestampgen" class="tsd-kind-icon">random<wbr>Timestamp<wbr>Gen</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#tasklistname" class="tsd-kind-icon">task<wbr>List<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#workflowdecoratorfactory" class="tsd-kind-icon">workflow<wbr>Decorator<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#cancelled_params" class="tsd-kind-icon">CANCELLED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#completed_params" class="tsd-kind-icon">COMPLETED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#failed_params" class="tsd-kind-icon">FAILED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#request_cancelled_params" class="tsd-kind-icon">REQUEST_<wbr>CANCELLED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#scheduled_params" class="tsd-kind-icon">SCHEDULED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#started_params" class="tsd-kind-icon">STARTED_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#timeout_params" class="tsd-kind-icon">TIMEOUT_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#activitytype" class="tsd-kind-icon">activity<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#binding" class="tsd-kind-icon">binding</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#mockactor" class="tsd-kind-icon">mock<wbr>Actor</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-is-not-exported">
+						<a href="globals.html#scheduleparams" class="tsd-kind-icon">schedule<wbr>Params</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

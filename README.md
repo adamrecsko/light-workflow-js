@@ -3,6 +3,9 @@
 A library to create, run and orchestrate AWS SWF workflow.
 Written in TypeScript and heavily relies on RxJS. 
 
+[Documentation](https://adamrecsko.github.io/light-workflow-js/) - You can find a documentation here
+
+
 ## Getting Started
 ```
   $ git clone https://github.com/adamrecsko/light-workflow-js.git

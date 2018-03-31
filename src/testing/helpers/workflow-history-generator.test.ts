@@ -8,7 +8,7 @@ import {
   WorkflowExecutionCanceledEventAttributes,
   WorkflowExecutionCancelRequestedEventAttributes, WorkflowExecutionCompletedEventAttributes, WorkflowExecutionContinuedAsNewEventAttributes,
   WorkflowExecutionFailedEventAttributes,
-  WorkflowExecutionStartedEventAttributes, WorkflowExecutionTerminatedEventAttributes, WorkflowExecutionTimedOutEventAttributes
+  WorkflowExecutionStartedEventAttributes, WorkflowExecutionTerminatedEventAttributes, WorkflowExecutionTimedOutEventAttributes,
 } from 'aws-sdk/clients/swf';
 
 @suite
@@ -184,6 +184,4 @@ class WorkflowHistoryGeneratorTest {
       eventId: this.historyGenerator.currentEventId - 1,
     });
   }
-
-
 }

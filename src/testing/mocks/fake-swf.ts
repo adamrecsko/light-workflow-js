@@ -55,7 +55,8 @@ export class FakeSWF {
       () => {
         const resp = this.getCurrentEventList();
         cb(null, resp);
-      }, this.delayms);
+      },
+      this.delayms);
   }
 
   respondDecisionTaskCompleted(params: any, cb: any) {

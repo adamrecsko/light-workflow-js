@@ -15,7 +15,7 @@ enum TestStates {
 
 const TEST_TRANSITION_TABLE: TransitionTable<TestStates> = [
   [TestStates.test1, TestStates.test2],
-  [TestStates.test2, TestStates.test3]
+  [TestStates.test2, TestStates.test3],
 ];
 
 

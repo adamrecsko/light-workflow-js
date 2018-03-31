@@ -5,8 +5,8 @@ import * as sinon from 'sinon';
 import { Notification } from 'rxjs/Rx';
 import { ActivityPollParameters } from './aws.types';
 import { AWSClientProvider } from './aws-client-provider';
-import SWF = require('aws-sdk/clients/swf');
 import { TestLogger } from '../testing/mocks/test-logger';
+import * as SWF from 'aws-sdk/clients/swf';
 
 class MockAdapter implements AWSClientProvider {
   getNativeSWFClient(): SWF {
@@ -54,7 +54,8 @@ describe('BaseWorkflowClient', () => {
     it('should emit error if the async function returns back error', () => {
       type P = { param: string };
       type D = { data: string };
-      const param = new ActivityPollParameters('domain',
+      const param = new ActivityPollParameters(
+        'domain',
         { name: 'tasklist' });
       const error = { error: 'error' };
       const testFunction = (p: P, cb: (error: any, data: D) => {}) => {

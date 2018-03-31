@@ -100,9 +100,11 @@ describe('BaseDecisionContext', () => {
         const completedEvent = eventList[2];
         runContext.processEventList(createDecisionTask(eventList));
         const stateMachines: HistoryEventProcessor<any>[] = runContext.getStateMachines();
-        expectActivityStateMachine(<BaseActivityDecisionStateMachine>stateMachines[0], {
-          result: completedEvent.activityTaskCompletedEventAttributes.result,
-        }, ActivityDecisionState.Completed);
+        expectActivityStateMachine(
+          <BaseActivityDecisionStateMachine>stateMachines[0], {
+            result: completedEvent.activityTaskCompletedEventAttributes.result,
+          },
+          ActivityDecisionState.Completed);
       });
     });
 
@@ -237,9 +239,11 @@ describe('BaseDecisionContext', () => {
         ],
       ];
       const runContext = new BaseDecisionRunContext();
-      const list = ActivityHistoryGenerator.generateList([
-        COMPLETED_TRANSITION,
-      ], parameters);
+      const list = ActivityHistoryGenerator.generateList(
+        [
+          COMPLETED_TRANSITION,
+        ],
+        parameters);
 
       runContext.processEventList(createDecisionTask(list));
       const stateMachines: BaseActivityDecisionStateMachine[] = <BaseActivityDecisionStateMachine[]>runContext.getStateMachines();

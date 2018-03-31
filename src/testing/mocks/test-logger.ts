@@ -20,5 +20,4 @@ export class TestLogger implements Logger {
   error(message: string, ...args: any[]): void {
     this.log('debug', message, ...args);
   }
-
 }

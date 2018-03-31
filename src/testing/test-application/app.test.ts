@@ -67,18 +67,23 @@ describe('Test Application', () => {
     const app: MyApp = applicationFactory.createApplication<MyApp>(MyApp);
     await app.registerWorkflows();
 
-    assert.calledWith(registerWfStub.getCall(0), match({
-      name: 'workflowTest1',
-      version: '2',
-      domain: 'test-domain',
-    }), match.func);
+    assert.calledWith(
+      registerWfStub.getCall(0),
+      match({
+        name: 'workflowTest1',
+        version: '2',
+        domain: MyApp.domain,
+      }),
+      match.func);
 
-    assert.calledWith(registerWfStub.getCall(1), match({
-      name: 'workflowTest2',
-      version: '3',
-      domain: 'test-domain',
-      defaultExecutionStartToCloseTimeout: '13',
-    }), match.func);
-
+    assert.calledWith(
+      registerWfStub.getCall(1),
+      match({
+        name: 'workflowTest2',
+        version: '3',
+        domain: MyApp.domain,
+        defaultExecutionStartToCloseTimeout: '13',
+      }),
+      match.func);
   });
 });

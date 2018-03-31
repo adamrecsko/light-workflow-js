@@ -47,26 +47,14 @@ Explain what these tests test and why
 
 HelloWorld Application
 
+For examples please check the [examples](examples) folder.
+
+
+### Actor implementation
+
 ```typescript
 import 'reflect-metadata';
 import 'zone.js';
-
-import { Observable } from 'rxjs/Observable';
-import { inject, injectable } from 'inversify';
-import { activity, description, version } from '../../src/core/actor/activity/decorators/activity-decorators';
-import { of } from 'rxjs/observable/of';
-import { actorClient } from '../../src/core/actor/decorators/actor-decorators';
-import { workflow } from '../../src/core/workflow/decorators/workflow-decorators';
-import { workflowClient } from '../../src/core/workflow/decorators/workflow-client-decorators';
-import { Workflows, WORKFLOWS } from '../../src/core/workflow/workflows';
-import { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } from '../../src/core/workflow/worker/workflow-worker-factory';
-import { ACTOR_WORKER_FACTORY, ActorWorkerFactory } from '../../src/core/actor/worker/actor-worker-factory';
-import { WorkflowWorker } from '../../src/core/workflow/worker/workflow-worker';
-import { ActorWorker } from '../../src/core/actor/worker/actor-worker';
-import { BaseApplicationConfigurationProvider } from '../../src/core/application/application-configuration-provider';
-import { ConfigurableApplicationFactory } from '../../src/core/application/application-factory';
-import { SWF } from 'aws-sdk';
-import { ApplicationConfiguration } from '../../src/core/application/application-configuration';
 
 const HELLO_WORLD_ACTOR = Symbol('HELLO_WORLD_ACTOR');
 
@@ -97,6 +85,11 @@ export class HelloWorldImpl implements HelloWorld {
   }
 }
 
+```
+###  Workflow implementation
+
+```typescript
+
 export const HELLO_WORLD_WORKFLOW = Symbol('HELLO_WORLD_WORKFLOW');
 
 
@@ -118,6 +111,12 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
     return printedText;
   }
 }
+
+```
+
+###  Application implementation
+
+```typescript
 
 @injectable()
 export class MyApp {
@@ -169,6 +168,10 @@ export class MyApp {
   }
 }
 
+```
+###  How to start workers and workflow
+
+```typescript
 
 async function boot() {
   const swf = new SWF({ region: 'us-east-1' });

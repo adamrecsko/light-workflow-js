@@ -85,25 +85,10 @@
 				<pre><code><span class="hljs-meta">   $</span><span class="bash"> yarn lint</span>
 </code></pre><h2 id="example">Example</h2>
 				<p>HelloWorld Application</p>
+				<p>For examples please check the <a href="examples">examples</a> folder.</p>
+				<h3 id="actor-implementation">Actor implementation</h3>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">'zone.js'</span>;
-
-<span class="hljs-keyword">import</span> { Observable } <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs/Observable'</span>;
-<span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'inversify'</span>;
-<span class="hljs-keyword">import</span> { activity, description, version } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/activity/decorators/activity-decorators'</span>;
-<span class="hljs-keyword">import</span> { of } <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs/observable/of'</span>;
-<span class="hljs-keyword">import</span> { actorClient } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/decorators/actor-decorators'</span>;
-<span class="hljs-keyword">import</span> { workflow } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/decorators/workflow-decorators'</span>;
-<span class="hljs-keyword">import</span> { workflowClient } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/decorators/workflow-client-decorators'</span>;
-<span class="hljs-keyword">import</span> { Workflows, WORKFLOWS } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/workflows'</span>;
-<span class="hljs-keyword">import</span> { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/worker/workflow-worker-factory'</span>;
-<span class="hljs-keyword">import</span> { ACTOR_WORKER_FACTORY, ActorWorkerFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/worker/actor-worker-factory'</span>;
-<span class="hljs-keyword">import</span> { WorkflowWorker } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/workflow/worker/workflow-worker'</span>;
-<span class="hljs-keyword">import</span> { ActorWorker } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/actor/worker/actor-worker'</span>;
-<span class="hljs-keyword">import</span> { BaseApplicationConfigurationProvider } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-configuration-provider'</span>;
-<span class="hljs-keyword">import</span> { ConfigurableApplicationFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-factory'</span>;
-<span class="hljs-keyword">import</span> { SWF } <span class="hljs-keyword">from</span> <span class="hljs-string">'aws-sdk'</span>;
-<span class="hljs-keyword">import</span> { ApplicationConfiguration } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../src/core/application/application-configuration'</span>;
 
 <span class="hljs-keyword">const</span> HELLO_WORLD_ACTOR = Symbol(<span class="hljs-string">'HELLO_WORLD_ACTOR'</span>);
 
@@ -134,6 +119,9 @@
   }
 }
 
+</code></pre>
+				<h3 id="workflow-implementation">Workflow implementation</h3>
+				<pre><code class="lang-typescript">
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> HELLO_WORLD_WORKFLOW = Symbol(<span class="hljs-string">'HELLO_WORLD_WORKFLOW'</span>);
 
 
@@ -156,6 +144,9 @@
   }
 }
 
+</code></pre>
+				<h3 id="application-implementation">Application implementation</h3>
+				<pre><code class="lang-typescript">
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyApp {
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> domain = <span class="hljs-string">'test-domain'</span>;
@@ -206,7 +197,9 @@
   }
 }
 
-
+</code></pre>
+				<h3 id="how-to-start-workers-and-workflow">How to start workers and workflow</h3>
+				<pre><code class="lang-typescript">
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">boot</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> swf = <span class="hljs-keyword">new</span> SWF({ region: <span class="hljs-string">'us-east-1'</span> });
   <span class="hljs-keyword">const</span> config = <span class="hljs-keyword">new</span> ApplicationConfiguration(swf);

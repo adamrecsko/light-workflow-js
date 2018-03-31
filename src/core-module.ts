@@ -37,6 +37,7 @@ import {
   WorkflowWorkerFactory,
 } from './core/workflow/worker/workflow-worker-factory';
 import { BaseContextCache, ContextCache } from './core/context/context-cache';
+import { ACTOR_WORKER_FACTORY, ActorWorkerFactory, BaseActorWorkerFactory } from './core/actor/worker/actor-worker-factory';
 
 export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<AWSClientProvider>(AWS_ADAPTER)
@@ -68,5 +69,7 @@ export const CORE: ContainerModule = new ContainerModule((bind: interfaces.Bind)
     .toConstantValue(new ZoneContextResolutionStrategy<DecisionRunContext>(DECISION_RUN_CONTEXT_ZONE_KEY));
   bind<RemoteActivityAdapterFactory>(REMOTE_ACTIVITY_ADAPTER_FACTORY)
     .to(DefaultRemoteActivityAdapterFactory).inSingletonScope();
+  bind<ActorWorkerFactory>(ACTOR_WORKER_FACTORY)
+    .to(BaseActorWorkerFactory).inSingletonScope();
 
 });

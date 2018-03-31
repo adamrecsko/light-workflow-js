@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { TEST_ACTOR, TestActor } from '../actors/test-actor';
 import {
   workflow, executionStartToCloseTimeout,
-  description, version, defaultExecutionStartToCloseTimeout,
+  description, version, defaultExecutionStartToCloseTimeout, taskStartToCloseTimeout, childPolicy,
 } from '../../../core/workflow/decorators/workflow-decorators';
 
 export const TEST_WORKFLOW = Symbol('TEST_WORKFLOW');
@@ -30,7 +30,6 @@ export class TestWorkflowImpl implements TestWorkflow {
   }
 
   @workflow()
-  @executionStartToCloseTimeout('10')
   @version('2')
   @defaultExecutionStartToCloseTimeout('13')
   async workflowTest2(text: string, num: number): Promise<string> {

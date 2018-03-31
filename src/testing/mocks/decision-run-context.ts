@@ -5,6 +5,8 @@ import { BaseActivityDecisionStateMachine } from '../../core/context/state-machi
 import { WorkflowExecution } from '../../core/context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
 
 export class MockDecisionRunContext implements DecisionRunContext {
+  currentTaskToken: string;
+  
   getZone(): Zone {
     return undefined;
   }

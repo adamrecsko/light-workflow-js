@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { injectable } from 'inversify';
-import { description, version, activity } from '../../../core/actor/activity/decorators/activity-decorators';
+import { description, version, activity, scheduleToCloseTimeout, scheduleToStartTimeout, startToCloseTimeout, heartbeatTimeout } from '../../../core/actor/activity/decorators/activity-decorators';
 
 export const TEST_ACTOR = Symbol('TEST_ACTOR');
 
@@ -14,16 +14,16 @@ export interface TestActor {
 export class TestActorImpl implements TestActor {
 
   private printer(text: string) {
-    console.log(text);
+    console.log('ACTIVITY PRINTED TEXT:', text);
   }
 
-  @activity
+  @activity()
   @version('23-b')
   formatText(text: string): Observable<string> {
-    return Observable.of(text + ' hello world');
+    return Observable.of(text + ' hello Panni!!');
   }
 
-  @activity
+  @activity()
   @version('23-b')
   @description('print the text out')
   printIt(text: string): Observable<string> {

@@ -5,7 +5,6 @@ export abstract class AbstractDecoratorDefinition {
   version = '1';
   description: string;
   taskPriority: string;
-  defaultTaskPriority: string;
   serializer: Serializer = defaultSerializer;
   [key: string]: any;
   constructor(decoratedMethodName: string) {

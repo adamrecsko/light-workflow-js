@@ -4,7 +4,7 @@ export interface StateMachine<T> {
   stateHistory: T[];
 }
 
-export type TransitionTable<T> = [[T, T]];
+export type TransitionTable<T> = [T, T][];
 
 
 export class InvalidStateTransitionException extends Error {

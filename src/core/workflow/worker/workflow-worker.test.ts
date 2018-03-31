@@ -62,6 +62,8 @@ const binding: Binding<TestWfImpl> = {
 };
 
 class MockDecisionRunContext implements DecisionRunContext {
+  currentTaskToken: string;
+
   getZone(): Zone {
     return undefined;
   }
@@ -323,6 +325,7 @@ class BaseWorkflowWorkerTest {
       a: task,
     };
     this.loadBinding(this.binding);
+    this.decisionContext.currentTaskToken = task.taskToken;
     this.poller = this.testScheduler.createColdObservable('a|', values);
     this.workflowExecution.currentState = WorkflowExecutionStates.Created;
     this.workflowExecution.onChange = this.testScheduler
@@ -454,6 +457,7 @@ class BaseWorkflowWorkerTest {
     const values = {
       a: task,
     };
+    this.decisionContext.currentTaskToken = task.taskToken;
     this.loadBinding(this.binding);
     this.poller = this.testScheduler.createColdObservable('a|', values);
     this.workflowExecution.currentState = WorkflowExecutionStates.Created;

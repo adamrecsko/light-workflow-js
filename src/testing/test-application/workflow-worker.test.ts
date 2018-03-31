@@ -105,7 +105,7 @@ class WorkflowWorkerIntegrationTest {
     const worker = app.createWorker();
     worker.startWorker();
     await this.mockSWF.completedEventChangeSubject
-      .asObservable().do(evt => console.log(JSON.stringify(evt))).take(3).toArray().toPromise();
+      .asObservable().take(3).toArray().toPromise();
 
     const expectedEvents: any = [{
       decisions: [
@@ -172,7 +172,7 @@ class WorkflowWorkerIntegrationTest {
     const worker = app.createWorker();
     worker.startWorker();
     await this.mockSWF.completedEventChangeSubject
-      .asObservable().do(evt => console.log(JSON.stringify(evt))).take(2).toArray().toPromise();
+      .asObservable().take(2).toArray().toPromise();
 
     expect(this.mockSWF.completedEvents).to.eql([
       {

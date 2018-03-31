@@ -11,13 +11,12 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContextCache } from '../../context/context-cache';
 import { WorkflowExecutionStates } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution-states';
 import { of } from 'rxjs/observable/of';
-import { LocalWorkflowStub } from '../workflow-proxy';
-import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../../constants';
 import { DecisionRunContext } from '../../context/decision-run-context';
 import { Decision, DecisionList, RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
 import { ActivityDecisionStateMachine, BaseActivityDecisionStateMachine } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import 'zone.js/dist/zone-patch-rxjs';
+import { LocalStub } from '../../utils/local-stub';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -28,7 +27,7 @@ export interface WorkflowWorker<T> {
 export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   private pollSubscription: Subscription;
-  private wfStub: LocalWorkflowStub<T>;
+  private wfStub: LocalStub;
 
   constructor(private workflowClient: WorkflowClient,
               private appContainer: Container,
@@ -53,14 +52,14 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     };
   }
 
-  private createRespondDecisionTaskCompletedInput(taskToken: string, decisions: DecisionList): RespondDecisionTaskCompletedInput {
+  private static createCompletedInput(taskToken: string, decisions: DecisionList): RespondDecisionTaskCompletedInput {
     return {
       taskToken,
       decisions,
     };
   }
 
-  private createActivityScheduleDecisionFromStateMachine(sm: ActivityDecisionStateMachine): Decision {
+  private static createActivityScheduleDecisionFromStateMachine(sm: ActivityDecisionStateMachine): Decision {
     const params = sm.startParams;
     return {
       decisionType: 'ScheduleActivityTask',
@@ -69,7 +68,6 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       },
     };
   }
-
 
   private registerWorkflow(definition: WorkflowDefinition): Observable<any> {
     const registerWorkflowInput = this.workflowDefinitionToRegisterWorkflowTypeInput(definition);
@@ -86,26 +84,28 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   private processDecision(context: DecisionRunContext, decisionTask: DecisionTask) {
     const taskToken = decisionTask.taskToken;
     context.processEventList(decisionTask);
-
-
-    return Observable.timer(10, 1)
-      .flatMap(() => this.respondActivityDecisions(taskToken, context)).toPromise();
+    return Observable.timer(10).flatMap(() => this.respondActivityDecisions(taskToken, context));
   }
 
-  private async respondCompletedWorkflowDecision(taskToken: string, result: string, context: DecisionRunContext) {
+  private respondCompletedWorkflowDecision(result: string, context: DecisionRunContext) {
+    const taskToken = context.currentTaskToken;
     const decision: Decision = {
       decisionType: 'CompleteWorkflowExecution',
       completeWorkflowExecutionDecisionAttributes: {
         result,
       },
     };
-    const input = this.createRespondDecisionTaskCompletedInput(taskToken, [decision]);
+    const input = BaseWorkflowWorker.createCompletedInput(taskToken, [decision]);
     const workflowExecution = context.getWorkflowExecution();
     workflowExecution.setCompleteStateRequestedWith(result);
-    return this.workflowClient.respondDecisionTaskCompleted(input).toPromise();
+    return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
+      console.error(err);
+      return of();
+    });
   }
 
-  private async respondFailedWorkflowDecision(taskToken: string, details: string = 'error', reason: string, context: DecisionRunContext) {
+  private respondFailedWorkflowDecision(details: string = 'error', reason: string, context: DecisionRunContext) {
+    const taskToken = context.currentTaskToken;
     const decision: Decision = {
       decisionType: 'FailWorkflowExecution',
       failWorkflowExecutionDecisionAttributes: {
@@ -113,14 +113,17 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
         reason,
       },
     };
-    const input = this.createRespondDecisionTaskCompletedInput(taskToken, [decision]);
+    const input = BaseWorkflowWorker.createCompletedInput(taskToken, [decision]);
     const workflowExecution = context.getWorkflowExecution();
     workflowExecution.setExecutionFailedStateRequestedWith(details, reason);
-    return this.workflowClient.respondDecisionTaskCompleted(input).toPromise();
+    return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
+      console.error(err);
+      return of();
+    });
   }
 
 
-  private async respondActivityDecisions(taskToken: string, context: DecisionRunContext) {
+  private respondActivityDecisions(taskToken: string, context: DecisionRunContext) {
     const decisions: Decision[] = [];
     const stateMachines: any = context.getStateMachines();
     const machines: ActivityDecisionStateMachine[] = [];
@@ -129,25 +132,23 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       if (machine instanceof BaseActivityDecisionStateMachine) {
         if (machine.currentState === ActivityDecisionState.Created) {
           machine.currentState = ActivityDecisionState.Sending;
-          decisions.push(this.createActivityScheduleDecisionFromStateMachine(machine));
+          decisions.push(BaseWorkflowWorker.createActivityScheduleDecisionFromStateMachine(machine));
           machines.push(machine);
         }
       }
     });
-
     if (decisions.length > 0) {
-      const input = this.createRespondDecisionTaskCompletedInput(taskToken, decisions);
-      const result = await this.workflowClient.respondDecisionTaskCompleted(input).toPromise();
-      machines.forEach(machine => machine.currentState = ActivityDecisionState.Sent);
-      return result;
+      const input = BaseWorkflowWorker.createCompletedInput(taskToken, decisions);
+      return this.workflowClient.respondDecisionTaskCompleted(input).do(() => {
+        machines.forEach(machine => machine.currentState = ActivityDecisionState.Sent);
+      });
     }
-
+    return Observable.empty();
   }
 
-
-  createWorkflowStub(): LocalWorkflowStub<T> {
+  createWorkflowStub(): LocalStub {
     const instance = this.appContainer.get<T>(this.binding.key);
-    return new LocalWorkflowStub(this.binding.impl, instance);
+    return new LocalStub(this.binding.impl, instance);
   }
 
   register(): Observable<any> {
@@ -164,26 +165,23 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
       .flatMap((decisionTask: DecisionTask) => {
         const runId = decisionTask.workflowExecution.runId;
         const context = this.contextCache.getOrCreateContext(runId);
-        return context.getZone().runGuarded(() => of(context.getWorkflowExecution())
+        return of(context.getWorkflowExecution())
           .filter(workflowExecution => workflowExecution.currentState === WorkflowExecutionStates.Created)
           .flatMap((workflowExecution) => {
             return workflowExecution
               .onChange
               .filter(state => state === WorkflowExecutionStates.Started)
-              .flatMap(() => {
-                const result: Promise<any> =
-                  this.wfStub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input);
-                return result.then(workflowResult => this.respondCompletedWorkflowDecision(decisionTask.taskToken, workflowResult, context),
-                  err => this.respondFailedWorkflowDecision(decisionTask.taskToken, err.details, err.message, context));
-              });
-          }));
+              .flatMap(() => context.getZone().runGuarded(() => this.wfStub.callWorkflowWithInput(workflowExecution.workflowType, workflowExecution.input)))
+              .flatMap((workflowResult: string) => this.respondCompletedWorkflowDecision(workflowResult, context))
+              .catch(workflowError => this.respondFailedWorkflowDecision(workflowError.details, workflowError.message, context));
+          });
       }).subscribe();
 
-    const processSub = sharedPoller.subscribe((decisionTask: DecisionTask) => {
+    const processSub = sharedPoller.flatMap((decisionTask: DecisionTask) => {
       const runId = decisionTask.workflowExecution.runId;
       const context = this.contextCache.getOrCreateContext(runId);
       return this.processDecision(context, decisionTask);
-    });
+    }).subscribe();
     this.pollSubscription.add(processSub);
   }
 

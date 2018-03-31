@@ -27,10 +27,16 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
               private contextCache: ContextCache) {
 
   }
+
   create<T>(domain: string, binding: Binding<T>): WorkflowWorker<T> {
-    // TODO: params missing
+    // TODO: params missing (task list)
     const pollParams = new DecisionPollParameters();
     pollParams.domain = domain;
+    pollParams.taskList = {
+      name: 'default',
+    };
+
+
     const poller = this.decisionPollerFactory.createPoller(pollParams);
     return new BaseWorkflowWorker(this.workflowClient, this.appContainer, this.contextCache, poller, domain, binding);
   }

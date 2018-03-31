@@ -21,6 +21,9 @@ export interface DecisionRunContext {
   getWorkflowExecution(): WorkflowExecution;
 
   getZone(): Zone;
+
+  currentTaskToken: string;
+
 }
 
 
@@ -31,6 +34,8 @@ export class NotSupportedEventTypeException extends Error {
 }
 
 export class BaseDecisionRunContext implements DecisionRunContext {
+
+  public currentTaskToken: string;
 
 
   private keyToStateMachine: Map<string, HistoryEventProcessor<any>>;
@@ -54,14 +59,18 @@ export class BaseDecisionRunContext implements DecisionRunContext {
   }
 
   processEventList(decisionTask: DecisionTask): void {
+    this.currentTaskToken = decisionTask.taskToken;
     const { events } = decisionTask;
     const notify = (stateMachine: HistoryEventProcessor<any>) => stateMachine.notify();
+
+
     const parseEvent = (event: HistoryEvent) => {
       let stateMachine: HistoryEventProcessor<any>;
       const eventType: EventType = EventType.fromString(event.eventType);
       let activityId: string;
       let eventId: number;
       switch (eventType) {
+
         case EventType.ActivityTaskScheduled:
           eventId = event.eventId;
           activityId = event.activityTaskScheduledEventAttributes.activityId;
@@ -131,8 +140,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
         default:
           throw new NotSupportedEventTypeException(`Not supported event type ${event.eventType}`);
       }
-
-      stateMachine.processHistoryEvent(event);
+      if (stateMachine) stateMachine.processHistoryEvent(event);
     };
     events.forEach(parseEvent);
     this.getStateMachines().forEach(notify);

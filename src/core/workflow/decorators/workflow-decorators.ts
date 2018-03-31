@@ -1,9 +1,9 @@
 import { workflowDecoratorFactory as decoratorFactory } from './workflow-decorator-factory';
-import { WorkflowDefinitionProperties } from '../workflow-definition';
+import { ChildPolicy, WorkflowDefinitionProperties } from '../workflow-definition';
 import { Serializer } from '../../application/serializer';
 import { TaskList } from '../../../aws/aws.types';
 
-export type ChildPolicy = 'TERMINATE' | 'REQUEST_CANCEL' | 'ABANDON';
+
 
 export const workflow = decoratorFactory<string>(WorkflowDefinitionProperties.name);
 

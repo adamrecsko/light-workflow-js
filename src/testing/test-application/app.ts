@@ -5,6 +5,9 @@ import { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } from '../../core/workf
 
 import { WorkflowWorker } from '../../core/workflow/worker/workflow-worker';
 import { TEST_WORKFLOW, TestWorkflow, TestWorkflowImpl } from './workflows/test-workflow';
+import { ActorWorker } from '../../core/actor/worker/actor-worker';
+import { ACTOR_WORKER_FACTORY, ActorWorkerFactory } from '../../core/actor/worker/actor-worker-factory';
+import { TEST_ACTOR, TestActorImpl } from './actors/test-actor';
 
 @injectable()
 export class MyApp {
@@ -16,6 +19,9 @@ export class MyApp {
   private workflows: Workflows;
   @inject(WORKFLOW_WORKER_FACTORY)
   private workerFactory: WorkflowWorkerFactory;
+
+  @inject(ACTOR_WORKER_FACTORY)
+  private actorWorkerFactory: ActorWorkerFactory;
 
   public async registerWorkflows() {
     const worker = this.workerFactory.create(MyApp.domain, {
@@ -34,7 +40,7 @@ export class MyApp {
   }
 
   public async runTestWorkflow1(text: string): Promise<string> {
-    const start = this.workflows.createStarter('test-domain');
+    const start = this.workflows.createStarter('test-domain', 'default');
     const workflowResult = await start(this.workflow.workflowTest1, text);
     return workflowResult.runId;
   }
@@ -46,4 +52,10 @@ export class MyApp {
     });
   }
 
+  public createActorWorker(): ActorWorker {
+    return this.actorWorkerFactory.create(MyApp.domain, {
+      key: TEST_ACTOR,
+      impl: TestActorImpl,
+    });
+  }
 }

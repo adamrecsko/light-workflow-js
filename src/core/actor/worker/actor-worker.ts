@@ -1,18 +1,104 @@
 import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
-import { ActivityTask, TaskList, ActivityPollParameters } from '../../../aws/aws.types';
-import { ActivityPollerFactory } from '../../../aws/swf/activity-poller-factory';
+import { ActivityTask } from '../../../aws/aws.types';
+import { WorkflowClient } from '../../../aws/workflow-client';
+import { Binding } from '../../generics/implementation-helper';
+import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { Observable } from 'rxjs/Observable';
+import { ActivityDefinition } from '../activity/activity-definition';
+import { AWSError } from 'aws-sdk';
+import { RegisterActivityTypeInput } from 'aws-sdk/clients/swf';
+
+import { Container } from 'inversify';
+import { LocalStub } from '../../utils/local-stub';
+import { of } from 'rxjs/observable/of';
 
 
 export interface ActorWorker {
+
+  register(): Observable<void>;
+
+  startWorker(): void;
+
 }
 
 export class BaseActorWorker implements ActorWorker {
-  private activityPoller: TaskPollerObservable<ActivityTask>;
 
-  constructor(private domain: string,
-              private taskList: TaskList,
-              private activityPollerFactory: ActivityPollerFactory) {
-    this.activityPoller = this.activityPollerFactory
-            .createPoller(new ActivityPollParameters(domain, taskList));
+
+  constructor(private workflowClient: WorkflowClient,
+              private domain: string,
+              private appContainer: Container,
+              private activityPoller: TaskPollerObservable<ActivityTask>,
+              private binding: Binding) {
+  }
+
+  private activityDefinitionToRegisterActivityTpeInput(definition: ActivityDefinition): RegisterActivityTypeInput {
+    return {
+      domain: this.domain,
+      name: definition.name,
+      version: definition.version,
+      description: definition.description,
+      defaultTaskStartToCloseTimeout: definition.defaultTaskStartToCloseTimeout,
+      defaultTaskHeartbeatTimeout: definition.defaultTaskHeartbeatTimeout,
+      defaultTaskList: definition.defaultTaskList,
+      defaultTaskPriority: definition.defaultTaskPriority,
+      defaultTaskScheduleToStartTimeout: definition.defaultTaskScheduleToStartTimeout,
+      defaultTaskScheduleToCloseTimeout: definition.defaultTaskScheduleToCloseTimeout,
+    };
+  }
+
+  private registerActivity(definition: ActivityDefinition): Observable<any> {
+    const activityInput = this.activityDefinitionToRegisterActivityTpeInput(definition);
+    return this.workflowClient
+      .registerActivityType(activityInput)
+      .catch((error: AWSError) => {
+        if (error.code === 'TypeAlreadyExistsFault') {
+          return Observable.empty();
+        }
+        return Observable.throw(error);
+      });
+  }
+
+  public register(): Observable<any> {
+    const definitions = getDefinitionsFromClass<ActivityDefinition>(this.binding.impl);
+    return Observable.from(definitions)
+      .flatMap((def: ActivityDefinition) => this.registerActivity(def), 1)
+      .toArray();
+  }
+
+  createStub(): LocalStub {
+    const instance = this.appContainer.get(this.binding.key);
+    return new LocalStub(this.binding.impl, instance);
+  }
+
+  respondActivityFinished(taskToken: string, result: string): Observable<any> {
+    return this.workflowClient.respondActivityTaskCompleted({
+      taskToken,
+      result,
+    }).catch((err) => {
+      console.error(err);
+      return Observable.empty();
+    });
+  }
+
+  respondActivityTaskFailed(taskToken: string, details: string, reason: string): Observable<any> {
+    return this.workflowClient.respondActivityTaskFailed({
+      taskToken,
+      details,
+      reason,
+    }).catch((err) => {
+      console.error(err);
+      return Observable.empty();
+    });
+  }
+
+  public startWorker(): void {
+    const stub = this.createStub();
+    this.activityPoller.flatMap((activityTask: ActivityTask) => of(activityTask)
+      .flatMap((activityTask: ActivityTask) => stub.callWorkflowWithInput(activityTask.activityType, activityTask.input))
+      .flatMap(activityResult => this.respondActivityFinished(activityTask.taskToken, activityResult))
+      .catch(err => this.respondActivityTaskFailed(activityTask.taskToken, err.details, err.message)))
+      .subscribe((result: any) => {
+        console.log(result);
+      });
   }
 }

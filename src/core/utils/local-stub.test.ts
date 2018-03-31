@@ -1,10 +1,12 @@
 import { suite, test } from 'mocha-typescript';
-import { LocalWorkflowStub } from './workflow-proxy';
 import {
   defaultChildPolicy, defaultExecutionStartToCloseTimeout, defaultLambdaRole, defaultTaskList, defaultTaskPriority, defaultTaskStartToCloseTimeout, description, version,
   workflow, name,
-} from './decorators/workflow-decorators';
+} from '../workflow/decorators/workflow-decorators';
 import { expect } from 'chai';
+import { LocalStub } from './local-stub';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 
 
 class TestWfImpl {
@@ -32,17 +34,24 @@ class TestWfImpl {
     };
   }
 
+  @workflow()
+  @description('test')
+  @version('1-b')
+  thisIsATestWithObservableReturn(a: string, b: number): Observable<string> {
+    return of(`test ${a}  ${b}`);
+  }
+
 }
 
 
 @suite
 class LocalWorkflowStubTest {
 
-  workflowStub: LocalWorkflowStub<TestWfImpl>;
+  workflowStub: LocalStub;
 
   before() {
     const instance = new TestWfImpl();
-    this.workflowStub = new LocalWorkflowStub(TestWfImpl, instance);
+    this.workflowStub = new LocalStub(TestWfImpl, instance);
   }
 
   @test
@@ -58,6 +67,18 @@ class LocalWorkflowStubTest {
 
   @test
   async shouldCallWorkflowWorkflowInstanceMethod() {
+    const testInput = JSON.stringify(['test', 27]);
+    const result = await this.workflowStub.callWorkflowWithInput({ name: 'test-wf', version: '1-b' }, testInput);
+
+    expect(result).to.eql(JSON.stringify({
+      a: 'test',
+      b: 27,
+    }));
+  }
+
+
+  @test
+  async shouldRunWithObservable() {
     const testInput = JSON.stringify(['test', 27]);
     const result = await this.workflowStub.callWorkflowWithInput({ name: 'test-wf', version: '1-b' }, testInput);
 

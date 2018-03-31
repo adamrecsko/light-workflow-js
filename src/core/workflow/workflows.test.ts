@@ -36,7 +36,7 @@ describe('Workflows', () => {
     workflowDefinition.executionStartToCloseTimeout = 'expectedExecutionStartToCloseTimeout';
     workflowDefinition.tagList = ['tag1', 'tag2'];
     workflowDefinition.taskStartToCloseTimeout = 'expectedTaskStartToCloseTimeout';
-    workflowDefinition.childPolicy = 'expectedChildPolicy';
+    workflowDefinition.childPolicy = 'TERMINATE';
     workflowDefinition.lambdaRole = 'expectedLambdaRole';
 
     const workflowStartStub = stub().returns(Observable.of({}));

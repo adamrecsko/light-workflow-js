@@ -7,7 +7,7 @@ import {
 import { injectable, inject } from 'inversify';
 import { AWSClientProvider } from './aws-client-provider';
 import { AWS_ADAPTER } from '../symbols';
-import { RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
+import { RegisterActivityTypeInput, RespondActivityTaskCompletedInput, RespondActivityTaskFailedInput, RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
 
 export interface WorkflowClient {
   pollForActivityTask(params: ActivityPollParameters): Observable<ActivityTask>;
@@ -18,11 +18,18 @@ export interface WorkflowClient {
 
   registerWorkflowType(params: RegisterWorkflowTypeInput): Observable<RegisterWorkflowTypeInput>;
 
+  registerActivityType(params: RegisterActivityTypeInput): Observable<RegisterActivityTypeInput>;
+
   respondDecisionTaskCompleted(params: RespondDecisionTaskCompletedInput): Observable<{}>;
+
+  respondActivityTaskCompleted(params: RespondActivityTaskCompletedInput): Observable<{}>;
+
+  respondActivityTaskFailed(params: RespondActivityTaskFailedInput): Observable<{}>;
 }
 
 @injectable()
 export class BaseWorkflowClient implements WorkflowClient {
+
   private swfClient: SWF;
 
   constructor(@inject(AWS_ADAPTER) private awsAdapter: AWSClientProvider) {
@@ -45,9 +52,22 @@ export class BaseWorkflowClient implements WorkflowClient {
     return BaseWorkflowClient.fromSwfFunction<RegisterWorkflowTypeInput>(this.swfClient.registerWorkflowType.bind(this.swfClient), params);
   }
 
+  registerActivityType(params: RegisterActivityTypeInput): Observable<RegisterActivityTypeInput> {
+    return BaseWorkflowClient.fromSwfFunction<RegisterActivityTypeInput>(this.swfClient.registerActivityType.bind(this.swfClient), params);
+  }
+
   respondDecisionTaskCompleted(params: RespondDecisionTaskCompletedInput): Observable<{}> {
     return BaseWorkflowClient.fromSwfFunction(this.swfClient.respondDecisionTaskCompleted.bind(this.swfClient), params);
   }
+
+  respondActivityTaskCompleted(params: RespondActivityTaskCompletedInput): Observable<{}> {
+    return BaseWorkflowClient.fromSwfFunction(this.swfClient.respondActivityTaskCompleted.bind(this.swfClient), params);
+  }
+
+  respondActivityTaskFailed(params: RespondActivityTaskFailedInput): Observable<{}> {
+    return BaseWorkflowClient.fromSwfFunction(this.swfClient.respondActivityTaskFailed.bind(this.swfClient), params);
+  }
+
 
 
   public static fromSwfFunction<T>(fnc: <T>(params: any, cb: (error: any, data: T) => void) => any, params: any): Observable<T> {

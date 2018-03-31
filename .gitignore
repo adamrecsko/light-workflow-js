@@ -5,3 +5,4 @@ typings
 *.map
 *.d.ts
 .nyc_output
+.DS_Store

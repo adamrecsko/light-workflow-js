@@ -1,4 +1,5 @@
 #  light-workflow-js
+[![Build Status](https://travis-ci.org/adamrecsko/light-workflow-js.svg?branch=master)](https://travis-ci.org/adamrecsko/light-workflow-js)
 
 A library to create, run and orchestrate AWS SWF workflow.
 Written in TypeScript and heavily relies on RxJS. 

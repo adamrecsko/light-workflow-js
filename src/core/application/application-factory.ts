@@ -14,16 +14,6 @@ export interface ApplicationFactory {
   addWorkflowImplementations(implementationList: Binding[]): void;
 }
 
-
-interface ApplicationBuilder<T> {
-  setConfiguration(configurationProvider: ApplicationConfigurationProvider): this;
-  setModules(modules: ContainerModule[]): this;
-  setActors(actorBinding: Binding[]): this;
-  setApplicationClass(application: Newable<T>): this;
-  createApplication(): T;
-}
-
-
 export class ConfigurableApplicationFactory implements ApplicationFactory {
   private coreKernel: Container;
   private applicationKernel: Container;

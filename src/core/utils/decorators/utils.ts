@@ -5,7 +5,8 @@ import { AbstractDefinitionContainer } from './definition-container';
 
 export const DEFINITION_SYMBOL = Symbol('DEFINITION_SYMBOL');
 export type Decorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-export type ValueSetterDecoratorFactory<T> = (value?: T) => Decorator;
+export type ClassLevelDecorator = (constructor: Function) => void;
+export type ValueSetterDecoratorFactory<T, R> = (value?: T) => R;
 
 
 export class DefinitionNotAvailableException extends Error {
@@ -22,7 +23,7 @@ export function definitionCreatorFactory<D>(definitionContainerClass: Newable<D>
 }
 
 export function propertyLevelDefinition<T, D extends AbstractDecoratorDefinition>(definitionProperty: keyof D,
-                                                                                  definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
+                                                                                  definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T, Decorator> {
   return function (value: T): Decorator {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
       definitionCreatorFactory(definitionContainerClass)(target, propertyKey, descriptor);
@@ -36,11 +37,11 @@ export function propertyLevelDefinition<T, D extends AbstractDecoratorDefinition
   };
 }
 
-export function classLevelDefinition<T, D>(definitionProperty: keyof D, definitionClass: Newable<D>): ValueSetterDecoratorFactory<T> {
-  return function (value: T): Decorator {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
-      definitionCreatorFactory(definitionClass)(target, propertyKey, descriptor);
-      const definition: D = target[DEFINITION_SYMBOL];
+export function classLevelDefinition<T, D>(definitionProperty: keyof D, definitionClass: Newable<D>): ValueSetterDecoratorFactory<T, ClassLevelDecorator> {
+  return function (value: T): ClassLevelDecorator {
+    return function (constructor: Function): void {
+      definitionCreatorFactory(definitionClass)(constructor.prototype, undefined, undefined);
+      const definition: D = constructor.prototype[DEFINITION_SYMBOL];
       if (value !== undefined) {
         definition[definitionProperty] = value as any;
       }

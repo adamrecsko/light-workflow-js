@@ -131,7 +131,7 @@ You can handle activity exceptions with try catch
   
 ```
 
-Or you an use observables to create a flow
+Or you can use observables to create a flow
 
 ```typescript
 

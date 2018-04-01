@@ -96,6 +96,14 @@ class MockContextCache implements ContextCache {
 }
 
 class MockWorkflowExecution {
+  setExecutionFailedStateRequestedWith(): void {
+  }
+
+  setCompleteStateRequestedWith(): void {
+  }
+
+  processEvent() {
+  }
 
 }
 
@@ -231,6 +239,8 @@ class BaseWorkflowWorkerTest {
 
   @test
   shouldCallImplementationOfTheCorrespondingWf() {
+    const testScheduler = this.testScheduler;
+
     @injectable()
     class TestWf {
       static testCall = sinon.spy();
@@ -240,8 +250,9 @@ class BaseWorkflowWorkerTest {
 
       @workflow()
       @version('1-test')
-      async test_wf(param1: string) {
+      test_wf(param1: string) {
         TestWf.testCall(param1);
+        return testScheduler.createColdObservable('|');
       }
     }
 

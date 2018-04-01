@@ -2,7 +2,7 @@ import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
 import { ActivityTask } from '../../../aws/aws.types';
 import { WorkflowClient } from '../../../aws/workflow-client';
 import { Binding } from '../../generics/implementation-helper';
-import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from '../../utils/decorators/utils';
 import { Observable } from 'rxjs/Observable';
 import { ActivityDefinition } from '../activity/activity-definition';
 import { AWSError } from 'aws-sdk';
@@ -61,7 +61,7 @@ export class BaseActorWorker implements ActorWorker {
   }
 
   public register(): Observable<any> {
-    const definitions = getDefinitionsFromClass<ActivityDefinition>(this.binding.impl);
+    const definitions = getPropertyLevelDefinitionsFromClass<ActivityDefinition>(this.binding.impl);
     return Observable.from(definitions)
       .flatMap((def: ActivityDefinition) => this.registerActivity(def), 1)
       .toArray();

@@ -8,7 +8,7 @@ import {
     RemoteActivityAdapter,
 } from '../activity/adapters/remote-activity-adapter';
 import { ActivityDefinition } from '../activity/activity-definition';
-import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from '../../utils/decorators/utils';
 import { ActorProxy } from './actor-proxy';
 import { RemoteActivityObservable } from '../activity/observable/remote-activity-observable';
 
@@ -33,7 +33,7 @@ export class RemoteActorProxyFactory implements ActorProxyFactory {
   }
 
   create<T>(implementation: Newable<T>, taskList: string): T {
-    const activityDefinitions: ActivityDefinition[] = getDefinitionsFromClass<ActivityDefinition>(implementation);
+    const activityDefinitions: ActivityDefinition[] = getPropertyLevelDefinitionsFromClass<ActivityDefinition>(implementation);
     const actorProxy: any = new ActorProxy();
     activityDefinitions.forEach((definition: ActivityDefinition) => {
       const adapter: RemoteActivityAdapter = this.remoteActivityAdapterFactory

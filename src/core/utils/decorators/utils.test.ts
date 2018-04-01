@@ -1,6 +1,6 @@
 import {
-  getDefinitionsFromClass, DefinitionNotAvailableException, ValueSetterDecoratorFactory,
-  definitionPropertySetterFactory, DEFINITION_SYMBOL,
+  getPropertyLevelDefinitionsFromClass, DefinitionNotAvailableException, ValueSetterDecoratorFactory,
+  propertyLevelDefinition, DEFINITION_SYMBOL, classLevelDefinition,
 } from './utils';
 import { AbstractDecoratorDefinition } from './abstract-decorator-definition';
 import { expect } from 'chai';
@@ -22,10 +22,10 @@ class TestDefinitionContainer extends AbstractDefinitionContainer<TestDefinition
 const TEST_PROPERTY = 'testProperty';
 const TEST_PROPERTY_2 = 'testProperty2';
 
-describe('definitionDecoratorPropertySetterFactory', () => {
+describe('propertyLevelDefinition', () => {
   let decoratorFactory: ValueSetterDecoratorFactory<string>;
   beforeEach(() => {
-    decoratorFactory = definitionPropertySetterFactory<string, TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
+    decoratorFactory = propertyLevelDefinition<string, TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
   });
 
   it('should return a function', () => {
@@ -96,8 +96,8 @@ describe('definitionDecoratorPropertySetterFactory', () => {
         it('should set existing DecoratorDefinition property', () => {
           const testPropertyValue = '1234';
           const testProperty2Value = 'ABC';
-          const decoratorFactory = definitionPropertySetterFactory<string, TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
-          const decorator2Factory = definitionPropertySetterFactory<string, TestDefinition>(TEST_PROPERTY_2, TestDefinitionContainer);
+          const decoratorFactory = propertyLevelDefinition<string, TestDefinition>(TEST_PROPERTY, TestDefinitionContainer);
+          const decorator2Factory = propertyLevelDefinition<string, TestDefinition>(TEST_PROPERTY_2, TestDefinitionContainer);
 
           const decorator = decoratorFactory(testPropertyValue);
           const decorator2 = decorator2Factory(testProperty2Value);
@@ -121,11 +121,11 @@ describe('definitionDecoratorPropertySetterFactory', () => {
 });
 
 
-describe('getDefinitionsFromClass', () => {
+describe('getPropertyLevelDefinitionsFromClass', () => {
 
   context('if definition exist', () => {
     it('should give back an array of activity definitions from the class', () => {
-      const decorator = definitionPropertySetterFactory<string, TestDefinition>('name', TestDefinitionContainer);
+      const decorator = propertyLevelDefinition<string, TestDefinition>('name', TestDefinitionContainer);
 
       class Clazz {
         @decorator('test')
@@ -133,7 +133,7 @@ describe('getDefinitionsFromClass', () => {
         }
       }
 
-      const definitions: TestDefinition[] = getDefinitionsFromClass<TestDefinition>(Clazz);
+      const definitions: TestDefinition[] = getPropertyLevelDefinitionsFromClass<TestDefinition>(Clazz);
       expect(definitions).to.be.an('array');
     });
   });
@@ -145,10 +145,48 @@ describe('getDefinitionsFromClass', () => {
       }
 
       expect(() => {
-        getDefinitionsFromClass(Clazz);
+        getPropertyLevelDefinitionsFromClass(Clazz);
       }).to.throw(DefinitionNotAvailableException);
 
     });
   });
 });
 
+
+describe('classLevelDefinition', () => {
+  let decoratorFactory: ValueSetterDecoratorFactory<string>;
+  beforeEach(() => {
+    decoratorFactory = classLevelDefinition<string, TestDefinition>(TEST_PROPERTY, TestDefinition);
+  });
+
+  describe('ValueSetterDecoratorFactory', () => {
+    describe('decorator', () => {
+      context('if Definition already exists on class and already annotated', () => {
+        it('should not add new Definition', () => {
+          const decorator = decoratorFactory('value');
+          const testObject: any = {};
+          decorator(testObject, null, {});
+          const definition = testObject[DEFINITION_SYMBOL];
+          decorator(testObject, null, {});
+          const definition2 = testObject[DEFINITION_SYMBOL];
+          expect(definition).to.eq(definition2);
+        });
+      });
+      
+      it('should add Definition', () => {
+        const decorator = decoratorFactory('value');
+        const testObject: any = {};
+        decorator(testObject, 'testMethod', {});
+        expect(testObject[DEFINITION_SYMBOL]).to.instanceOf(TestDefinition);
+      });
+
+      it('should set property on definition', () => {
+        const decorator = decoratorFactory('test value');
+        const testObject: any = {};
+        decorator(testObject, null, {});
+        const definition: TestDefinition = testObject[DEFINITION_SYMBOL];
+        expect(definition.testProperty).to.eq('test value');
+      });
+    });
+  });
+});

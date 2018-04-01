@@ -1,6 +1,7 @@
-import { WorkflowDefinitionProperties, WorkflowDefinition } from '../workflow-definition';
-import { ValueSetterDecoratorFactory, definitionPropertySetterFactory } from '../../utils/decorators/utils';
+import { ValueSetterDecoratorFactory, propertyLevelDefinition } from '../../utils/decorators/utils';
 import { WorkflowDecoratorDefinitionContainer } from './workflow-decorator-definition-conatiner';
-export function workflowDecoratorFactory<T>(workflowDefinitionProperty: WorkflowDefinitionProperties): ValueSetterDecoratorFactory<T> {
-  return definitionPropertySetterFactory<T, WorkflowDefinition>(WorkflowDefinitionProperties[workflowDefinitionProperty], WorkflowDecoratorDefinitionContainer);
+import { WorkflowDefinition } from '../workflow-definition';
+
+export function workflowDecoratorFactory<T>(property: keyof WorkflowDefinition): ValueSetterDecoratorFactory<T> {
+  return propertyLevelDefinition<T, WorkflowDefinition>(property, WorkflowDecoratorDefinitionContainer);
 }

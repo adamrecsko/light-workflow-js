@@ -15,32 +15,53 @@ export class DefinitionNotAvailableException extends Error {
 }
 
 
-export function definitionCreatorFactory<T extends AbstractDecoratorDefinition>(definitionContainerClass: Newable<AbstractDefinitionContainer<T>>) {
+export function definitionCreatorFactory<D>(definitionContainerClass: Newable<D>) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
     target[DEFINITION_SYMBOL] = target[DEFINITION_SYMBOL] || new definitionContainerClass();
   };
 }
 
-export function definitionPropertySetterFactory<T, D extends AbstractDecoratorDefinition>(definitionProperty: keyof D,
-                                                                                          definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
+export function propertyLevelDefinition<T, D extends AbstractDecoratorDefinition>(definitionProperty: keyof D,
+                                                                                  definitionContainerClass: Newable<AbstractDefinitionContainer<D>>): ValueSetterDecoratorFactory<T> {
   return function (value: T): Decorator {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
       definitionCreatorFactory(definitionContainerClass)(target, propertyKey, descriptor);
       const definitionContainer: AbstractDefinitionContainer<D> = target[DEFINITION_SYMBOL];
       const definition: D = definitionContainer.createOrGetDefinitionToDecoratedProperty(propertyKey);
 
-      if (value) {
-        definition[definitionProperty] = value;
+      if (value !== undefined) {
+        definition[definitionProperty] = value as any;
       }
     };
   };
 }
 
+export function classLevelDefinition<T, D>(definitionProperty: keyof D, definitionClass: Newable<D>): ValueSetterDecoratorFactory<T> {
+  return function (value: T): Decorator {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor): void {
+      definitionCreatorFactory(definitionClass)(target, propertyKey, descriptor);
+      const definition: D = target[DEFINITION_SYMBOL];
+      if (value !== undefined) {
+        definition[definitionProperty] = value as any;
+      }
+    };
+  };
+}
 
-export function getDefinitionsFromClass<T extends AbstractDecoratorDefinition>(newable: Newable<any>): T[] {
+export function getPropertyLevelDefinitionsFromClass<T extends AbstractDecoratorDefinition>(newable: Newable<any>): T[] {
   const defContainer: AbstractDefinitionContainer<T> = (<AbstractDefinitionContainer<T>>newable.prototype[DEFINITION_SYMBOL]);
   if (defContainer) {
     return defContainer.toArray();
   }
   throw new DefinitionNotAvailableException(newable);
 }
+
+
+export function getClassLevelDefinitionsFromClass<T>(newable: Newable<any>): T {
+  const definition: T = newable.prototype[DEFINITION_SYMBOL] as T;
+  if (definition) {
+    return definition;
+  }
+  throw new DefinitionNotAvailableException(newable);
+}
+

@@ -10,6 +10,7 @@ export class WorkflowDefinition extends AbstractDecoratorDefinition {
   tagList: string[];
   taskPriority: string;
   taskStartToCloseTimeout: string;
+  taskList: TaskList;
   defaultChildPolicy: ChildPolicy = 'TERMINATE';
   defaultExecutionStartToCloseTimeout: string = '60';
   defaultLambdaRole: string;
@@ -18,21 +19,3 @@ export class WorkflowDefinition extends AbstractDecoratorDefinition {
   defaultTaskStartToCloseTimeout: string = '20';
 }
 
-export enum WorkflowDefinitionProperties {
-  name = 1,
-  version,
-  description,
-  taskPriority,
-  defaultTaskPriority,
-  serializer,
-  childPolicy,
-  executionStartToCloseTimeout,
-  lambdaRole,
-  tagList,
-  taskStartToCloseTimeout,
-  defaultChildPolicy,
-  defaultExecutionStartToCloseTimeout,
-  defaultLambdaRole,
-  defaultTaskList,
-  defaultTaskStartToCloseTimeout,
-}

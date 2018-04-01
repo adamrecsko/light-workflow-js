@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { WorkflowClient } from '../../../aws/workflow-client';
 import { Binding } from '../../generics/implementation-helper';
-import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from '../../utils/decorators/utils';
 import { WorkflowDefinition } from '../workflow-definition';
 import { DecisionTask, RegisterWorkflowTypeInput } from '../../../aws/aws.types';
 import { AWSError } from 'aws-sdk';
@@ -156,7 +156,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   }
 
   register(): Observable<any> {
-    const definitions = getDefinitionsFromClass<WorkflowDefinition>(this.binding.impl);
+    const definitions = getPropertyLevelDefinitionsFromClass<WorkflowDefinition>(this.binding.impl);
     return Observable.from(definitions)
       .flatMap((def: WorkflowDefinition) => this.registerWorkflow(def), 1)
       .toArray();

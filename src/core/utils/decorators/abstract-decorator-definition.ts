@@ -6,7 +6,6 @@ export abstract class AbstractDecoratorDefinition {
   description: string;
   taskPriority: string;
   serializer: Serializer = defaultSerializer;
-  [key: string]: any;
   constructor(decoratedMethodName: string) {
     this.methodName = decoratedMethodName;
     this.name = decoratedMethodName;

@@ -26,7 +26,6 @@ describe('Workflows', () => {
     const testParam2 = 10000;
     const testParam3 = [10, '10', true];
     const workflowDefinition: WorkflowDefinition = new WorkflowDefinition(testMethodName);
-    workflowDefinition.domain = 'expectedDomain';
     workflowDefinition.name = 'expectedName';
     workflowDefinition.version = 'expectedVersion';
     workflowDefinition.taskList = {

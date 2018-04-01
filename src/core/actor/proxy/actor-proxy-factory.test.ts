@@ -12,7 +12,7 @@ import { MockSerializer } from '../../../testing/mocks/serializer';
 import { expect } from 'chai';
 import { Observable } from 'rxjs';
 import * as sinon from 'sinon';
-import { getDefinitionsFromClass } from '../../utils/decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from '../../utils/decorators/utils';
 import { RemoteObservableFactory, RemoteActivityObservable } from '../activity/observable/remote-activity-observable';
 
 class MockRemoteActivityAdapterFactory implements RemoteActivityAdapterFactory {
@@ -97,7 +97,7 @@ describe('RemoteActorProxyFactory', () => {
     remoteActivityAdapterFactory.create = createStub;
     const remoteActorProxyFactory = new RemoteActorProxyFactory(contextResolutionStrategy, remoteActivityAdapterFactory);
     remoteActorProxyFactory.create<Test>(TestImpl, testTaskList);
-    const definitions: ActivityDefinition[] = getDefinitionsFromClass<ActivityDefinition>(TestImpl);
+    const definitions: ActivityDefinition[] = getPropertyLevelDefinitionsFromClass<ActivityDefinition>(TestImpl);
     expect(createStub.getCall(0).args).to.be.eql([
       contextResolutionStrategy,
       definitions[0],

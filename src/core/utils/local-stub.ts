@@ -1,6 +1,6 @@
 import { Newable } from '../../implementation';
 import { AbstractDecoratorDefinition } from './decorators/abstract-decorator-definition';
-import { getDefinitionsFromClass } from './decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from './decorators/utils';
 import { Observable } from 'rxjs/Observable';
 import { Logger } from '../logging/logger';
 
@@ -19,7 +19,7 @@ export class LocalStub {
   private workflowToDefinition: Map<string, AbstractDecoratorDefinition> = new Map();
 
   constructor(private clazz: Newable<object>, private instance: any, private logger: Logger) {
-    const definitions = getDefinitionsFromClass<AbstractDecoratorDefinition>(clazz);
+    const definitions = getPropertyLevelDefinitionsFromClass<AbstractDecoratorDefinition>(clazz);
     definitions.forEach((definition: AbstractDecoratorDefinition) => this.storeDefinition(definition));
   }
 

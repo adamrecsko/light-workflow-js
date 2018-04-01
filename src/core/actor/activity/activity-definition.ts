@@ -13,21 +13,3 @@ export class ActivityDefinition extends AbstractDecoratorDefinition {
   scheduleToStartTimeout: string;
   startToCloseTimeout: string;
 }
-
-export enum ActivityDefinitionProperty {
-  name = 1,
-  version,
-  defaultTaskHeartbeatTimeout,
-  defaultTaskList,
-  defaultTaskPriority,
-  defaultTaskScheduleToCloseTimeout,
-  defaultTaskScheduleToStartTimeout,
-  defaultTaskStartToCloseTimeout,
-  description,
-  heartbeatTimeout,
-  scheduleToCloseTimeout,
-  scheduleToStartTimeout,
-  startToCloseTimeout,
-  taskPriority,
-  serializer,
-}

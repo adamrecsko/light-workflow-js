@@ -1,5 +1,5 @@
 import { WorkflowDefinition } from './workflow-definition';
-import { getDefinitionsFromClass } from '../utils/decorators/utils';
+import { getPropertyLevelDefinitionsFromClass } from '../utils/decorators/utils';
 import { Newable } from '../../implementation';
 import { DecisionRunContext } from '../context/decision-run-context';
 

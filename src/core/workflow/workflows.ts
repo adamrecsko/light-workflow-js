@@ -5,14 +5,22 @@ import { WorkflowClient } from '../../aws/workflow-client';
 import { WORKFLOW_CLIENT } from '../../symbols';
 import { WorkflowStartParameters } from '../../aws/aws.types';
 import { UUID_GENERATOR, UuidGenerator } from '../utils/uuid-generator';
+import { Observable } from 'rxjs/Observable';
+
+export type PromiseOrObservable<R> = Promise<R> | Observable<R>;
 
 export interface WorkflowFn {
-  <A, B, C, D, E, R> (wf: (param1: A, param2: B, param3: C, param4: D, param5: E) => Promise<R>, param1: A, param2: B, param3: C, param4: D, param5: E): Promise<WorkflowResult<R>>;
-  <A, B, C, D, R> (wf: (param1: A, param2: B, param3: C, param4: D) => Promise<R>, param1: A, param2: B, param3: C, param4: D): Promise<WorkflowResult<R>>;
-  <A, B, C, R> (wf: (param1: A, param2: B, param3: C) => Promise<R>, param1: A, param2: B, param3: C): Promise<WorkflowResult<R>>;
-  <A, B, R> (wf: (param1: A, param2: B) => Promise<R>, param1: A, param2: B): Promise<WorkflowResult<R>>;
-  <A, R> (wf: (param1: A) => Promise<R>, param1: A): Promise<WorkflowResult<R>>;
-  <R> (wf: () => Promise<R>): Promise<WorkflowResult<R>>;
+  <A, B, C, D, E, R> (wf: (param1: A, param2: B, param3: C, param4: D, param5: E) => PromiseOrObservable<R>, param1: A, param2: B, param3: C, param4: D, param5: E): Promise<WorkflowResult<R>>;
+
+  <A, B, C, D, R> (wf: (param1: A, param2: B, param3: C, param4: D) => PromiseOrObservable<R>, param1: A, param2: B, param3: C, param4: D): Promise<WorkflowResult<R>>;
+
+  <A, B, C, R> (wf: (param1: A, param2: B, param3: C) => PromiseOrObservable<R>, param1: A, param2: B, param3: C): Promise<WorkflowResult<R>>;
+
+  <A, B, R> (wf: (param1: A, param2: B) => PromiseOrObservable<R>, param1: A, param2: B): Promise<WorkflowResult<R>>;
+
+  <A, R> (wf: (param1: A) => PromiseOrObservable<R>, param1: A): Promise<WorkflowResult<R>>;
+
+  <R> (wf: () => PromiseOrObservable<R>): Promise<WorkflowResult<R>>;
 }
 
 export const WORKFLOWS = Symbol('WORKFLOWS');

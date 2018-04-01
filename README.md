@@ -180,6 +180,20 @@ For more examples please check the examples folder
 ```typescript
 
 @injectable()
+@configuration(new ApplicationConfiguration(new SWF({ region: 'us-east-1' })))
+@actors([
+  {
+    impl: HelloWorldImpl,
+    key: HELLO_WORLD_ACTOR,
+  },
+])
+@workflows([
+  {
+    impl: HelloWorldWorkflowImpl,
+    key: HELLO_WORLD_WORKFLOW,
+    taskLists: ['default'],
+  },
+])
 export class MyApp {
   public static domain = 'test-domain';
   @inject(HELLO_WORLD_WORKFLOW)
@@ -192,29 +206,13 @@ export class MyApp {
   @inject(ACTOR_WORKER_FACTORY)
   private actorWorkerFactory: ActorWorkerFactory;
 
-  public async register() {
-    const worker = this.workerFactory.create(MyApp.domain, {
-      key: HELLO_WORLD_WORKFLOW,
-      impl: HelloWorldWorkflowImpl,
-    });
-    await worker.register().toPromise();
-  }
-
-  public async start() {
-    try {
-      return await this.startHelloWorld('World');
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   public async startHelloWorld(text: string): Promise<string> {
     const start = this.workflows.createStarter(MyApp.domain, 'default');
     const workflowResult = await start(this.workflow.helloWorld, text);
     return workflowResult.runId;
   }
 
-  public createWorklfowWorker(): WorkflowWorker<HelloWorld> {
+  public createWorkflowWorker(): WorkflowWorker<HelloWorld> {
     return this.workerFactory.create(MyApp.domain, {
       key: HELLO_WORLD_WORKFLOW,
       impl: HelloWorldWorkflowImpl,
@@ -235,27 +233,8 @@ export class MyApp {
 ```typescript
 
 async function boot() {
-  const swf = new SWF({ region: 'us-east-1' });
-  const config = new ApplicationConfiguration(swf);
-  const configProvider = new BaseApplicationConfigurationProvider(config);
-  const applicationFactory = new ConfigurableApplicationFactory(configProvider);
-  applicationFactory.addActorImplementations([
-    {
-      impl: HelloWorldImpl,
-      key: HELLO_WORLD_ACTOR,
-    },
-  ]);
+  const app = createApplication<MyApp>(MyApp);
 
-  applicationFactory.addWorkflowImplementations([
-    {
-      impl: HelloWorldWorkflowImpl,
-      key: HELLO_WORLD_WORKFLOW,
-      taskLists: ['default'],
-    },
-  ]);
-
-
-  const app = applicationFactory.createApplication<MyApp>(MyApp);
   const workflowWorker = app.createWorklfowWorker();
   const actorWorker = app.createActorWorker();
 
@@ -266,9 +245,8 @@ async function boot() {
   workflowWorker.startWorker();
   actorWorker.startWorker();
 
-  const res = await  app.start();
+  await  app.startHelloWorld('World');
 
-  console.log(res);
 }
 
 // boot

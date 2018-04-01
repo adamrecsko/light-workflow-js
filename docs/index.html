@@ -198,6 +198,20 @@
 				<h3 id="application-implementation">Application implementation</h3>
 				<pre><code class="lang-typescript">
 <span class="hljs-meta">@injectable</span>()
+<span class="hljs-meta">@configuration</span>(<span class="hljs-keyword">new</span> ApplicationConfiguration(<span class="hljs-keyword">new</span> SWF({ region: <span class="hljs-string">'us-east-1'</span> })))
+<span class="hljs-meta">@actors</span>([
+  {
+    impl: HelloWorldImpl,
+    key: HELLO_WORLD_ACTOR,
+  },
+])
+<span class="hljs-meta">@workflows</span>([
+  {
+    impl: HelloWorldWorkflowImpl,
+    key: HELLO_WORLD_WORKFLOW,
+    taskLists: [<span class="hljs-string">'default'</span>],
+  },
+])
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyApp {
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> domain = <span class="hljs-string">'test-domain'</span>;
   <span class="hljs-meta">@inject</span>(HELLO_WORLD_WORKFLOW)
@@ -210,29 +224,13 @@
   <span class="hljs-meta">@inject</span>(ACTOR_WORKER_FACTORY)
   <span class="hljs-keyword">private</span> actorWorkerFactory: ActorWorkerFactory;
 
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> register() {
-    <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, {
-      key: HELLO_WORLD_WORKFLOW,
-      impl: HelloWorldWorkflowImpl,
-    });
-    <span class="hljs-keyword">await</span> worker.register().toPromise();
-  }
-
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> start() {
-    <span class="hljs-keyword">try</span> {
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.startHelloWorld(<span class="hljs-string">'World'</span>);
-    } <span class="hljs-keyword">catch</span> (e) {
-      <span class="hljs-built_in">console</span>.log(e);
-    }
-  }
-
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> startHelloWorld(text: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt; {
     <span class="hljs-keyword">const</span> start = <span class="hljs-keyword">this</span>.workflows.createStarter(MyApp.domain, <span class="hljs-string">'default'</span>);
     <span class="hljs-keyword">const</span> workflowResult = <span class="hljs-keyword">await</span> start(<span class="hljs-keyword">this</span>.workflow.helloWorld, text);
     <span class="hljs-keyword">return</span> workflowResult.runId;
   }
 
-  <span class="hljs-keyword">public</span> createWorklfowWorker(): WorkflowWorker&lt;HelloWorld&gt; {
+  <span class="hljs-keyword">public</span> createWorkflowWorker(): WorkflowWorker&lt;HelloWorld&gt; {
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, {
       key: HELLO_WORLD_WORKFLOW,
       impl: HelloWorldWorkflowImpl,
@@ -251,27 +249,8 @@
 				<h3 id="how-to-start-workers-and-workflow">How to start workers and workflow</h3>
 				<pre><code class="lang-typescript">
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">boot</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> swf = <span class="hljs-keyword">new</span> SWF({ region: <span class="hljs-string">'us-east-1'</span> });
-  <span class="hljs-keyword">const</span> config = <span class="hljs-keyword">new</span> ApplicationConfiguration(swf);
-  <span class="hljs-keyword">const</span> configProvider = <span class="hljs-keyword">new</span> BaseApplicationConfigurationProvider(config);
-  <span class="hljs-keyword">const</span> applicationFactory = <span class="hljs-keyword">new</span> ConfigurableApplicationFactory(configProvider);
-  applicationFactory.addActorImplementations([
-    {
-      impl: HelloWorldImpl,
-      key: HELLO_WORLD_ACTOR,
-    },
-  ]);
+  <span class="hljs-keyword">const</span> app = createApplication&lt;MyApp&gt;(MyApp);
 
-  applicationFactory.addWorkflowImplementations([
-    {
-      impl: HelloWorldWorkflowImpl,
-      key: HELLO_WORLD_WORKFLOW,
-      taskLists: [<span class="hljs-string">'default'</span>],
-    },
-  ]);
-
-
-  <span class="hljs-keyword">const</span> app = applicationFactory.createApplication&lt;MyApp&gt;(MyApp);
   <span class="hljs-keyword">const</span> workflowWorker = app.createWorklfowWorker();
   <span class="hljs-keyword">const</span> actorWorker = app.createActorWorker();
 
@@ -282,9 +261,8 @@
   workflowWorker.startWorker();
   actorWorker.startWorker();
 
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span>  app.start();
+  <span class="hljs-keyword">await</span>  app.startHelloWorld(<span class="hljs-string">'World'</span>);
 
-  <span class="hljs-built_in">console</span>.log(res);
 }
 
 <span class="hljs-comment">// boot</span>
@@ -336,9 +314,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="enums/activitydecisionstate.html" class="tsd-kind-icon">Activity<wbr>Decision<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-enum">
-						<a href="enums/activitydefinitionproperty.html" class="tsd-kind-icon">Activity<wbr>Definition<wbr>Property</a>
-					</li>
-					<li class=" tsd-kind-enum">
 						<a href="enums/activitytimeouttype.html" class="tsd-kind-icon">Activity<wbr>Timeout<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-enum">
@@ -346,9 +321,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-enum tsd-is-not-exported">
 						<a href="enums/teststates.html" class="tsd-kind-icon">Test<wbr>States</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/workflowdefinitionproperties.html" class="tsd-kind-icon">Workflow<wbr>Definition<wbr>Properties</a>
 					</li>
 					<li class=" tsd-kind-enum">
 						<a href="enums/workflowexecutionstates.html" class="tsd-kind-icon">Workflow<wbr>Execution<wbr>States</a>
@@ -388,6 +360,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/applicationconfiguration.html" class="tsd-kind-icon">Application<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/applicationdefinition.html" class="tsd-kind-icon">Application<wbr>Definition</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/baseactivitydecisionstatemachine.html" class="tsd-kind-icon">Base<wbr>Activity<wbr>Decision<wbr>State<wbr>Machine</a>
@@ -674,9 +649,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/actorworkerfactory.html" class="tsd-kind-icon">Actor<wbr>Worker<wbr>Factory</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter tsd-is-not-exported">
-						<a href="interfaces/applicationbuilder.html" class="tsd-kind-icon">Application<wbr>Builder</a>
-					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/applicationconfigurationprovider.html" class="tsd-kind-icon">Application<wbr>Configuration<wbr>Provider</a>
 					</li>
@@ -778,6 +750,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#childpolicy" class="tsd-kind-icon">Child<wbr>Policy</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#classleveldecorator" class="tsd-kind-icon">Class<wbr>Level<wbr>Decorator</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#compositeworkfloweventparams" class="tsd-kind-icon">Composite<wbr>Workflow<wbr>Event<wbr>Params</a>
@@ -959,6 +934,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#actorclient" class="tsd-kind-icon">actor<wbr>Client</a>
 					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#actors" class="tsd-kind-icon">actors</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#applicationfactory" class="tsd-kind-icon">application<wbr>Factory</a>
 					</li>
@@ -973,6 +951,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#configprovider" class="tsd-kind-icon">config<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#configuration" class="tsd-kind-icon">configuration</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#defaultchildpolicy" class="tsd-kind-icon">default<wbr>Child<wbr>Policy</a>
@@ -1082,6 +1063,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#workflowclient" class="tsd-kind-icon">workflow<wbr>Client</a>
 					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workflows" class="tsd-kind-icon">workflows</a>
+					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#activitydefinitiondecoratorfactory" class="tsd-kind-icon">activity<wbr>Definition<wbr>Decorator<wbr>Factory</a>
 					</li>
@@ -1094,17 +1078,23 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#caller" class="tsd-kind-icon">caller</a>
 					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#classleveldefinition" class="tsd-kind-icon">class<wbr>Level<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#createapplication" class="tsd-kind-icon">create<wbr>Application</a>
+					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#createdecisiontask" class="tsd-kind-icon">create<wbr>Decision<wbr>Task</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter tsd-is-not-exported">
+						<a href="globals.html#createdecorator" class="tsd-kind-icon">create<wbr>Decorator</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#createnewactivitydecision" class="tsd-kind-icon">create<wbr>New<wbr>Activity<wbr>Decision</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#definitioncreatorfactory" class="tsd-kind-icon">definition<wbr>Creator<wbr>Factory</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="globals.html#definitionpropertysetterfactory" class="tsd-kind-icon">definition<wbr>Property<wbr>Setter<wbr>Factory</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#expectactivitystate" class="tsd-kind-icon">expect<wbr>Activity<wbr>State</a>
@@ -1122,13 +1112,19 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#generatehistoryeventlist" class="tsd-kind-icon">generate<wbr>History<wbr>Event<wbr>List</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="globals.html#getdefinitionsfromclass" class="tsd-kind-icon">get<wbr>Definitions<wbr>From<wbr>Class</a>
+						<a href="globals.html#getclassleveldefinitionsfromclass" class="tsd-kind-icon">get<wbr>Class<wbr>Level<wbr>Definitions<wbr>From<wbr>Class</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#getparams" class="tsd-kind-icon">get<wbr>Params</a>
 					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#getpropertyleveldefinitionsfromclass" class="tsd-kind-icon">get<wbr>Property<wbr>Level<wbr>Definitions<wbr>From<wbr>Class</a>
+					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#merge" class="tsd-kind-icon">merge</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#propertyleveldefinition" class="tsd-kind-icon">property<wbr>Level<wbr>Definition</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#randomactivitytype" class="tsd-kind-icon">random<wbr>Activity<wbr>Type</a>

@@ -18,8 +18,9 @@ import { ConfigurableApplicationFactory } from '../../src/core/application/appli
 import { SWF } from 'aws-sdk';
 import { ApplicationConfiguration } from '../../src/core/application/application-configuration';
 import { FailedException, TimeoutException } from '../../src/core/actor/activity/observable/remote-activity-observable-exceptions';
-import { pipe } from 'rxjs/Rx';
 import { catchError } from 'rxjs/operators';
+import { actors, configuration, workflows } from '../../src/core/application/decorators';
+import { createApplication } from '../../src/core/utils/create-application';
 
 const HELLO_WORLD_ACTOR = Symbol('HELLO_WORLD_ACTOR');
 
@@ -87,6 +88,7 @@ export interface HelloWorldWorkflow {
 
 
 @injectable()
+
 export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
   @actorClient
   @inject(HELLO_WORLD_ACTOR)
@@ -130,7 +132,22 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
   }
 }
 
+
 @injectable()
+@configuration(new ApplicationConfiguration(new SWF({ region: 'us-east-1' })))
+@actors([
+  {
+    impl: HelloWorldImpl,
+    key: HELLO_WORLD_ACTOR,
+  },
+])
+@workflows([
+  {
+    impl: HelloWorldWorkflowImpl,
+    key: HELLO_WORLD_WORKFLOW,
+    taskLists: ['default'],
+  },
+])
 export class MyApp {
   public static domain = 'test-domain';
   @inject(HELLO_WORLD_WORKFLOW)
@@ -192,27 +209,8 @@ export class MyApp {
 
 
 async function boot() {
-  const swf = new SWF({ region: 'us-east-1' });
-  const config = new ApplicationConfiguration(swf);
-  const configProvider = new BaseApplicationConfigurationProvider(config);
-  const applicationFactory = new ConfigurableApplicationFactory(configProvider);
-  applicationFactory.addActorImplementations([
-    {
-      impl: HelloWorldImpl,
-      key: HELLO_WORLD_ACTOR,
-    },
-  ]);
+  const app = createApplication<MyApp>(MyApp);
 
-  applicationFactory.addWorkflowImplementations([
-    {
-      impl: HelloWorldWorkflowImpl,
-      key: HELLO_WORLD_WORKFLOW,
-      taskLists: ['default'],
-    },
-  ]);
-
-
-  const app = applicationFactory.createApplication<MyApp>(MyApp);
   const workflowWorker = app.createWorkflowWorker();
   const actorWorker = app.createActorWorker();
 
@@ -223,12 +221,10 @@ async function boot() {
   workflowWorker.startWorker();
   actorWorker.startWorker();
 
+  await  app.startHelloWorld('World');
   //await  app.startHelloWorldWithErrorHandling();
-  //await  app.startHelloWorld('World');
   //await  app.startHelloWorldWithRetry();
-  await app.startHelloWorldErrorHandleWithObservables();
-
-
+  //await app.startHelloWorldErrorHandleWithObservables();
 }
 
 boot().catch(err => console.error(err));

@@ -73,14 +73,14 @@ export class BaseWorkflowClient implements WorkflowClient {
   public fromSwfFunction<T>(fnc: <T>(params: any, cb: (error: any, data: T) => void) => any, params: any): Observable<T> {
     return Observable.create((obs: Observer<T>) => {
 
-      this.logger.debug('AWS request: %s, with %s params in progress', fnc.name, params);
+      this.logger.debug('AWS request: %s, with %j params in progress', fnc.name, params);
 
       const handler = (error: any, data: T) => {
         if (error) {
           this.logger.debug('AWS request error: %s, error: %s', fnc.name, error);
           obs.error(error);
         } else {
-          this.logger.debug('AWS request completed: %s, with %s result', fnc.name, data);
+          this.logger.debug('AWS request completed: %s, with %j result', fnc.name, data);
           obs.next(data);
           obs.complete();
         }

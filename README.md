@@ -17,7 +17,7 @@ Written in TypeScript and heavily relies on RxJS.
 
 ### Prerequisites
 
-You need node.js and yarn to be installed before start.
+You need node.js and yarn to be installed before a start.
 
 ```
     $ apt-get install nodejs
@@ -112,8 +112,68 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
     return printedText;
   }
 }
-
 ```
+
+You can handle activity exceptions with try catch
+
+```typescript
+  @workflow()
+  async helloWorldWithErrorHandling() {
+    try {
+      await this.actor.throwException().toPromise();
+    } catch (e) {
+      if (e instanceof FailedException) {
+        return 'Error handled';
+      }
+      throw e;
+    }
+  }
+  
+```
+
+Or you an use observables to create a flow
+
+```typescript
+
+  @workflow()
+  helloWorldHandleErrorWithObservables() {
+    return this.actor.throwException().catch((err) => {
+      if (err instanceof FailedException) {
+        return Observable.of('Error handled, no problem!');
+      }
+      return Observable.throw(err);
+    });
+  }
+```
+
+Or with lettable operators
+
+```typescript
+  @workflow()
+  helloWorldHandleErrorWithObservables() {
+    const errorHandler = catchError(err => of('Error handled, no problem!'));
+    return this.actor.throwException().let(errorHandler);
+  }
+```
+You can also reschedule an activity
+
+```typescript
+  
+   @workflow()
+   async helloWorkflowWithRetry() {
+      try {
+        await this.actor.firstTryTimeOut(0).toPromise();
+      } catch (e) {
+        if (e instanceof TimeoutException) {
+          // Don't worry it is just a timeout
+          return await this.actor.firstTryTimeOut(1).toPromise();
+        }
+        throw Error('Unknown error');
+      }
+    }
+  
+```
+For more examples please check the examples folder
 
 ###  Application implementation
 

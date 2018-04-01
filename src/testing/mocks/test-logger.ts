@@ -1,6 +1,7 @@
 import { Logger } from '../../core/logging/logger';
 
 export class TestLogger implements Logger {
+
   log(level: string, message: string, ...args: any[]): void {
     console.log(`${level}:${message}`, ...args);
   }
@@ -19,5 +20,9 @@ export class TestLogger implements Logger {
 
   error(message: string, ...args: any[]): void {
     this.log('debug', message, ...args);
+  }
+
+  profile(message: string): void {
+    this.log('profile', message);
   }
 }

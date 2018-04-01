@@ -10,4 +10,6 @@ export interface Logger {
   warn(message: string, ...args: any[]): void;
 
   error(message: string, ...args: any[]): void;
+
+  profile(message: string): void;
 }

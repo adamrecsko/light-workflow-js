@@ -4,16 +4,23 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class DefaultLogger implements Logger {
+
   private logger: any;
 
   constructor() {
 
     this.logger = (winston as any).createLogger({
       level: 'debug',
-      format: (winston as any).format.json(),
+      format: (winston as any).format.combine(
+        (winston as any).format.splat(),
+        (winston as any).format.simple(),
+      ),
       transports: [
         new winston.transports.Console({
-          format: (winston as any).format.simple(),
+          format: (winston as any).format.combine(
+            (winston as any).format.splat(),
+            (winston as any).format.simple(),
+          ),
         }),
       ],
     });
@@ -37,6 +44,10 @@ export class DefaultLogger implements Logger {
 
   error(message: string, ...args: any[]): void {
     this.log('error', message, ...args);
+  }
+
+  profile(message: string): void {
+    this.logger.profile(message);
   }
 
 }

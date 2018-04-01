@@ -93,6 +93,7 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="basecontextcache.html#logger" class="tsd-kind-icon">logger</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="basecontextcache.html#runidtoruncontext" class="tsd-kind-icon">run<wbr>IdTo<wbr>Run<wbr>Context</a></li>
 							</ul>
 						</section>
@@ -111,15 +112,21 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Context<wbr>Cache<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="basecontextcache.html" class="tsd-signature-type">BaseContextCache</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Context<wbr>Cache<span class="tsd-signature-symbol">(</span>logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="basecontextcache.html" class="tsd-signature-type">BaseContextCache</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/8afa494/src/core/context/context-cache.ts#L10">core/context/context-cache.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/e441892/src/core/context/context-cache.ts#L12">core/context/context-cache.ts:12</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>logger: <a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="basecontextcache.html" class="tsd-signature-type">BaseContextCache</a></h4>
 						</li>
 					</ul>
@@ -128,12 +135,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="logger" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> logger</h3>
+					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/e441892/src/core/context/context-cache.ts#L14">core/context/context-cache.ts:14</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="runidtoruncontext" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> run<wbr>IdTo<wbr>Run<wbr>Context</h3>
 					<div class="tsd-signature tsd-kind-icon">run<wbr>IdTo<wbr>Run<wbr>Context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/decisionruncontext.html" class="tsd-signature-type">DecisionRunContext</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/8afa494/src/core/context/context-cache.ts#L10">core/context/context-cache.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/e441892/src/core/context/context-cache.ts#L12">core/context/context-cache.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -151,7 +168,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/contextcache.html">ContextCache</a>.<a href="../interfaces/contextcache.html#getorcreatecontext">getOrCreateContext</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/8afa494/src/core/context/context-cache.ts#L16">core/context/context-cache.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/e441892/src/core/context/context-cache.ts#L18">core/context/context-cache.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -183,6 +200,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="basecontextcache.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="basecontextcache.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="basecontextcache.html#runidtoruncontext" class="tsd-kind-icon">run<wbr>IdTo<wbr>Run<wbr>Context</a>

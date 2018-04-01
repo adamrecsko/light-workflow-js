@@ -17,6 +17,9 @@ import { BaseApplicationConfigurationProvider } from '../../src/core/application
 import { ConfigurableApplicationFactory } from '../../src/core/application/application-factory';
 import { SWF } from 'aws-sdk';
 import { ApplicationConfiguration } from '../../src/core/application/application-configuration';
+import { FailedException, TimeoutException } from '../../src/core/actor/activity/observable/remote-activity-observable-exceptions';
+import { pipe } from 'rxjs/Rx';
+import { catchError } from 'rxjs/operators';
 
 const HELLO_WORLD_ACTOR = Symbol('HELLO_WORLD_ACTOR');
 
@@ -24,6 +27,10 @@ export interface HelloWorld {
   formatText(text: string): Observable<string>;
 
   printIt(text: string): Observable<string>;
+
+  throwException(): Observable<string>;
+
+  firstTryTimeOut(num: number): Observable<string>;
 }
 
 @injectable()
@@ -46,6 +53,23 @@ export class HelloWorldImpl implements HelloWorld {
       this.printer(text);
     });
   }
+
+  @activity()
+  @version('1')
+  @description('this activity always dies')
+  throwException(): Observable<string> {
+    throw new Error('Activity died unexpectedly');
+  }
+
+  @activity()
+  @version('1')
+  @description('this activity time out for the first try')
+  firstTryTimeOut(num: number): Observable<string> {
+    if (num === 0) {
+      return Observable.never();
+    }
+    return Observable.of('I am okay');
+  }
 }
 
 export const HELLO_WORLD_WORKFLOW = Symbol('HELLO_WORLD_WORKFLOW');
@@ -53,6 +77,12 @@ export const HELLO_WORLD_WORKFLOW = Symbol('HELLO_WORLD_WORKFLOW');
 
 export interface HelloWorldWorkflow {
   helloWorld(text: string): Promise<string>;
+
+  helloWorldWithErrorHandling(): Promise<string>;
+
+  helloWorkflowWithRetry(): Promise<string>;
+
+  helloWorldHandleErrorWithObservables(): Observable<any>;
 }
 
 
@@ -67,6 +97,36 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
     const formattedText = await this.actor.formatText(text).toPromise();
     const printedText = await this.actor.printIt(formattedText).toPromise();
     return printedText;
+  }
+
+  @workflow()
+  async helloWorldWithErrorHandling() {
+    try {
+      await this.actor.throwException().toPromise();
+    } catch (e) {
+      if (e instanceof FailedException) {
+        return 'Error handled';
+      }
+      throw e;
+    }
+  }
+
+  @workflow()
+  async helloWorkflowWithRetry() {
+    try {
+      await this.actor.firstTryTimeOut(0).toPromise();
+    } catch (e) {
+      if (e instanceof TimeoutException) {
+        return await this.actor.firstTryTimeOut(1).toPromise();
+      }
+      throw Error('Unknown error');
+    }
+  }
+
+  @workflow()
+  helloWorldHandleErrorWithObservables() {
+    const errorHandler = catchError(err => of('Error handled, no problem!'));
+    return this.actor.throwException().let(errorHandler);
   }
 }
 
@@ -91,21 +151,31 @@ export class MyApp {
     await worker.register().toPromise();
   }
 
-  public async start() {
-    try {
-      return await this.startHelloWorld('World');
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   public async startHelloWorld(text: string): Promise<string> {
     const start = this.workflows.createStarter(MyApp.domain, 'default');
     const workflowResult = await start(this.workflow.helloWorld, text);
     return workflowResult.runId;
   }
 
-  public createWorklfowWorker(): WorkflowWorker<HelloWorld> {
+  public async startHelloWorldWithRetry(): Promise<string> {
+    const start = this.workflows.createStarter(MyApp.domain, 'default');
+    const workflowResult = await start(this.workflow.helloWorkflowWithRetry);
+    return workflowResult.runId;
+  }
+
+  public async startHelloWorldWithErrorHandling(): Promise<string> {
+    const start = this.workflows.createStarter(MyApp.domain, 'default');
+    const workflowResult = await start(this.workflow.helloWorldWithErrorHandling);
+    return workflowResult.runId;
+  }
+
+  public async startHelloWorldErrorHandleWithObservables(): Promise<string> {
+    const start = this.workflows.createStarter(MyApp.domain, 'default');
+    const workflowResult = await start(this.workflow.helloWorldHandleErrorWithObservables);
+    return workflowResult.runId;
+  }
+
+  public createWorkflowWorker(): WorkflowWorker<HelloWorld> {
     return this.workerFactory.create(MyApp.domain, {
       key: HELLO_WORLD_WORKFLOW,
       impl: HelloWorldWorkflowImpl,
@@ -143,7 +213,7 @@ async function boot() {
 
 
   const app = applicationFactory.createApplication<MyApp>(MyApp);
-  const workflowWorker = app.createWorklfowWorker();
+  const workflowWorker = app.createWorkflowWorker();
   const actorWorker = app.createActorWorker();
 
 
@@ -153,9 +223,12 @@ async function boot() {
   workflowWorker.startWorker();
   actorWorker.startWorker();
 
-  const res = await  app.start();
+  //await  app.startHelloWorldWithErrorHandling();
+  //await  app.startHelloWorld('World');
+  //await  app.startHelloWorldWithRetry();
+  await app.startHelloWorldErrorHandleWithObservables();
 
-  console.log(res);
+
 }
 
 boot().catch(err => console.error(err));

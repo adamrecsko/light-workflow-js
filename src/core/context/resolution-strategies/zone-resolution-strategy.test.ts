@@ -2,13 +2,14 @@ import 'zone.js';
 import { ZoneContextResolutionStrategy, ContextNotFoundException } from './zone-resolution-strategy';
 import { BaseDecisionRunContext } from '../decision-run-context';
 import { expect } from 'chai';
+import { TestLogger } from '../../../testing/mocks/test-logger';
 
 describe('ZoneContextResolutionStrategy', () => {
   context('if context found', () => {
     it('should gives back run context from current zone', () => {
       const key = 'test-key';
       const contextResolution = new ZoneContextResolutionStrategy(key);
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const props = {
         [key]: runContext,
       };

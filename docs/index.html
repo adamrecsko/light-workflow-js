@@ -74,7 +74,7 @@
 <span class="hljs-meta">  $</span><span class="bash"> <span class="hljs-built_in">cd</span> light-workflow-js</span>
 <span class="hljs-meta">  $</span><span class="bash"> yarn install</span>
 </code></pre><h3 id="prerequisites">Prerequisites</h3>
-				<p>You need node.js and yarn to be installed before start.</p>
+				<p>You need node.js and yarn to be installed before a start.</p>
 				<pre><code>    $ apt-get <span class="hljs-keyword">install</span> nodejs
     $ npm <span class="hljs-keyword">install</span> yarn -g
 </code></pre><p>For running a workflow on AWS you need aws credentials properly setup on your development environment
@@ -144,8 +144,57 @@
     <span class="hljs-keyword">return</span> printedText;
   }
 }
+</code></pre>
+				<p>You can handle activity exceptions with try catch</p>
+				<pre><code class="lang-typescript">  <span class="hljs-meta">@workflow</span>()
+  <span class="hljs-keyword">async</span> helloWorldWithErrorHandling() {
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.actor.throwException().toPromise();
+    } <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> FailedException) {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">'Error handled'</span>;
+      }
+      <span class="hljs-keyword">throw</span> e;
+    }
+  }
 
 </code></pre>
+				<p>Or you an use observables to create a flow</p>
+				<pre><code class="lang-typescript">
+  <span class="hljs-meta">@workflow</span>()
+  helloWorldHandleErrorWithObservables() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.actor.throwException().catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+      <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> FailedException) {
+        <span class="hljs-keyword">return</span> Observable.of(<span class="hljs-string">'Error handled, no problem!'</span>);
+      }
+      <span class="hljs-keyword">return</span> Observable.throw(err);
+    });
+  }
+</code></pre>
+				<p>Or with lettable operators</p>
+				<pre><code class="lang-typescript">  <span class="hljs-meta">@workflow</span>()
+  helloWorldHandleErrorWithObservables() {
+    <span class="hljs-keyword">const</span> errorHandler = catchError(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> of(<span class="hljs-string">'Error handled, no problem!'</span>));
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.actor.throwException().let(errorHandler);
+  }
+</code></pre>
+				<p>You can also reschedule an activity</p>
+				<pre><code class="lang-typescript">
+   <span class="hljs-meta">@workflow</span>()
+   <span class="hljs-keyword">async</span> helloWorkflowWithRetry() {
+      <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.actor.firstTryTimeOut(<span class="hljs-number">0</span>).toPromise();
+      } <span class="hljs-keyword">catch</span> (e) {
+        <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> TimeoutException) {
+          <span class="hljs-comment">// Don't worry it is just a timeout</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.actor.firstTryTimeOut(<span class="hljs-number">1</span>).toPromise();
+        }
+        <span class="hljs-keyword">throw</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Unknown error'</span>);
+      }
+    }
+
+</code></pre>
+				<p>For more examples please check the examples folder</p>
 				<h3 id="application-implementation">Application implementation</h3>
 				<pre><code class="lang-typescript">
 <span class="hljs-meta">@injectable</span>()
@@ -750,6 +799,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="globals.html#newable" class="tsd-kind-icon">Newable</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#promiseorobservable" class="tsd-kind-icon">Promise<wbr>OrObservable</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#registerworkflowtypeinput" class="tsd-kind-icon">Register<wbr>Workflow<wbr>Type<wbr>Input</a>

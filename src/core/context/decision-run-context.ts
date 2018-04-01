@@ -7,6 +7,7 @@ import {
 import { HistoryEventProcessor } from './state-machines/history-event-state-machines/history-event-state-machine';
 import { WorkflowExecution } from './state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution';
 import { DECISION_RUN_CONTEXT_ZONE_KEY } from '../../constants';
+import { Logger } from '../logging/logger';
 
 
 export interface DecisionRunContext {
@@ -45,7 +46,7 @@ export class BaseDecisionRunContext implements DecisionRunContext {
   private zone: Zone;
 
 
-  constructor() {
+  constructor(private logger: Logger) {
     this.keyToStateMachine = new Map();
     this.scheduleEventIdToActivityId = new Map();
     this.currentId = 0;
@@ -118,7 +119,9 @@ export class BaseDecisionRunContext implements DecisionRunContext {
         case EventType.DecisionTaskScheduled:
         case EventType.DecisionTaskStarted:
         case EventType.DecisionTaskCompleted:
+          break;
         case EventType.DecisionTaskTimedOut:
+          this.logger.debug('Decision task timed out. Wait for reschedule.');
           break;
 
         case EventType.WorkflowExecutionStarted:

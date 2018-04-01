@@ -85,7 +85,9 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
 
   private processDecision(context: DecisionRunContext, decisionTask: DecisionTask) {
     const taskToken = decisionTask.taskToken;
+    this.logger.profile('Process event list');
     context.processEventList(decisionTask);
+    this.logger.profile('Process event list');
     return Observable.timer(10).flatMap(() => this.respondActivityDecisions(taskToken, context));
   }
 

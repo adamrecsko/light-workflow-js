@@ -19,6 +19,7 @@ import {
   FAILED_PARAMS,
 } from '../../testing/test-data/event-params';
 import { HistoryEventProcessor } from './state-machines/history-event-state-machines/history-event-state-machine';
+import { TestLogger } from '../../testing/mocks/test-logger';
 
 
 function createNewActivityDecision(activityId?: string): ScheduleActivityTaskDecisionAttributes {
@@ -52,7 +53,7 @@ function createDecisionTask(eventList: HistoryEvent[]): DecisionTask {
 describe('BaseDecisionContext', () => {
   describe('getActivityDecisionStateMachine', () => {
     it('should return ActivityDecisionStateMachine', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const testAttribs = createNewActivityDecision();
       const stateMachine = runContext.scheduleActivity(testAttribs);
       expect(stateMachine).to.instanceOf(BaseActivityDecisionStateMachine);
@@ -60,7 +61,7 @@ describe('BaseDecisionContext', () => {
     context('if activityId registered', () => {
       it('should not create new ActivityDecisionStateMachine', () => {
         const testAttribs = createNewActivityDecision();
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const stateMachine = runContext.scheduleActivity(testAttribs);
         const stateMachine2 = runContext.scheduleActivity(testAttribs);
         expect(stateMachine).to.eq(stateMachine2);
@@ -68,7 +69,7 @@ describe('BaseDecisionContext', () => {
     });
     context('if activityId not registered', () => {
       it('should create new ActivityDecisionStateMachine', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const dec1 = createNewActivityDecision('activity-1');
         const dec2 = createNewActivityDecision('activity-2');
         const stateMachine = runContext.scheduleActivity(dec1);
@@ -80,7 +81,7 @@ describe('BaseDecisionContext', () => {
 
   describe('getStateMachines', () => {
     it('should return an array of state machines', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const dec1 = createNewActivityDecision('activity-1');
       const dec2 = createNewActivityDecision('activity-2');
       const stateMachine = runContext.scheduleActivity(dec1);
@@ -93,7 +94,7 @@ describe('BaseDecisionContext', () => {
 
     context('normal completed transition', () => {
       it('should update state machines', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const eventList = historyGenerator.createActivityList(COMPLETED_TRANSITION);
 
@@ -110,7 +111,7 @@ describe('BaseDecisionContext', () => {
 
     context('normal failed transition', () => {
       it('should update state machines', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const eventList = historyGenerator.createActivityList(FAILED_TRANSITION);
         runContext.processEventList(createDecisionTask(eventList));
@@ -122,7 +123,7 @@ describe('BaseDecisionContext', () => {
 
     context('normal timeouted transition', () => {
       it('should update state machines', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const eventList = historyGenerator.createActivityList(TIMEOUTED_TRANSITION);
         runContext.processEventList(createDecisionTask(eventList));
@@ -133,7 +134,7 @@ describe('BaseDecisionContext', () => {
 
     context('normal cancelled transition', () => {
       it('should update state machines', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const eventList = historyGenerator.createActivityList(CANCELLED_TRANSITION);
         runContext.processEventList(createDecisionTask(eventList));
@@ -144,7 +145,7 @@ describe('BaseDecisionContext', () => {
 
     context('normal cancel failed transition', () => {
       it('should update state machines', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const eventList = historyGenerator.createActivityList(CANCEL_FAILED_TRANSITION);
         runContext.processEventList(createDecisionTask(eventList));
@@ -155,7 +156,7 @@ describe('BaseDecisionContext', () => {
 
 
     it('should update state machines with failed transition', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList([
         FAILED_TRANSITION,
         FAILED_TRANSITION,
@@ -181,7 +182,7 @@ describe('BaseDecisionContext', () => {
     });
 
     it('should create unique state machines for each activity', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList([
         COMPLETED_TRANSITION,
         FAILED_TRANSITION,
@@ -196,7 +197,7 @@ describe('BaseDecisionContext', () => {
     });
 
     it('should not create new activity state machines', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList([
         COMPLETED_TRANSITION,
         FAILED_TRANSITION,
@@ -214,7 +215,7 @@ describe('BaseDecisionContext', () => {
     });
 
     it('should notify stateMachines about change', () => {
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList([
         COMPLETED_TRANSITION,
       ]);
@@ -238,7 +239,7 @@ describe('BaseDecisionContext', () => {
           COMPLETED_PARAMS,
         ],
       ];
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList(
         [
           COMPLETED_TRANSITION,
@@ -267,7 +268,7 @@ describe('BaseDecisionContext', () => {
           FAILED_PARAMS,
         ],
       ];
-      const runContext = new BaseDecisionRunContext();
+      const runContext = new BaseDecisionRunContext(new TestLogger());
       const list = ActivityHistoryGenerator.generateList(
         [
           FAILED_TRANSITION,
@@ -294,7 +295,7 @@ describe('BaseDecisionContext', () => {
     context('if activity state machine already created', () => {
 
       it('should create activity state machine', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const attributes = {
           activityType: {
             name: 'test name',
@@ -307,7 +308,7 @@ describe('BaseDecisionContext', () => {
         expect(stateMachine).to.be.instanceOf(BaseActivityDecisionStateMachine);
       });
       it('should store activity state machine', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const attributes = {
           activityType: {
             name: 'test name',
@@ -328,7 +329,7 @@ describe('BaseDecisionContext', () => {
 
     context('if activity state machine not created', () => {
       it('should not create new activity state machine', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const attributes = {
           activityType: {
             name: 'test name',
@@ -343,7 +344,7 @@ describe('BaseDecisionContext', () => {
       });
 
       it('should gives back stored activity state machine', () => {
-        const runContext = new BaseDecisionRunContext();
+        const runContext = new BaseDecisionRunContext(new TestLogger());
         const historyGenerator = new ActivityHistoryGenerator();
         const list = historyGenerator.createActivityList(
           COMPLETED_TRANSITION,
@@ -367,7 +368,7 @@ describe('BaseDecisionContext', () => {
 
   describe('getNextId', () => {
     it('should increase', () => {
-      const decisionRunContext = new BaseDecisionRunContext();
+      const decisionRunContext = new BaseDecisionRunContext(new TestLogger());
       const ids: string[] = [];
       ids.push(decisionRunContext.getNextId());
       ids.push(decisionRunContext.getNextId());

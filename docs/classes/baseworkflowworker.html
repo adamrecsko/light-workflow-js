@@ -102,7 +102,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#appcontainer" class="tsd-kind-icon">app<wbr>Container</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#binding" class="tsd-kind-icon">binding</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#bindings" class="tsd-kind-icon">bindings</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#contextcache" class="tsd-kind-icon">context<wbr>Cache</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#domain" class="tsd-kind-icon">domain</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="baseworkflowworker.html#logger" class="tsd-kind-icon">logger</a></li>
@@ -137,13 +137,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Workflow<wbr>Worker<span class="tsd-signature-symbol">(</span>workflowClient<span class="tsd-signature-symbol">: </span><a href="../interfaces/workflowclient.html" class="tsd-signature-type">WorkflowClient</a>, appContainer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span>, contextCache<span class="tsd-signature-symbol">: </span><a href="../interfaces/contextcache.html" class="tsd-signature-type">ContextCache</a>, poller<span class="tsd-signature-symbol">: </span><a href="taskpollerobservable.html" class="tsd-signature-type">TaskPollerObservable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">DecisionTask</span><span class="tsd-signature-symbol">&gt;</span>, domain<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, binding<span class="tsd-signature-symbol">: </span><a href="../globals.html#binding" class="tsd-signature-type">Binding</a>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="baseworkflowworker.html" class="tsd-signature-type">BaseWorkflowWorker</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Base<wbr>Workflow<wbr>Worker<span class="tsd-signature-symbol">(</span>workflowClient<span class="tsd-signature-symbol">: </span><a href="../interfaces/workflowclient.html" class="tsd-signature-type">WorkflowClient</a>, appContainer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span>, contextCache<span class="tsd-signature-symbol">: </span><a href="../interfaces/contextcache.html" class="tsd-signature-type">ContextCache</a>, poller<span class="tsd-signature-symbol">: </span><a href="taskpollerobservable.html" class="tsd-signature-type">TaskPollerObservable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">DecisionTask</span><span class="tsd-signature-symbol">&gt;</span>, domain<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, bindings<span class="tsd-signature-symbol">: </span><a href="../globals.html#binding" class="tsd-signature-type">Binding</a><span class="tsd-signature-symbol">[]</span>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="baseworkflowworker.html" class="tsd-signature-type">BaseWorkflowWorker</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L31">core/workflow/worker/workflow-worker.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L32">core/workflow/worker/workflow-worker.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -164,7 +164,7 @@
 									<h5>domain: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>binding: <a href="../globals.html#binding" class="tsd-signature-type">Binding</a></h5>
+									<h5>bindings: <a href="../globals.html#binding" class="tsd-signature-type">Binding</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
 									<h5>logger: <a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a></h5>
@@ -183,17 +183,17 @@
 					<div class="tsd-signature tsd-kind-icon">app<wbr>Container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L34">core/workflow/worker/workflow-worker.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L35">core/workflow/worker/workflow-worker.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="binding" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> binding</h3>
-					<div class="tsd-signature tsd-kind-icon">binding<span class="tsd-signature-symbol">:</span> <a href="../globals.html#binding" class="tsd-signature-type">Binding</a></div>
+					<a name="bindings" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> bindings</h3>
+					<div class="tsd-signature tsd-kind-icon">bindings<span class="tsd-signature-symbol">:</span> <a href="../globals.html#binding" class="tsd-signature-type">Binding</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L38">core/workflow/worker/workflow-worker.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L39">core/workflow/worker/workflow-worker.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -203,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="../interfaces/contextcache.html" class="tsd-signature-type">ContextCache</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L35">core/workflow/worker/workflow-worker.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L36">core/workflow/worker/workflow-worker.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -213,7 +213,7 @@
 					<div class="tsd-signature tsd-kind-icon">domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L37">core/workflow/worker/workflow-worker.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L38">core/workflow/worker/workflow-worker.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -223,7 +223,7 @@
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/logger.html" class="tsd-signature-type">Logger</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L39">core/workflow/worker/workflow-worker.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L40">core/workflow/worker/workflow-worker.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -233,7 +233,7 @@
 					<div class="tsd-signature tsd-kind-icon">poll<wbr>Subscription<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Subscription</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L30">core/workflow/worker/workflow-worker.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L31">core/workflow/worker/workflow-worker.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -243,17 +243,17 @@
 					<div class="tsd-signature tsd-kind-icon">poller<span class="tsd-signature-symbol">:</span> <a href="taskpollerobservable.html" class="tsd-signature-type">TaskPollerObservable</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">DecisionTask</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L36">core/workflow/worker/workflow-worker.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L37">core/workflow/worker/workflow-worker.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="wfstub" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> wf<wbr>Stub</h3>
-					<div class="tsd-signature tsd-kind-icon">wf<wbr>Stub<span class="tsd-signature-symbol">:</span> <a href="localstub.html" class="tsd-signature-type">LocalStub</a></div>
+					<div class="tsd-signature tsd-kind-icon">wf<wbr>Stub<span class="tsd-signature-symbol">:</span> <a href="../interfaces/localstub.html" class="tsd-signature-type">LocalStub</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L31">core/workflow/worker/workflow-worker.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L32">core/workflow/worker/workflow-worker.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -263,7 +263,7 @@
 					<div class="tsd-signature tsd-kind-icon">workflow<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="../interfaces/workflowclient.html" class="tsd-signature-type">WorkflowClient</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L33">core/workflow/worker/workflow-worker.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L34">core/workflow/worker/workflow-worker.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -274,16 +274,16 @@
 					<a name="createworkflowstub" class="tsd-anchor"></a>
 					<h3>create<wbr>Workflow<wbr>Stub</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Workflow<wbr>Stub<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="localstub.html" class="tsd-signature-type">LocalStub</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Workflow<wbr>Stub<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/localstub.html" class="tsd-signature-type">LocalStub</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L153">core/workflow/worker/workflow-worker.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L154">core/workflow/worker/workflow-worker.ts:154</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="localstub.html" class="tsd-signature-type">LocalStub</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/localstub.html" class="tsd-signature-type">LocalStub</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -297,7 +297,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L86">core/workflow/worker/workflow-worker.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L87">core/workflow/worker/workflow-worker.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -324,7 +324,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/workflowworker.html">WorkflowWorker</a>.<a href="../interfaces/workflowworker.html#register">register</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L158">core/workflow/worker/workflow-worker.ts:158</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L158">core/workflow/worker/workflow-worker.ts:158</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -341,7 +341,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L74">core/workflow/worker/workflow-worker.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L75">core/workflow/worker/workflow-worker.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -364,7 +364,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L130">core/workflow/worker/workflow-worker.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L131">core/workflow/worker/workflow-worker.ts:131</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -390,7 +390,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L94">core/workflow/worker/workflow-worker.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L95">core/workflow/worker/workflow-worker.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -416,7 +416,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L111">core/workflow/worker/workflow-worker.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L112">core/workflow/worker/workflow-worker.ts:112</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -446,7 +446,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/workflowworker.html">WorkflowWorker</a>.<a href="../interfaces/workflowworker.html#startworker">startWorker</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L165">core/workflow/worker/workflow-worker.ts:165</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L165">core/workflow/worker/workflow-worker.ts:165</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -463,7 +463,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L42">core/workflow/worker/workflow-worker.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L43">core/workflow/worker/workflow-worker.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -486,7 +486,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L64">core/workflow/worker/workflow-worker.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L65">core/workflow/worker/workflow-worker.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -509,7 +509,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/4c8d6cb/src/core/workflow/worker/workflow-worker.ts#L57">core/workflow/worker/workflow-worker.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/adamrecsko/light-workflow-js/blob/a966c85/src/core/workflow/worker/workflow-worker.ts#L58">core/workflow/worker/workflow-worker.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -549,7 +549,7 @@
 								<a href="baseworkflowworker.html#appcontainer" class="tsd-kind-icon">app<wbr>Container</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="baseworkflowworker.html#binding" class="tsd-kind-icon">binding</a>
+								<a href="baseworkflowworker.html#bindings" class="tsd-kind-icon">bindings</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="baseworkflowworker.html#contextcache" class="tsd-kind-icon">context<wbr>Cache</a>

@@ -199,17 +199,14 @@
 				<pre><code class="lang-typescript">
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-meta">@configuration</span>(<span class="hljs-keyword">new</span> ApplicationConfiguration(<span class="hljs-keyword">new</span> SWF({ region: <span class="hljs-string">'us-east-1'</span> })))
-<span class="hljs-meta">@actors</span>([
+<span class="hljs-meta">@services</span>([
   {
     impl: HelloWorldImpl,
     key: HELLO_WORLD_ACTOR,
   },
-])
-<span class="hljs-meta">@workflows</span>([
   {
     impl: HelloWorldWorkflowImpl,
     key: HELLO_WORLD_WORKFLOW,
-    taskLists: [<span class="hljs-string">'default'</span>],
   },
 ])
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyApp {
@@ -230,18 +227,18 @@
     <span class="hljs-keyword">return</span> workflowResult.runId;
   }
 
-  <span class="hljs-keyword">public</span> createWorkflowWorker(): WorkflowWorker&lt;HelloWorld&gt; {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, {
+<span class="hljs-keyword">public</span> createWorkflowWorker(): WorkflowWorker&lt;HelloWorld&gt; {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.workerFactory.create(MyApp.domain, [{
       key: HELLO_WORLD_WORKFLOW,
       impl: HelloWorldWorkflowImpl,
-    });
+    }]);
   }
 
   <span class="hljs-keyword">public</span> createActorWorker(): ActorWorker {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.actorWorkerFactory.create(MyApp.domain, {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.actorWorkerFactory.create(MyApp.domain, [{
       key: HELLO_WORLD_ACTOR,
       impl: HelloWorldImpl,
-    });
+    }]);
   }
 }
 
@@ -278,6 +275,7 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					<li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
 					<li><a href="https://yarnpkg.com/lang/en/">yarn</a></li>
 					<li><a href="https://github.com/angular/zone.js">Zone.js</a></li>
+					<li><a href="http://inversify.io/">InversifyJS</a></li>
 				</ul>
 				<h2 id="authors">Authors</h2>
 				<ul>
@@ -368,9 +366,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="classes/baseactivitydecisionstatemachine.html" class="tsd-kind-icon">Base<wbr>Activity<wbr>Decision<wbr>State<wbr>Machine</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/baseactorclientimplementationhelper.html" class="tsd-kind-icon">Base<wbr>Actor<wbr>Client<wbr>Implementation<wbr>Helper</a>
-					</li>
-					<li class=" tsd-kind-class">
 						<a href="classes/baseactorworker.html" class="tsd-kind-icon">Base<wbr>Actor<wbr>Worker</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -384,6 +379,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/basedecisionruncontext.html" class="tsd-kind-icon">Base<wbr>Decision<wbr>Run<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/baseimplementationhelper.html" class="tsd-kind-icon">Base<wbr>Implementation<wbr>Helper</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/basenotifiablestatemachine.html" class="tsd-kind-icon">Base<wbr>Notifiable<wbr>State<wbr>Machine</a>
@@ -399,9 +397,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/baseworkflowclient.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Client</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/baseworkflowclientimplementationhelper.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Client<wbr>Implementation<wbr>Helper</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/baseworkflowdecisionpollgenerator.html" class="tsd-kind-icon">Base<wbr>Workflow<wbr>Decision<wbr>Poll<wbr>Generator</a>
@@ -476,7 +471,7 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="classes/invalidstatetransitionexception.html" class="tsd-kind-icon">Invalid<wbr>State<wbr>Transition<wbr>Exception</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/localstub.html" class="tsd-kind-icon">Local<wbr>Stub</a>
+						<a href="classes/localmultibindingstub.html" class="tsd-kind-icon">Local<wbr>Multi<wbr>Binding<wbr>Stub</a>
 					</li>
 					<li class=" tsd-kind-class tsd-is-not-exported">
 						<a href="classes/localworkflowstubtest.html" class="tsd-kind-icon">Local<wbr>Workflow<wbr>Stub<wbr>Test</a>
@@ -555,6 +550,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/scheduletostarttimeoutexception.html" class="tsd-kind-icon">Schedule<wbr>ToStart<wbr>Timeout<wbr>Exception</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/singleinstancelocalstub.html" class="tsd-kind-icon">Single<wbr>Instance<wbr>Local<wbr>Stub</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/starttoclosetimeoutexception.html" class="tsd-kind-icon">Start<wbr>ToClose<wbr>Timeout<wbr>Exception</a>
@@ -680,6 +678,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="interfaces/implementationhelper.html" class="tsd-kind-icon">Implementation<wbr>Helper</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/localstub.html" class="tsd-kind-icon">Local<wbr>Stub</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/logger.html" class="tsd-kind-icon">Logger</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
@@ -797,9 +798,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#workflowstartparameters" class="tsd-kind-icon">Workflow<wbr>Start<wbr>Parameters</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#activity_client_implementation_helper" class="tsd-kind-icon">ACTIVITY_<wbr>CLIENT_<wbr>IMPLEMENTATION_<wbr>HELPER</a>
-					</li>
-					<li class=" tsd-kind-variable">
 						<a href="globals.html#activity_poller_factory" class="tsd-kind-icon">ACTIVITY_<wbr>POLLER_<wbr>FACTORY</a>
 					</li>
 					<li class=" tsd-kind-variable">
@@ -863,6 +861,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#failed_transition" class="tsd-kind-icon">FAILED_<wbr>TRANSITION</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="globals.html#implementation_helper" class="tsd-kind-icon">IMPLEMENTATION_<wbr>HELPER</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#logger" class="tsd-kind-icon">LOGGER</a>
 					</li>
 					<li class=" tsd-kind-variable">
@@ -908,9 +909,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#workflow_client" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#workflow_client_implementation_helper" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT_<wbr>IMPLEMENTATION_<wbr>HELPER</a>
-					</li>
-					<li class=" tsd-kind-variable">
 						<a href="globals.html#workflow_client_tag" class="tsd-kind-icon">WORKFLOW_<wbr>CLIENT_<wbr>TAG</a>
 					</li>
 					<li class=" tsd-kind-variable">
@@ -933,9 +931,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#actorclient" class="tsd-kind-icon">actor<wbr>Client</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#actors" class="tsd-kind-icon">actors</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#applicationfactory" class="tsd-kind-icon">application<wbr>Factory</a>
@@ -1016,6 +1011,9 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#serializer" class="tsd-kind-icon">serializer</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="globals.html#services" class="tsd-kind-icon">services</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#starttoclosetimeout" class="tsd-kind-icon">start<wbr>ToClose<wbr>Timeout</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
@@ -1049,9 +1047,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 						<a href="globals.html#testtasklist" class="tsd-kind-icon">test<wbr>Task<wbr>List</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
-						<a href="globals.html#testtasklists" class="tsd-kind-icon">test<wbr>Task<wbr>Lists</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#testworkflowsymbol" class="tsd-kind-icon">test<wbr>Workflow<wbr>Symbol</a>
 					</li>
 					<li class=" tsd-kind-variable">
@@ -1062,9 +1057,6 @@ boot().catch(<span class="hljs-function"><span class="hljs-params">err</span> =&
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#workflowclient" class="tsd-kind-icon">workflow<wbr>Client</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#workflows" class="tsd-kind-icon">workflows</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#activitydefinitiondecoratorfactory" class="tsd-kind-icon">activity<wbr>Definition<wbr>Decorator<wbr>Factory</a>

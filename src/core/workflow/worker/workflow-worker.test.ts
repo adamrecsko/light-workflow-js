@@ -496,7 +496,7 @@ class BaseWorkflowWorkerTest {
   private createWorker(): WorkflowWorker<any> {
     return new BaseWorkflowWorker<TestWfImpl>(
       this.workflowClient, this.container,
-      this.contextCache, this.poller as any, domain, this.binding, new TestLogger());
+      this.contextCache, this.poller as any, domain, [this.binding], new TestLogger());
   }
 
   private loadBinding({ key, impl }: Binding<any>): void {

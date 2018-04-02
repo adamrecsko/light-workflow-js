@@ -23,10 +23,10 @@ export class MyApp {
   private actorWorkerFactory: ActorWorkerFactory;
 
   public async registerWorkflows() {
-    const worker = this.workerFactory.create(MyApp.domain, {
+    const worker = this.workerFactory.create(MyApp.domain, [{
       key: TEST_WORKFLOW,
       impl: TestWorkflowImpl,
-    });
+    }]);
     await worker.register().toPromise();
   }
 
@@ -45,16 +45,16 @@ export class MyApp {
   }
 
   public createWorker(): WorkflowWorker<TestWorkflow> {
-    return this.workerFactory.create(MyApp.domain, {
+    return this.workerFactory.create(MyApp.domain, [{
       key: TEST_WORKFLOW,
       impl: TestWorkflowImpl,
-    });
+    }]);
   }
 
   public createActorWorker(): ActorWorker {
-    return this.actorWorkerFactory.create(MyApp.domain, {
+    return this.actorWorkerFactory.create(MyApp.domain, [{
       key: TEST_ACTOR,
       impl: TestActorImpl,
-    });
+    }]);
   }
 }

@@ -16,8 +16,9 @@ import { Decision, DecisionList, RespondDecisionTaskCompletedInput } from 'aws-s
 import { ActivityDecisionStateMachine, BaseActivityDecisionStateMachine } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import 'zone.js/dist/zone-patch-rxjs';
-import { LocalStub } from '../../utils/local-stub';
+import { LocalMultiBindingStub, LocalStub, SingleInstanceLocalStub } from '../../utils/local-stub';
 import { Logger } from '../../logging/logger';
+import { ActivityDefinition } from '../../actor/activity/activity-definition';
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -35,7 +36,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
               private contextCache: ContextCache,
               private poller: TaskPollerObservable<DecisionTask>,
               private domain: string,
-              private binding: Binding,
+              private bindings: Binding[],
               private logger: Logger) {
   }
 
@@ -151,13 +152,12 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
   }
 
   createWorkflowStub(): LocalStub {
-    const instance = this.appContainer.get<T>(this.binding.key);
-    return new LocalStub(this.binding.impl, instance, this.logger);
+    return new LocalMultiBindingStub(this.appContainer, this.bindings, this.logger);
   }
 
   register(): Observable<any> {
-    const definitions = getPropertyLevelDefinitionsFromClass<WorkflowDefinition>(this.binding.impl);
-    return Observable.from(definitions)
+    return Observable.from(this.bindings)
+      .mergeMap(b => getPropertyLevelDefinitionsFromClass<WorkflowDefinition>(b.impl))
       .flatMap((def: WorkflowDefinition) => this.registerWorkflow(def), 1)
       .toArray();
   }

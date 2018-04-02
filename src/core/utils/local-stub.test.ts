@@ -4,7 +4,7 @@ import {
   workflow, name,
 } from '../workflow/decorators/workflow-decorators';
 import { expect } from 'chai';
-import { LocalStub } from './local-stub';
+import { SingleInstanceLocalStub } from './local-stub';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { TestLogger } from '../../testing/mocks/test-logger';
@@ -48,22 +48,22 @@ class TestWfImpl {
 @suite
 class LocalWorkflowStubTest {
 
-  workflowStub: LocalStub;
+  workflowStub: SingleInstanceLocalStub;
 
   before() {
     const instance = new TestWfImpl();
-    this.workflowStub = new LocalStub(TestWfImpl, instance, new TestLogger());
+    this.workflowStub = new SingleInstanceLocalStub(TestWfImpl, instance, new TestLogger());
   }
 
   @test
   shouldHasWorkflow() {
-    expect(this.workflowStub.isWorkflowExists({ name: 'workflowName', version: '12' })).to.be.true;
-    expect(this.workflowStub.isWorkflowExists({ name: 'test-wf', version: '1-b' })).to.be.true;
+    expect(this.workflowStub.isMethodExists({ name: 'workflowName', version: '12' })).to.be.true;
+    expect(this.workflowStub.isMethodExists({ name: 'test-wf', version: '1-b' })).to.be.true;
   }
 
   @test
   shouldNotHasWorkflow() {
-    expect(this.workflowStub.isWorkflowExists({ name: 'thisIsJustATest', version: '1b' })).to.be.false;
+    expect(this.workflowStub.isMethodExists({ name: 'thisIsJustATest', version: '1b' })).to.be.false;
   }
 
   @test

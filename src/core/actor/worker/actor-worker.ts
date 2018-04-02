@@ -9,7 +9,7 @@ import { AWSError } from 'aws-sdk';
 import { RegisterActivityTypeInput } from 'aws-sdk/clients/swf';
 
 import { Container } from 'inversify';
-import { LocalStub } from '../../utils/local-stub';
+import { LocalMultiBindingStub, LocalStub } from '../../utils/local-stub';
 import { of } from 'rxjs/observable/of';
 import { Logger } from '../../logging/logger';
 
@@ -29,7 +29,7 @@ export class BaseActorWorker implements ActorWorker {
               private domain: string,
               private appContainer: Container,
               private activityPoller: TaskPollerObservable<ActivityTask>,
-              private binding: Binding,
+              private bindings: Binding[],
               private logger: Logger) {
   }
 
@@ -61,15 +61,14 @@ export class BaseActorWorker implements ActorWorker {
   }
 
   public register(): Observable<any> {
-    const definitions = getPropertyLevelDefinitionsFromClass<ActivityDefinition>(this.binding.impl);
-    return Observable.from(definitions)
+    return Observable.from(this.bindings)
+      .mergeMap(b => getPropertyLevelDefinitionsFromClass<ActivityDefinition>(b.impl))
       .flatMap((def: ActivityDefinition) => this.registerActivity(def), 1)
       .toArray();
   }
 
   createStub(): LocalStub {
-    const instance = this.appContainer.get(this.binding.key);
-    return new LocalStub(this.binding.impl, instance, this.logger);
+    return new LocalMultiBindingStub(this.appContainer, this.bindings, this.logger);
   }
 
   respondActivityFinished(taskToken: string, result: string): Observable<any> {
@@ -77,7 +76,7 @@ export class BaseActorWorker implements ActorWorker {
       taskToken,
       result,
     }).map(() => result).catch((err) => {
-      console.error(err);
+      this.logger.error('activity finish respond failed %s', err);
       return Observable.empty();
     });
   }
@@ -88,7 +87,7 @@ export class BaseActorWorker implements ActorWorker {
       details,
       reason,
     }).catch((err) => {
-      console.error(err);
+      this.logger.error('activity failed respond failed %s', err);
       return Observable.empty();
     });
   }

@@ -12,7 +12,7 @@ export const WORKFLOW_WORKER_FACTORY = Symbol('WORKFLOW_WORKER_FACTORY');
 
 
 export interface WorkflowWorkerFactory {
-  create<T>(domain: string, binding: Binding<T>): WorkflowWorker<T>;
+  create<T>(domain: string, bindings: Binding<T>[]): WorkflowWorker<T>;
 }
 
 
@@ -31,7 +31,7 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
 
   }
 
-  create<T>(domain: string, binding: Binding<T>): WorkflowWorker<T> {
+  create<T>(domain: string, bindings: Binding<T>[]): WorkflowWorker<T> {
     // TODO: params missing (task list)
     const pollParams = new DecisionPollParameters();
     pollParams.domain = domain;
@@ -40,6 +40,6 @@ export class BaseWorkflowWorkerFactory implements WorkflowWorkerFactory {
     };
 
     const poller = this.decisionPollerFactory.createPoller(pollParams);
-    return new BaseWorkflowWorker(this.workflowClient, this.appContainer, this.contextCache, poller, domain, binding, this.logger);
+    return new BaseWorkflowWorker(this.workflowClient, this.appContainer, this.contextCache, poller, domain, bindings, this.logger);
   }
 }

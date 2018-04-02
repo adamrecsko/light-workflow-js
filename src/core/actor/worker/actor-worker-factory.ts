@@ -12,7 +12,7 @@ export const ACTOR_WORKER_FACTORY = Symbol('ACTOR_WORKER_FACTORY');
 
 
 export interface ActorWorkerFactory {
-  create<T>(domain: string, binding: Binding<T>): ActorWorker;
+  create<T>(domain: string, bindings: Binding<T>[]): ActorWorker;
 }
 
 
@@ -29,11 +29,11 @@ export class BaseActorWorkerFactory implements ActorWorkerFactory {
 
   }
 
-  create<T>(domain: string, binding: Binding<T>): ActorWorker {
+  create<T>(domain: string, bindings: Binding<T>[]): ActorWorker {
     // TODO: params missing (task list)
     const pollParams = new ActivityPollParameters(domain, { name: 'default' });
 
     const poller = this.pollerFactory.createPoller(pollParams);
-    return new BaseActorWorker(this.workflowClient, domain, this.appContainer, poller, binding, this.logger);
+    return new BaseActorWorker(this.workflowClient, domain, this.appContainer, poller, bindings, this.logger);
   }
 }

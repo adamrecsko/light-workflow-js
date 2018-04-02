@@ -209,18 +209,18 @@ export class MyApp {
     return workflowResult.runId;
   }
 
-  public createWorkflowWorker(): WorkflowWorker<HelloWorld> {
-    return this.workerFactory.create(MyApp.domain, {
+public createWorkflowWorker(): WorkflowWorker<HelloWorld> {
+    return this.workerFactory.create(MyApp.domain, [{
       key: HELLO_WORLD_WORKFLOW,
       impl: HelloWorldWorkflowImpl,
-    });
+    }]);
   }
 
   public createActorWorker(): ActorWorker {
-    return this.actorWorkerFactory.create(MyApp.domain, {
+    return this.actorWorkerFactory.create(MyApp.domain, [{
       key: HELLO_WORLD_ACTOR,
       impl: HelloWorldImpl,
-    });
+    }]);
   }
 }
 

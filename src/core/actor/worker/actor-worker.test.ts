@@ -171,7 +171,7 @@ class ActorWorkerTest {
 
 
   private createWorker() {
-    return new BaseActorWorker(this.workflowClient, this.domain, this.container, this.activityPoller as any, this.binding, new TestLogger());
+    return new BaseActorWorker(this.workflowClient, this.domain, this.container, this.activityPoller as any, [this.binding], new TestLogger());
   }
 
   private static createBinding(): Binding<any> {

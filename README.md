@@ -191,7 +191,6 @@ For more examples please check the examples folder
   {
     impl: HelloWorldWorkflowImpl,
     key: HELLO_WORLD_WORKFLOW,
-    taskLists: ['default'],
   },
 ])
 export class MyApp {
@@ -264,6 +263,7 @@ boot().catch(err => console.error(err));
 * [TypeScript](http://www.typescriptlang.org/)
 * [yarn](https://yarnpkg.com/lang/en/)
 * [Zone.js](https://github.com/angular/zone.js)
+* [InversifyJS](http://inversify.io/)
 
 
 ## Authors

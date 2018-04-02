@@ -23,7 +23,6 @@ applicationFactory.addWorkflowImplementations([
   {
     impl: TestWorkflowImpl,
     key: TEST_WORKFLOW,
-    taskLists: ['default'],
   },
 ]);
 

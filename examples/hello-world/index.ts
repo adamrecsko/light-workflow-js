@@ -145,7 +145,6 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
   {
     impl: HelloWorldWorkflowImpl,
     key: HELLO_WORLD_WORKFLOW,
-    taskLists: ['default'],
   },
 ])
 export class MyApp {

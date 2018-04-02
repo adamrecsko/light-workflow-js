@@ -9,6 +9,7 @@ import { Newable } from '../../../implementation';
 import { DEFAULT_ACTOR_TASK_LIST } from '../../../constants';
 import { ACTOR_CLIENT_TAG, TASK_LIST_TAG } from '../decorators/actor-decorators';
 import { Binding, ImplementationHelper } from '../../generics/implementation-helper';
+import Metadata = interfaces.Metadata;
 
 
 @injectable()
@@ -20,10 +21,17 @@ export class BaseActorClientImplementationHelper implements ImplementationHelper
   }
 
 
+  private static getValueFromMetadata(metadatas: Metadata[], key: any): any {
+    const meta = metadatas.find(meta => meta.key === key);
+    if (meta) {
+      return meta.value;
+    }
+  }
+
   public addImplementations(implementationList: Binding[]): void {
     implementationList.forEach((binding) => {
       const impl: Newable<any> = binding.impl;
-      const taskLists = binding.taskLists;
+
 
       /*
        Load default actor implementation
@@ -32,22 +40,15 @@ export class BaseActorClientImplementationHelper implements ImplementationHelper
         .to(impl).whenTargetIsDefault();
 
       /*
-       Load actor proxy for default task list
+        Load actor clients
        */
       this.appContainer.bind<Newable<any>>(binding.key)
-        .toDynamicValue(() => this.actorProxyFactory.create(impl, DEFAULT_ACTOR_TASK_LIST))
-        .when((request: interfaces.Request) => request.target.hasTag(ACTOR_CLIENT_TAG) && !request.target.hasTag(TASK_LIST_TAG));
+        .toDynamicValue((req) => {
+          const customTags = req.currentRequest.target.getCustomTags();
+          const taskList = BaseActorClientImplementationHelper.getValueFromMetadata(customTags, TASK_LIST_TAG);
+          return this.actorProxyFactory.create(impl, taskList ? taskList : DEFAULT_ACTOR_TASK_LIST);
+        }).whenTargetTagged(ACTOR_CLIENT_TAG, true);
 
-      /*
-       Load actor proxy for custom task lists
-       */
-      if (taskLists) {
-        taskLists.forEach(taskList =>
-          this.appContainer.bind<Newable<any>>(binding.key)
-            .toDynamicValue(() => this.actorProxyFactory.create(impl, taskList))
-            .when((r: interfaces.Request) => r.target.hasTag(ACTOR_CLIENT_TAG)
-              && taggedConstraint(TASK_LIST_TAG)(taskList)(r)));
-      }
     });
   }
 }

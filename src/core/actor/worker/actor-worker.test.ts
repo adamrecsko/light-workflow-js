@@ -20,7 +20,6 @@ import { TestLogger } from '../../../testing/mocks/test-logger';
 class ActorWorkerTest {
   private workflowClient: WorkflowClient;
   private domain = 'test-domain';
-  private taskList = 'test-task-list';
   private binding: Binding;
   private activityPoller: Observable<ActivityTask>;
   private container: Container;
@@ -28,7 +27,7 @@ class ActorWorkerTest {
   before() {
     this.workflowClient = new MockWorkflowClient();
     this.workflowClient.registerActivityType = sinon.stub().returns(of());
-    this.binding = ActorWorkerTest.createBinding([this.taskList]);
+    this.binding = ActorWorkerTest.createBinding();
     this.container = new Container();
     this.container.bind(this.binding.key).to(this.binding.impl);
 
@@ -175,7 +174,7 @@ class ActorWorkerTest {
     return new BaseActorWorker(this.workflowClient, this.domain, this.container, this.activityPoller as any, this.binding, new TestLogger());
   }
 
-  private static createBinding(taskLists: string[]): Binding<any> {
+  private static createBinding(): Binding<any> {
     const sym = Symbol('test-activity-symbol');
 
     @injectable()
@@ -219,7 +218,6 @@ class ActorWorkerTest {
     }
 
     return {
-      taskLists,
       impl: TestActivity,
       key: sym,
     };

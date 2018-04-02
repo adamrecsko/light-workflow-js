@@ -59,7 +59,6 @@ class TestWfImpl {
 const binding: Binding<TestWfImpl> = {
   impl: TestWfImpl,
   key: TEST_WF,
-  taskLists: [taskList],
 };
 
 class MockDecisionRunContext implements DecisionRunContext {

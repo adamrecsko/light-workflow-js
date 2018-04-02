@@ -59,7 +59,6 @@ describe('BaseActorClientImplementationHelper', () => {
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
-        taskLists: [],
       };
       helper.addImplementations(
         [binding],
@@ -87,7 +86,6 @@ describe('BaseActorClientImplementationHelper', () => {
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
-        taskLists: testTaskLists,
       };
 
       mockActorFactory.create = createStub;
@@ -121,7 +119,6 @@ describe('BaseActorClientImplementationHelper', () => {
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
-        taskLists: testTaskLists,
       };
 
       mockActorFactory.create = createStub;
@@ -160,7 +157,6 @@ describe('BaseActorClientImplementationHelper', () => {
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
-        taskLists: testTaskLists,
       };
 
       mockActorFactory.create = createStub;

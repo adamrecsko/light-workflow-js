@@ -10,15 +10,19 @@ import { TaskPollerObservable } from '../../../aws/swf/task-poller-observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ContextCache } from '../../context/context-cache';
 import { WorkflowExecutionStates } from '../../context/state-machines/history-event-state-machines/workflow-execution-state-machines/workflow-execution-states';
-import { of } from 'rxjs/observable/of';
 import { DecisionRunContext } from '../../context/decision-run-context';
-import { Decision, DecisionList, RespondDecisionTaskCompletedInput } from 'aws-sdk/clients/swf';
+import { Decision, DecisionList, RespondDecisionTaskCompletedInput, WorkflowType } from 'aws-sdk/clients/swf';
 import { ActivityDecisionStateMachine, BaseActivityDecisionStateMachine } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision';
 import { ActivityDecisionState } from '../../context/state-machines/history-event-state-machines/activity-decision-state-machine/activity-decision-states';
 import 'zone.js/dist/zone-patch-rxjs';
-import { LocalMultiBindingStub, LocalStub, SingleInstanceLocalStub } from '../../utils/local-stub';
+import { LocalMultiBindingStub, LocalStub } from '../../utils/local-stub';
 import { Logger } from '../../logging/logger';
-import { ActivityDefinition } from '../../actor/activity/activity-definition';
+import { filter, mergeMap, tap, catchError } from 'rxjs/operators';
+import { pipe } from 'rxjs/Rx';
+import { empty } from 'rxjs/observable/empty';
+import { from } from 'rxjs/observable/from';
+import { timer } from 'rxjs/observable/timer';
+
 
 export interface WorkflowWorker<T> {
   register(): Observable<void>;
@@ -40,6 +44,78 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
               private logger: Logger) {
   }
 
+
+  public register(): Observable<any> {
+    return from(this.bindings)
+      .mergeMap(b => getPropertyLevelDefinitionsFromClass<WorkflowDefinition>(b.impl))
+      .mergeMap((def: WorkflowDefinition) => this.registerWorkflow(def), 1)
+      .toArray();
+  }
+
+  public startWorker(): void {
+    this.wfStub = this.createWorkflowStub();
+    const sharedPoller = this.poller.share();
+
+
+    this.pollSubscription = sharedPoller
+      .let(pipe(
+        this.workflowStateFilter(WorkflowExecutionStates.Created),
+        this.createWorkflowEventsHandler())).subscribe();
+    const processSub = sharedPoller.let(this.createProcessEventsPipe()).subscribe();
+    this.pollSubscription.add(processSub);
+  }
+
+
+  private createWorkflowEventsHandler() {
+    return mergeMap((decisionTask: DecisionTask) => {
+      const runId = decisionTask.workflowExecution.runId;
+      const context = this.contextCache.getOrCreateContext(runId);
+      const execution = context.getWorkflowExecution();
+      const callWorkflowExecutionInZone = mergeMap(() => context.getZone()
+        .runGuarded(() => this.wfStub.callMethodWithInput(execution.workflowType, execution.input)));
+      const logExecution = this.loggerForWorkflowType(decisionTask.workflowType);
+      const respondCompleted = mergeMap((workflowResult: string) => this.respondCompletedWorkflowDecision(workflowResult, context));
+      const respondFailed = catchError(workflowError => this.respondFailedWorkflowDecision(workflowError.details, workflowError.message, context));
+      const workflowStartedFilter = filter(state => state === WorkflowExecutionStates.Started);
+
+      return execution.onChange.pipe(
+        workflowStartedFilter,
+        callWorkflowExecutionInZone,
+        logExecution,
+        respondCompleted,
+        respondFailed,
+      );
+    });
+  }
+
+  private loggerForWorkflowType(workflowType: WorkflowType) {
+    return tap(
+      result => this.logger.debug('Workflow %s:%s finished: %s', workflowType.name, workflowType.version, result),
+      err => this.logger.debug('Workflow %s:%s failed: %s %s', workflowType.name, workflowType.version, err.message, err.details),
+    );
+  }
+
+  private workflowStateFilter(state: WorkflowExecutionStates) {
+    return filter((decisionTask: DecisionTask) => {
+      const runId = decisionTask.workflowExecution.runId;
+      const context = this.contextCache.getOrCreateContext(runId);
+      const execution = context.getWorkflowExecution();
+      return execution.currentState === state;
+    });
+  }
+
+  private createProcessEventsPipe() {
+    return mergeMap((decisionTask: DecisionTask) => {
+      const runId = decisionTask.workflowExecution.runId;
+      const taskToken = decisionTask.taskToken;
+      const context = this.contextCache.getOrCreateContext(runId);
+      this.logger.profile('Process event list');
+      context.processEventList(decisionTask);
+      this.logger.profile('Process event list');
+      return timer(10).mergeMap(() => this.respondActivityDecisions(taskToken, context));
+    });
+  }
+
   private workflowDefinitionToRegisterWorkflowTypeInput(definition: WorkflowDefinition): RegisterWorkflowTypeInput {
     return {
       domain: this.domain,
@@ -55,41 +131,16 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     };
   }
 
-  private static createCompletedInput(taskToken: string, decisions: DecisionList): RespondDecisionTaskCompletedInput {
-    return {
-      taskToken,
-      decisions,
-    };
-  }
-
-  private static createActivityScheduleDecisionFromStateMachine(sm: ActivityDecisionStateMachine): Decision {
-    const params = sm.startParams;
-    return {
-      decisionType: 'ScheduleActivityTask',
-      scheduleActivityTaskDecisionAttributes: {
-        ...params,
-      },
-    };
-  }
-
   private registerWorkflow(definition: WorkflowDefinition): Observable<any> {
     const registerWorkflowInput = this.workflowDefinitionToRegisterWorkflowTypeInput(definition);
     return this.workflowClient
       .registerWorkflowType(registerWorkflowInput)
       .catch((error: AWSError) => {
         if (error.code === 'TypeAlreadyExistsFault') {
-          return Observable.empty();
+          return empty();
         }
         return Observable.throw(error);
       });
-  }
-
-  private processDecision(context: DecisionRunContext, decisionTask: DecisionTask) {
-    const taskToken = decisionTask.taskToken;
-    this.logger.profile('Process event list');
-    context.processEventList(decisionTask);
-    this.logger.profile('Process event list');
-    return Observable.timer(10).flatMap(() => this.respondActivityDecisions(taskToken, context));
   }
 
   private respondCompletedWorkflowDecision(result: string, context: DecisionRunContext) {
@@ -105,7 +156,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     workflowExecution.setCompleteStateRequestedWith(result);
     return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
       this.logger.error(err);
-      return of();
+      return empty();
     });
   }
 
@@ -123,7 +174,7 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
     workflowExecution.setExecutionFailedStateRequestedWith(details, reason);
     return this.workflowClient.respondDecisionTaskCompleted(input).catch((err) => {
       this.logger.error(err);
-      return of();
+      return empty();
     });
   }
 
@@ -148,49 +199,28 @@ export class BaseWorkflowWorker<T> implements WorkflowWorker<T> {
         machines.forEach(machine => machine.currentState = ActivityDecisionState.Sent);
       });
     }
-    return Observable.empty();
+    return empty();
   }
 
-  createWorkflowStub(): LocalStub {
+  private createWorkflowStub(): LocalStub {
     return new LocalMultiBindingStub(this.appContainer, this.bindings, this.logger);
   }
 
-  register(): Observable<any> {
-    return Observable.from(this.bindings)
-      .mergeMap(b => getPropertyLevelDefinitionsFromClass<WorkflowDefinition>(b.impl))
-      .flatMap((def: WorkflowDefinition) => this.registerWorkflow(def), 1)
-      .toArray();
+  private static createCompletedInput(taskToken: string, decisions: DecisionList): RespondDecisionTaskCompletedInput {
+    return {
+      taskToken,
+      decisions,
+    };
   }
 
-  startWorker(): void {
-    this.wfStub = this.createWorkflowStub();
-    const sharedPoller = this.poller.share();
-    this.pollSubscription = sharedPoller
-      .flatMap((decisionTask: DecisionTask) => {
-        const runId = decisionTask.workflowExecution.runId;
-        const context = this.contextCache.getOrCreateContext(runId);
-        return of(context.getWorkflowExecution())
-          .filter(workflowExecution => workflowExecution.currentState === WorkflowExecutionStates.Created)
-          .flatMap((workflowExecution) => {
-            return workflowExecution
-              .onChange
-              .filter(state => state === WorkflowExecutionStates.Started)
-              .flatMap(() => context.getZone().runGuarded(() => this.wfStub.callMethodWithInput(workflowExecution.workflowType, workflowExecution.input)))
-              .do(
-                result => this.logger.debug('Workflow %s:%s finished: %s', decisionTask.workflowType.name, decisionTask.workflowType.version, result),
-                err => this.logger.debug('Workflow %s:%s failed: %s %s', decisionTask.workflowType.name, decisionTask.workflowType.version, err.message, err.details),
-              )
-              .flatMap((workflowResult: string) => this.respondCompletedWorkflowDecision(workflowResult, context))
-              .catch(workflowError => this.respondFailedWorkflowDecision(workflowError.details, workflowError.message, context));
-          });
-      }).subscribe();
-
-    const processSub = sharedPoller.flatMap((decisionTask: DecisionTask) => {
-      const runId = decisionTask.workflowExecution.runId;
-      const context = this.contextCache.getOrCreateContext(runId);
-      return this.processDecision(context, decisionTask);
-    }).subscribe();
-    this.pollSubscription.add(processSub);
+  private static createActivityScheduleDecisionFromStateMachine(sm: ActivityDecisionStateMachine): Decision {
+    const params = sm.startParams;
+    return {
+      decisionType: 'ScheduleActivityTask',
+      scheduleActivityTaskDecisionAttributes: {
+        ...params,
+      },
+    };
   }
 
 }

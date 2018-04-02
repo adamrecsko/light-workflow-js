@@ -13,13 +13,11 @@ import { WORKFLOW_WORKER_FACTORY, WorkflowWorkerFactory } from '../../src/core/w
 import { ACTOR_WORKER_FACTORY, ActorWorkerFactory } from '../../src/core/actor/worker/actor-worker-factory';
 import { WorkflowWorker } from '../../src/core/workflow/worker/workflow-worker';
 import { ActorWorker } from '../../src/core/actor/worker/actor-worker';
-import { BaseApplicationConfigurationProvider } from '../../src/core/application/application-configuration-provider';
-import { ConfigurableApplicationFactory } from '../../src/core/application/application-factory';
 import { SWF } from 'aws-sdk';
 import { ApplicationConfiguration } from '../../src/core/application/application-configuration';
 import { FailedException, TimeoutException } from '../../src/core/actor/activity/observable/remote-activity-observable-exceptions';
 import { catchError } from 'rxjs/operators';
-import { actors, configuration, workflows } from '../../src/core/application/decorators';
+import { configuration, services } from '../../src/core/application/decorators';
 import { createApplication } from '../../src/core/utils/create-application';
 
 const HELLO_WORLD_ACTOR = Symbol('HELLO_WORLD_ACTOR');
@@ -135,13 +133,11 @@ export class HelloWorldWorkflowImpl implements HelloWorldWorkflow {
 
 @injectable()
 @configuration(new ApplicationConfiguration(new SWF({ region: 'us-east-1' })))
-@actors([
+@services([
   {
     impl: HelloWorldImpl,
     key: HELLO_WORLD_ACTOR,
   },
-])
-@workflows([
   {
     impl: HelloWorldWorkflowImpl,
     key: HELLO_WORLD_WORKFLOW,
@@ -221,9 +217,9 @@ async function boot() {
   actorWorker.startWorker();
 
   await  app.startHelloWorld('World');
-  //await  app.startHelloWorldWithErrorHandling();
-  //await  app.startHelloWorldWithRetry();
-  //await app.startHelloWorldErrorHandleWithObservables();
+  await  app.startHelloWorldWithErrorHandling();
+  await  app.startHelloWorldWithRetry();
+  await app.startHelloWorldErrorHandleWithObservables();
 }
 
 boot().catch(err => console.error(err));

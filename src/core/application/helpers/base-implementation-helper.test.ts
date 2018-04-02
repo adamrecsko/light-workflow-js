@@ -1,20 +1,19 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import {
-  BaseActorClientImplementationHelper,
-} from './actor-client-implementation-helper';
-import { ActorProxyFactory } from '../proxy/actor-proxy-factory';
+import { ActorProxyFactory } from '../../actor/proxy/actor-proxy-factory';
 import { Newable } from '../../../implementation';
 import { Container, inject, injectable } from 'inversify';
 import { DEFAULT_ACTOR_TASK_LIST } from '../../../constants';
-import { taskList, actorClient } from '../decorators/actor-decorators';
+import { taskList, actorClient } from '../../actor/decorators/actor-decorators';
 import { Binding } from '../../generics/implementation-helper';
-
+import { WorkflowClientFactory } from '../../workflow/workflow-client-factory';
+import { workflowClient } from '../../workflow/decorators/workflow-client-decorators';
+import { RemoteWorkflowStub } from '../../workflow/workflow-proxy';
+import { BaseImplementationHelper } from './base-implementation-helper';
 
 const testActorSymbol = Symbol('testActorSymbol');
 const testDeciderSymbol = Symbol('testDeciderSymbol');
-const testTaskLists = ['test-task-list', 'test-task-list2'];
 
 class MockRemoteActorProxyFactory implements ActorProxyFactory {
   create<T>(implementation: Newable<T>, taskList: string): T {
@@ -36,12 +35,34 @@ const mockActor = {
   d: 'mock actor',
 };
 
-describe('BaseActorClientImplementationHelper', () => {
+const testWorkflowSymbol = Symbol('test wf symbol');
+
+interface TestWorkflow {
+  workflow(): string;
+}
+
+@injectable()
+class TestWorkflowImpl implements TestWorkflow {
+  workflow(): string {
+    return null;
+  }
+}
+
+
+class MockWorkflowClientFactory implements WorkflowClientFactory {
+  create<T>(implementation: Newable<T>): RemoteWorkflowStub<T> {
+    return null;
+  }
+}
+
+describe('BaseImplementationHelper', () => {
   let container: Container;
   let mockActorFactory: ActorProxyFactory;
+  let mockWorkflowClientFactory: WorkflowClientFactory;
   beforeEach(() => {
     container = new Container();
     mockActorFactory = new MockRemoteActorProxyFactory();
+    mockWorkflowClientFactory = new MockWorkflowClientFactory();
   });
   context('if not tagged with actorClient', () => {
     it('should inject actor instance', () => {
@@ -55,7 +76,7 @@ describe('BaseActorClientImplementationHelper', () => {
       }
 
       container.bind<TestDecider>(TestDecider).toSelf();
-      const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+      const helper = new BaseImplementationHelper(container, mockActorFactory, mockWorkflowClientFactory);
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
@@ -82,7 +103,7 @@ describe('BaseActorClientImplementationHelper', () => {
       }
 
       const createStub = sinon.stub().returns(mockActor);
-      const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+      const helper = new BaseImplementationHelper(container, mockActorFactory, mockWorkflowClientFactory);
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
@@ -115,7 +136,7 @@ describe('BaseActorClientImplementationHelper', () => {
       }
 
       const createStub = sinon.stub().returns(mockActor);
-      const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+      const helper = new BaseImplementationHelper(container, mockActorFactory, mockWorkflowClientFactory);
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
@@ -153,7 +174,7 @@ describe('BaseActorClientImplementationHelper', () => {
       }
 
       const createStub = sinon.stub().returns(mockActor);
-      const helper = new BaseActorClientImplementationHelper(container, mockActorFactory);
+      const helper = new BaseImplementationHelper(container, mockActorFactory, mockWorkflowClientFactory);
       const binding: Binding = {
         impl: TestActorImpl,
         key: testActorSymbol,
@@ -171,4 +192,35 @@ describe('BaseActorClientImplementationHelper', () => {
       expect(createStub.getCall(2).args).to.be.eql([TestActorImpl, 'test-task-list2']);
     });
   });
+
+
+  it('should inject workflow client', () => {
+    @injectable()
+    class TestApplication {
+      constructor(@inject(testWorkflowSymbol)
+                  @workflowClient
+                  public workflow: TestWorkflow) {
+      }
+    }
+
+    const mockWorkflow = { data: 'test' };
+    const createStub = sinon.stub().returns(mockWorkflow);
+    const helper = new BaseImplementationHelper(container, mockActorFactory, mockWorkflowClientFactory);
+    const binding: Binding = {
+      impl: TestWorkflowImpl,
+      key: testWorkflowSymbol,
+    };
+
+    mockWorkflowClientFactory.create = createStub;
+    helper.addImplementations(
+      [binding],
+    );
+    container.bind<TestApplication>(TestApplication).toSelf();
+    const testInstance: TestApplication = container.get<TestApplication>(TestApplication);
+    expect(testInstance.workflow).to.be.eq(mockWorkflow);
+  });
+
 });
+
+
+

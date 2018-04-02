@@ -12,14 +12,11 @@ const swf = new SWF({ region: 'us-east-1' });
 const config = new ApplicationConfiguration(swf);
 const configProvider = new BaseApplicationConfigurationProvider(config);
 const applicationFactory = new ConfigurableApplicationFactory(configProvider);
-applicationFactory.addActorImplementations([
+applicationFactory.addImplementations([
   {
     impl: TestActorImpl,
     key: TEST_ACTOR,
   },
-]);
-
-applicationFactory.addWorkflowImplementations([
   {
     impl: TestWorkflowImpl,
     key: TEST_WORKFLOW,
@@ -33,7 +30,7 @@ async function boot() {
 
 
   for (let i = 0; i < 100; i++) {
-    const res =   app.start();
+    const res = app.start();
     console.log(res);
   }
 

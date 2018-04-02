@@ -36,14 +36,11 @@ describe('Test Application', () => {
     registerWfStub = stub().callsArgWith(1, null);
     mockSWF.startWorkflowExecution = startWfStub;
     mockSWF.registerWorkflowType = registerWfStub;
-    applicationFactory.addActorImplementations([
+    applicationFactory.addImplementations([
       {
         impl: TestActorImpl,
         key: TEST_ACTOR,
       },
-    ]);
-
-    applicationFactory.addWorkflowImplementations([
       {
         impl: TestWorkflowImpl,
         key: TEST_WORKFLOW,

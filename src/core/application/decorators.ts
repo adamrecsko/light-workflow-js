@@ -4,8 +4,8 @@ import { classLevelDefinition } from '../utils/decorators/utils';
 
 export class ApplicationDefinition {
   public configuration: ApplicationConfiguration;
-  public actors: Binding[];
-  public workflows: Binding[];
+  public services: Binding[];
+
 }
 
 function createDecorator<T>(property: keyof ApplicationDefinition) {
@@ -13,5 +13,4 @@ function createDecorator<T>(property: keyof ApplicationDefinition) {
 }
 
 export const configuration = createDecorator<ApplicationConfiguration>('configuration');
-export const actors = createDecorator<Binding[]>('actors');
-export const workflows = createDecorator<Binding[]>('workflows');
+export const services = createDecorator<Binding[]>('services');

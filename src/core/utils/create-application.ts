@@ -8,8 +8,7 @@ export function createApplication<T>(newable: Newable<T>) {
   const appMeta = getClassLevelDefinitionsFromClass<ApplicationDefinition>(newable);
   const configProvider = new BaseApplicationConfigurationProvider(appMeta.configuration);
   const applicationFactory: ApplicationFactory = new ConfigurableApplicationFactory(configProvider);
-  applicationFactory.addActorImplementations(appMeta.actors);
-  applicationFactory.addWorkflowImplementations(appMeta.workflows);
+  applicationFactory.addImplementations(appMeta.services);
   return applicationFactory.createApplication<T>(newable);
 }
 

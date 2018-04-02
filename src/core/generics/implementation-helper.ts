@@ -8,3 +8,5 @@ export type Binding<T = any> = {
 export interface ImplementationHelper {
   addImplementations<T>(implementationList: Binding<T>[]): void;
 }
+
+export const IMPLEMENTATION_HELPER = Symbol('IMPLEMENTATION_HELPER');

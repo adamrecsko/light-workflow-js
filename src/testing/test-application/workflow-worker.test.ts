@@ -83,19 +83,17 @@ class WorkflowWorkerIntegrationTest {
     this.configProvider = new BaseApplicationConfigurationProvider(this.config);
     this.applicationFactory = new ConfigurableApplicationFactory(this.configProvider);
 
-    this.applicationFactory.addActorImplementations([
+    this.applicationFactory.addImplementations([
       {
         impl: TestActorImpl,
         key: TEST_ACTOR,
       },
-    ]);
-
-    this.applicationFactory.addWorkflowImplementations([
       {
         impl: TestWorkflowImpl,
         key: TEST_WORKFLOW,
       },
     ]);
+
   }
 
   @test(slow(2000), timeout(10000))

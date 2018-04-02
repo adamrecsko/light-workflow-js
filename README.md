@@ -181,13 +181,11 @@ For more examples please check the examples folder
 
 @injectable()
 @configuration(new ApplicationConfiguration(new SWF({ region: 'us-east-1' })))
-@actors([
+@services([
   {
     impl: HelloWorldImpl,
     key: HELLO_WORLD_ACTOR,
   },
-])
-@workflows([
   {
     impl: HelloWorldWorkflowImpl,
     key: HELLO_WORLD_WORKFLOW,

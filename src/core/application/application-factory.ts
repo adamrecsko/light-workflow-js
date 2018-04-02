@@ -1,24 +1,22 @@
-import { Container, ContainerModule } from 'inversify';
-import { APPLICATION_CONFIGURATION, APP_CONTAINER, ACTIVITY_CLIENT_IMPLEMENTATION_HELPER } from '../../symbols';
+import { Container } from 'inversify';
+import { APPLICATION_CONFIGURATION, APP_CONTAINER } from '../../symbols';
 import { ApplicationConfigurationProvider } from './application-configuration-provider';
 import { CORE } from '../../core-module';
 import { Newable } from '../../implementation';
-import { Binding, ImplementationHelper } from '../generics/implementation-helper';
-import { WORKFLOW_CLIENT_IMPLEMENTATION_HELPER } from '../workflow/workflow-client-implementation-helper';
+import { Binding, IMPLEMENTATION_HELPER, ImplementationHelper } from '../generics/implementation-helper';
 
 export interface ApplicationFactory {
   createApplication<T>(application: Newable<T>): T;
 
-  addActorImplementations(implementationList: Binding[]): void;
+  addImplementations(implementationList: Binding[]): void;
 
-  addWorkflowImplementations(implementationList: Binding[]): void;
 }
 
 export class ConfigurableApplicationFactory implements ApplicationFactory {
   private coreKernel: Container;
   private applicationKernel: Container;
-  private actorClientImplementationHelper: ImplementationHelper;
-  private workflowImplementationHelper: ImplementationHelper;
+  private implementationHelper: ImplementationHelper;
+
 
   constructor(private configurationProvider: ApplicationConfigurationProvider) {
     this.coreKernel = new Container();
@@ -30,17 +28,12 @@ export class ConfigurableApplicationFactory implements ApplicationFactory {
     this.coreKernel.bind<Container>(APP_CONTAINER)
       .toConstantValue(this.applicationKernel);
     this.coreKernel.load(CORE);
-    this.actorClientImplementationHelper =
-      this.coreKernel.get<ImplementationHelper>(ACTIVITY_CLIENT_IMPLEMENTATION_HELPER);
-    this.workflowImplementationHelper = this.coreKernel.get<ImplementationHelper>(WORKFLOW_CLIENT_IMPLEMENTATION_HELPER);
+    this.implementationHelper =
+      this.coreKernel.get<ImplementationHelper>(IMPLEMENTATION_HELPER);
   }
 
-  public addActorImplementations(implementationList: Binding[]): void {
-    this.actorClientImplementationHelper.addImplementations(implementationList);
-  }
-
-  public addWorkflowImplementations(implementationList: Binding[]): void {
-    this.workflowImplementationHelper.addImplementations(implementationList);
+  public addImplementations(implementationList: Binding[]): void {
+    this.implementationHelper.addImplementations(implementationList);
   }
 
   public createApplication<T>(application: Newable<T>): T {

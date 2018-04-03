@@ -31,7 +31,7 @@ export interface WorkflowClient {
 @injectable()
 export class BaseWorkflowClient implements WorkflowClient {
 
-  private swfClient: SWF;
+  private readonly swfClient: SWF;
 
   constructor(@inject(AWS_ADAPTER) private awsAdapter: AWSClientProvider, @inject(LOGGER) private logger: Logger) {
     this.swfClient = awsAdapter.getNativeSWFClient();

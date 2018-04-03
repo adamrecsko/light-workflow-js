@@ -8,8 +8,8 @@ export class FakeSWF {
   private workflowPollGenerator: WorkflowDecisionPollGenerator = new BaseWorkflowDecisionPollGenerator();
   private workflowEventGenerator = new WorkflowHistoryGenerator();
   private eventList: HistoryEvent[] = [];
-  private pollResp: DecisionTask;
-  private startEvent: HistoryEvent;
+  private readonly pollResp: DecisionTask;
+  private readonly startEvent: HistoryEvent;
   public completedEvents: any[] = [];
 
   public completedEventChangeSubject: Subject<any> = new Subject();

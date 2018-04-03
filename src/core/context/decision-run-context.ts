@@ -42,8 +42,8 @@ export class BaseDecisionRunContext implements DecisionRunContext {
   private keyToStateMachine: Map<string, HistoryEventProcessor<any>>;
   private scheduleEventIdToActivityId: Map<number, string>;
   private currentId: number;
-  private workflowExecution: WorkflowExecution;
-  private zone: Zone;
+  private readonly workflowExecution: WorkflowExecution;
+  private readonly zone: Zone;
 
 
   constructor(private logger: Logger) {

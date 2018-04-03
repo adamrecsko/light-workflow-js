@@ -13,8 +13,8 @@ export interface ApplicationFactory {
 }
 
 export class ConfigurableApplicationFactory implements ApplicationFactory {
-  private coreKernel: Container;
-  private applicationKernel: Container;
+  private readonly coreKernel: Container;
+  private readonly applicationKernel: Container;
   private implementationHelper: ImplementationHelper;
 
 

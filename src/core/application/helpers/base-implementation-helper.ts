@@ -27,8 +27,8 @@ export class BaseImplementationHelper implements ImplementationHelper {
   }
 
 
-  private static getValueFromMetadata(metadatas: Metadata[], key: any): any {
-    const meta = metadatas.find(meta => meta.key === key);
+  private static getValueFromMetadata(metadata: Metadata[], key: any): any {
+    const meta = metadata.find(meta => meta.key === key);
     if (meta) {
       return meta.value;
     }

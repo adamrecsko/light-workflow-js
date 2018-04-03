@@ -5,9 +5,9 @@ import { Subscriber } from 'rxjs/Subscriber';
 
 
 export class TaskPollerObservable<T> extends Observable<T> {
-  constructor(private request: Observable<T>,
-              private scheduler?: Scheduler,
-              private timerInterval?: number) {
+  constructor(private readonly request: Observable<T>,
+              private readonly scheduler?: Scheduler,
+              private readonly timerInterval?: number) {
     super();
     this.timerInterval = this.timerInterval || 100;
   }

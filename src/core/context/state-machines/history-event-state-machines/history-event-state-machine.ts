@@ -31,7 +31,7 @@ export interface HistoryEventStateMachine<T> extends HistoryEventProcessor<T>, N
 export abstract class AbstractHistoryEventStateMachine<T> extends BaseNotifiableStateMachine<T> implements HistoryEventStateMachine<T> {
   private processedEventIds: Set<number>;
 
-  constructor(transitionTable: TransitionTable<T>, currentState: T) {
+  protected constructor(transitionTable: TransitionTable<T>, currentState: T) {
     super(transitionTable, currentState);
     this.processedEventIds = new Set<number>();
   }
